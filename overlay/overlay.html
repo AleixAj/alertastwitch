@@ -584,7 +584,7 @@ html.preview body { background: #1b0e2c; }
   }
 
   // ----- neón: varias capas que comparten la cabeza; cuanto más larga, más fina y transparente -----
-  var NEON_CAPAS = 9, NEON_COLA = 0.42, NEON_VEL = 170;     // capas, largo de la estela (parte del borde), px por segundo
+  var NEON_CAPAS = 9, NEON_COLA = 0.55, NEON_VEL = 170;     // capas, largo de la estela (parte del borde), px por segundo
   function neonSVG(b) {
     var W = b.w + BORDER * 2, H = b.h + BORDER * 2, h = BORDER / 2, r = R + BORDER - h;
     var rect = '<rect x="' + h + '" y="' + h + '" width="' + (W - BORDER) + '" height="' + (H - BORDER) + '" rx="' + r + '" pathLength="1000"';
