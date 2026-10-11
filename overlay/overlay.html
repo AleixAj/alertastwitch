@@ -220,7 +220,7 @@ html, body {
 .title {
   position: absolute;
   left: 50%;
-  top: 20px;
+  top: 10px;
   transform: translateX(-50%);
   animation: float 6s ease-in-out infinite;
 }
@@ -230,7 +230,7 @@ html, body {
 }
 .title-card {
   position: relative;
-  padding: 4px 60px 10px;
+  padding: 2px 72px 8px;
   border-radius: 999px;
   background:
     radial-gradient(circle at 50% 120%, rgba(127,243,230,.25), transparent 60%),
@@ -268,9 +268,9 @@ html, body {
 }
 .name {
   position: relative;
-  font-size: 64px;
+  font-size: 78px;
   font-weight: 700;
-  line-height: 1.1;
+  line-height: 1.05;
   letter-spacing: .01em;
   background: linear-gradient(180deg, #ff8cc4 0%, #ff4f9f 45%, #d42475 100%);
   -webkit-background-clip: text;
@@ -285,15 +285,15 @@ html, body {
 .title .flake {
   position: absolute;
   top: 50%;
-  width: 50px;
-  height: 50px;
-  margin-top: -25px;
+  width: 60px;
+  height: 60px;
+  margin-top: -30px;
   color: #fff;
   filter: drop-shadow(0 0 6px rgba(255,194,221,.95)) drop-shadow(0 0 12px rgba(127,243,230,.5));
   animation: twirl 14s linear infinite;
 }
-.title .flake.l { left: -70px; }
-.title .flake.r { right: -70px; animation-direction: reverse; }
+.title .flake.l { left: -84px; }
+.title .flake.r { right: -84px; animation-direction: reverse; }
 @keyframes twirl { to { transform: rotate(360deg); } }
 .title svg { display: block; width: 100%; height: 100%; }
 
