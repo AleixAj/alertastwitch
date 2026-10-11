@@ -488,43 +488,6 @@ html, body {
     </g>
     <circle r="8" fill="currentColor"/>
   </symbol>
-  <!-- tiburón con volumen y cara de malo (dibujado a mano, mira a la derecha) -->
-  <linearGradient id="sk-body" x1="0" y1="0" x2="0" y2="1">
-    <stop offset="0" stop-color="#a3a2bd"/><stop offset=".45" stop-color="#6d6b8c"/><stop offset="1" stop-color="#45435c"/>
-  </linearGradient>
-  <linearGradient id="sk-fin" x1="0" y1="0" x2="1" y2="1">
-    <stop offset="0" stop-color="#77759a"/><stop offset="1" stop-color="#36344b"/>
-  </linearGradient>
-  <linearGradient id="sk-belly" x1="0" y1="0" x2="0" y2="1">
-    <stop offset="0" stop-color="#f6f4fd"/><stop offset="1" stop-color="#bdb8d6"/>
-  </linearGradient>
-  <linearGradient id="sk-shine" x1="0" y1="0" x2="1" y2="0">
-    <stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".45"/><stop offset="1" stop-color="#fff" stop-opacity="0"/>
-  </linearGradient>
-  <radialGradient id="sk-eye" cx=".4" cy=".4" r=".7">
-    <stop offset="0" stop-color="#ff6b8a"/><stop offset=".5" stop-color="#e0103f"/><stop offset="1" stop-color="#7a0020"/>
-  </radialGradient>
-  <symbol id="c-shark" viewBox="0 0 160 72">
-    <path d="M22 37 C14 24 7 12 1 1 C15 9 25 21 30 33Z" fill="url(#sk-fin)"/>
-    <path d="M22 40 C15 48 10 56 7 64 C18 58 25 50 30 43Z" fill="url(#sk-fin)"/>
-    <path d="M90 46 C88 59 79 68 68 71 C76 61 80 53 82 46Z" fill="url(#sk-fin)"/>
-    <path d="M78 17 C84 2 93 -4 102 -5 C95 3 93 11 95 17Z" fill="url(#sk-fin)"/>
-    <path d="M40 30 C42 25 45 22 48 21 C47 25 47 28 48 30Z" fill="url(#sk-fin)"/>
-    <path d="M18 38 C32 24 62 15 100 16 C124 17 143 25 157 33 L151 37 C142 39 132 40 124 41 C106 48 74 51 48 48 C34 47 24 44 18 38Z" fill="url(#sk-body)"/>
-    <path d="M40 43 C64 49 100 49 124 41 C106 48 74 51 48 48 C44 47 42 45 40 43Z" fill="url(#sk-belly)"/>
-    <path d="M44 27 C64 20 96 18 128 24 C110 21 80 22 50 30Z" fill="url(#sk-shine)"/>
-    <path d="M106 27 C104 31 104 35 106 39 M111 27 C109 31 109 35 111 39 M116 27 C114 31 114 35 116 38" stroke="#3a3852" stroke-width="2" fill="none" stroke-linecap="round" opacity=".85"/>
-    <path d="M62 24 L72 31 M68 23 L64 32 M84 28 L92 26" stroke="#c4c1dc" stroke-width="1.6" stroke-linecap="round" opacity=".75"/>
-    <path d="M118 42 C128 44 140 42 152 37" stroke="#2c2a40" stroke-width="2.6" fill="none" stroke-linecap="round"/>
-    <path d="M118 42 C116 40 115 38 116 36" stroke="#2c2a40" stroke-width="2" fill="none" stroke-linecap="round"/>
-    <path d="M124 43.2 L126 47.5 L128 43.4Z M131 43.3 L133.2 48 L135.3 43.1Z M138 42.6 L140 46.8 L142 42Z M144.5 41 L146.2 44.6 L148 40Z" fill="#fff"/>
-    <path d="M127 42.6 L128.6 39 L130.2 42.8Z M141 41.6 L142.6 38.2 L144 41Z" fill="#f2efff"/>
-    <circle cx="136" cy="28" r="7" fill="#ff2a5a" opacity=".22"/>
-    <ellipse cx="135.5" cy="28" rx="4.4" ry="3.3" fill="url(#sk-eye)"/>
-    <circle cx="136.4" cy="28.2" r="1.3" fill="#1a0610"/>
-    <circle cx="134.4" cy="26.9" r="1" fill="#fff" opacity=".9"/>
-    <path d="M127 23 L143 26.5" stroke="#2c2a40" stroke-width="3.4" stroke-linecap="round"/>
-  </symbol>
   <symbol id="bubble-ico" viewBox="0 0 16 16">
     <circle cx="6" cy="9" r="5" fill="none" stroke="currentColor" stroke-width="2"/>
     <circle cx="12.5" cy="4" r="2.5" fill="none" stroke="currentColor" stroke-width="1.6"/>
@@ -645,7 +608,7 @@ html, body {
     ring.appendChild(rv);
   }
   // ----- animales que pasan por la ventana, al azar (como mucho 2 a la vez) -----
-  // Dibujos: Fluent Emoji de Microsoft (licencia MIT, ver animales/LICENCIA.txt); el tiburón está dibujado a mano.
+  // Dibujos: Fluent Emoji de Microsoft (licencia MIT, ver animales/LICENCIA.txt).
   // w: ancho en px · s: segundos que tardan en cruzar · mira: hacia dónde mira el dibujo · up: suben en vez de cruzar
   var CRIATURAS = [
     { img: 'animales/fish.png',          peso: 14, w: [140, 160], s: [9, 12],   mira: 'izq' },
@@ -654,7 +617,7 @@ html, body {
     { img: 'animales/dolphin.png',       peso: 10, w: [185, 205], s: [6, 8],    mira: 'izq', fast: true, arc: 30 },
     { img: 'animales/turtle.png',        peso: 9,  w: [165, 185], s: [13, 16],  mira: 'izq' },
     { img: 'animales/whale.png',         peso: 7,  w: [205, 225], s: [14, 17],  mira: 'izq' },
-    { svg: 'c-shark',                    peso: 10, w: [240, 265], s: [11, 14],  mira: 'der' },
+    { img: 'animales/shark.png',         peso: 10, w: [200, 220], s: [11, 14],  mira: 'izq' },
     { img: 'animales/octopus.png',       peso: 9,  w: [140, 155], s: [12, 15],  up: true, pulse: true },
     { img: 'animales/jellyfish.png',     peso: 9,  w: [135, 150], s: [13, 16],  up: true, pulse: true },
     { img: 'animales/squid.png',         peso: 8,  w: [140, 155], s: [11, 14],  up: true, pulse: true }
@@ -726,7 +689,7 @@ html, body {
     }, espera);
   }
   programar(800);
-  window.soltarCriatura = soltar;   // para probar: soltarCriatura('c-shark') o soltarCriatura('dolphin')
+  window.soltarCriatura = soltar;   // para probar: soltarCriatura('shark')
   html = '';
   for (i = 0; i < 14; i++) {
     html += '<span style="--x:' + (10 + rnd() * 80).toFixed(0) + '%;--s:' + (5 + rnd() * 12 | 0) + 'px;--d:' + (6 + rnd() * 4).toFixed(1) + 's;--t:' + (-rnd() * 10).toFixed(1) + 's;--w:' + ((rnd() - .5) * 30 | 0) + 'px"></span>';
