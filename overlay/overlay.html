@@ -418,6 +418,27 @@ html, body {
   pointer-events: none;
 }
 
+/* ===== Abierto fuera de OBS: fondo oscuro alrededor y cuadritos en los huecos ===== */
+html.preview body { background: #1b0e2c; }
+.transp {
+  position: absolute;
+  border-radius: 28px;
+  background: repeating-conic-gradient(#d9d3e3 0 25%, #f4f1f8 0 50%) 0 0 / 32px 32px;
+}
+.transp::after {
+  content: 'transparente en OBS';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  padding: 8px 18px;
+  border-radius: 999px;
+  background: rgba(27,14,44,.7);
+  color: #fff;
+  font: 600 22px/1 'Fredoka', sans-serif;
+  white-space: nowrap;
+}
+
 /* ===== Modo demo (overlay.html?demo): contenido de ejemplo en los huecos ===== */
 .demo { position: absolute; overflow: hidden; border-radius: 28px; }
 .demo.game {
@@ -510,9 +531,16 @@ html, body {
   var demo = /[?&]demo\b/.test(location.search);
 
   // escala el escenario de 1920x1080 a la ventana (por si la fuente de OBS tiene otro tamaño)
+  // En OBS (existe window.obsstudio) los huecos son transparentes de verdad.
+  // Abierto en un navegador normal se marcan con cuadritos para que se vea que son transparentes.
+  var enOBS = !!window.obsstudio;
+  if (!enOBS) document.documentElement.classList.add('preview');
+
   function fit() {
     var s = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
-    stage.style.transform = 'scale(' + s + ')';
+    // centrado: si la ventana no es 16:9, lo que sobra queda repartido a los lados
+    var x = (window.innerWidth - 1920 * s) / 2, y = (window.innerHeight - 1080 * s) / 2;
+    stage.style.transform = 'translate(' + x + 'px,' + y + 'px) scale(' + s + ')';
   }
   window.addEventListener('resize', fit);
   fit();
@@ -557,9 +585,9 @@ html, body {
     el.style.height = (b.h + grow * 2) + 'px';
   }
   function frame(key, b, opts) {
-    if (demo) {
+    if (demo || !enOBS) {
       var d = document.createElement('div');
-      d.className = 'demo ' + key;
+      d.className = demo ? 'demo ' + key : 'transp';
       place(d, b, 0);
       document.getElementById('demo-layer').appendChild(d);
     }

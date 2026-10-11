@@ -82,8 +82,10 @@ Está en la carpeta "overlay". En OBS, dentro de la escena de juego:
    los lados (Alt + arrastrar en OBS) para que no se deforme.
 3. Pon el Alert Box ENCIMA del overlay, para que las alertas se vean.
 
-Para ver cómo queda sin OBS: abre overlay.html en el navegador y añade
-?demo al final de la dirección.
+Para ver cómo queda sin OBS: abre overlay.html en el navegador (pulsa F11
+para verlo a pantalla completa). Los huecos salen a cuadritos: eso significa
+que en OBS son transparentes. Añadiendo ?demo al final de la dirección se ve
+con un juego y una cámara de ejemplo.
 
 
 ------------------------------------------------------------------
