@@ -518,16 +518,36 @@ html, body {
     <circle cx="96" cy="21" r="2.6" fill="#2a1240"/><circle cx="96.8" cy="20.2" r=".9" fill="#fff"/>
     <path d="M101 27 C106 28 110 27 113 26" stroke="#7d68c0" stroke-width="1.6" fill="none" stroke-linecap="round"/>
   </symbol>
-  <symbol id="c-shark" viewBox="0 0 130 58">
-    <path d="M12 31 L1 12 L7 31 L1 50Z" fill="#8e8bb8"/>
-    <path d="M6 31 C20 18 48 12 82 14 C102 15 117 23 127 31 C117 37 101 41 82 41 C48 43 20 39 6 31Z" fill="#a3a0cc"/>
-    <path d="M36 37 C56 42 90 42 112 35 C101 40 92 41 82 41 C60 42 46 40 36 37Z" fill="#ecebff"/>
-    <path d="M64 15 C70 1 80 -1 85 0 C80 6 78 12 78 15Z" fill="#8e8bb8"/>
-    <path d="M74 39 C72 49 64 55 58 56 C63 47 66 41 68 39Z" fill="#8e8bb8"/>
-    <path d="M96 24 V32 M100 23 V31 M104 23 V30" stroke="#7d7aa8" stroke-width="1.8" stroke-linecap="round"/>
-    <circle cx="113" cy="26" r="2.8" fill="#2a1240"/><circle cx="113.8" cy="25.2" r="1" fill="#fff"/>
-    <path d="M111 34 C115 36 119 35 122 32" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"/>
-    <circle cx="117" cy="31" r="2.4" fill="#ff8cc4" opacity=".55"/>
+  <symbol id="c-shark" viewBox="0 0 160 72">
+    <!-- cola (lóbulo de arriba más grande, como un tiburón de verdad) -->
+    <path d="M22 37 C14 24 7 12 1 1 C15 9 25 21 30 33Z" fill="#4a4768"/>
+    <path d="M22 40 C15 48 10 56 7 64 C18 58 25 50 30 43Z" fill="#4a4768"/>
+    <!-- aleta de abajo -->
+    <path d="M90 46 C88 59 79 68 68 71 C76 61 80 53 82 46Z" fill="#4a4768"/>
+    <!-- cuerpo -->
+    <path d="M18 38 C32 24 62 15 100 16 C124 17 143 25 157 33 L151 37 C142 39 132 40 124 41 C106 48 74 51 48 48 C34 47 24 44 18 38Z" fill="#646184"/>
+    <!-- lomo más oscuro -->
+    <path d="M24 34 C40 23 66 17 100 18 C122 19 138 25 150 31 C132 26 112 24 98 25 C70 26 44 30 24 34Z" fill="#53506f"/>
+    <!-- barriga clara -->
+    <path d="M40 43 C64 49 100 49 124 41 C106 48 74 51 48 48 C44 47 42 45 40 43Z" fill="#d9d6ee"/>
+    <!-- aleta de arriba, afilada -->
+    <path d="M78 17 C84 2 93 -4 102 -5 C95 3 93 11 95 17Z" fill="#4a4768"/>
+    <path d="M40 30 C42 25 45 22 48 21 C47 25 47 28 48 30Z" fill="#4a4768"/>
+    <!-- branquias -->
+    <path d="M106 26 C104 31 104 35 106 39 M111 26 C109 31 109 35 111 39 M116 26 C114 31 114 35 116 38" stroke="#3a3756" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <!-- cicatrices -->
+    <path d="M62 23 L72 31 M68 22 L64 32 M84 27 L92 25" stroke="#9e9bbd" stroke-width="1.6" stroke-linecap="round" opacity=".8"/>
+    <!-- boca cerrada, larga y seria, con dientes que asoman -->
+    <path d="M118 42 C128 44 140 42 152 37" stroke="#2c2a44" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+    <path d="M118 42 C116 40 115 38 116 36" stroke="#2c2a44" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <path d="M124 43.2 L126 47.5 L128 43.4Z M131 43.3 L133.2 48 L135.3 43.1Z M138 42.6 L140 46.8 L142 42Z M144.5 41 L146.2 44.6 L148 40Z" fill="#fff"/>
+    <path d="M127 42.6 L128.6 39 L130.2 42.8Z M141 41.6 L142.6 38.2 L144 41Z" fill="#f2efff"/>
+    <!-- ojo rojo con ceño -->
+    <ellipse cx="135" cy="28" rx="4.2" ry="3" fill="#fff"/>
+    <circle cx="136" cy="28" r="2.4" fill="#e0103f"/>
+    <circle cx="136.3" cy="28" r="1" fill="#1a0610"/>
+    <circle cx="136" cy="28" r="6" fill="#ff2a5a" opacity=".25"/>
+    <path d="M127 23 L143 26.5" stroke="#2c2a44" stroke-width="3.2" stroke-linecap="round"/>
   </symbol>
   <symbol id="c-turtle" viewBox="0 0 96 58">
     <path d="M30 40 C24 50 14 54 8 52 C14 46 20 42 26 38Z M62 40 C66 50 74 55 80 54 C76 47 70 42 64 38Z" fill="#8fe8d8"/>
@@ -680,7 +700,7 @@ html, body {
   // ----- ojo de buey: centrado en el hueco que queda encima de la cámara -----
   var ph = document.querySelector('.porthole');
   var top = 122, bottom = LAYOUT.cam.y - BORDER - 10;       // espacio libre encima de la cámara
-  var D = Math.min(300, bottom - top - 50, LAYOUT.cam.w - 60);
+  var D = Math.min(314, bottom - top - 40, LAYOUT.cam.w - 56);
   ph.style.width = ph.style.height = D + 'px';
   ph.style.left = (LAYOUT.cam.x + LAYOUT.cam.w / 2 - D / 2) + 'px';
   ph.style.top = (top + (bottom - top) / 2 - D / 2) + 'px';
@@ -695,13 +715,13 @@ html, body {
   // ----- animales que pasan por la ventana, al azar (como mucho 2 a la vez) -----
   // w: ancho en px · s: segundos que tardan en cruzar · up: suben en vez de cruzar de lado
   var CRIATURAS = [
-    { id: 'c-fish',    peso: 30, w: [46, 64],   s: [6, 9],   colores: [['#ffd3e8', '#ff9ccb'], ['#c8fff8', '#7ff3e6'], ['#fff1b8', '#ffc86b'], ['#e6d8ff', '#b79cff']] },
-    { id: 'c-puffer',  peso: 12, w: [48, 58],   s: [8, 11] },
-    { id: 'c-dolphin', peso: 13, w: [120, 140], s: [4, 5.5], fast: true, arc: 40 },
-    { id: 'c-shark',   peso: 11, w: [140, 165], s: [8, 10] },
-    { id: 'c-turtle',  peso: 11, w: [86, 100],  s: [10, 13] },
-    { id: 'c-octopus', peso: 11, w: [54, 64],   s: [8, 11], up: true, pulse: true },
-    { id: 'c-jelly',   peso: 12, w: [52, 64],   s: [10, 13], up: true, pulse: true }
+    { id: 'c-fish',    peso: 30, w: [80, 105],  s: [6, 9],   colores: [['#ffd3e8', '#ff9ccb'], ['#c8fff8', '#7ff3e6'], ['#fff1b8', '#ffc86b'], ['#e6d8ff', '#b79cff']] },
+    { id: 'c-puffer',  peso: 12, w: [78, 92],   s: [8, 11] },
+    { id: 'c-dolphin', peso: 13, w: [190, 215], s: [4.5, 6], fast: true, arc: 40 },
+    { id: 'c-shark',   peso: 11, w: [235, 265], s: [8, 10] },
+    { id: 'c-turtle',  peso: 11, w: [140, 160], s: [10, 13] },
+    { id: 'c-octopus', peso: 11, w: [90, 105],  s: [8, 11], up: true, pulse: true },
+    { id: 'c-jelly',   peso: 12, w: [84, 98],   s: [10, 13], up: true, pulse: true }
   ];
   var swimmers = ph.querySelector('.swimmers'), activos = 0, ultimo = '';
   function entre(r) { return r[0] + Math.random() * (r[1] - r[0]); }
@@ -736,13 +756,13 @@ html, body {
     var frames, dur = entre(c.s) * 1000;
     if (c.up) {
       // pulpos y medusas suben desde abajo
-      var x0 = 30 + Math.random() * (D - w - 60), x1 = x0 + (Math.random() - .5) * 90;
+      var x0 = 20 + Math.random() * Math.max(10, D - w - 40), x1 = x0 + (Math.random() - .5) * 90;
       frames = [{ transform: 'translate(' + x0 + 'px,' + (D + 10) + 'px)' },
                 { transform: 'translate(' + ((x0 + x1) / 2 + 20) + 'px,' + (D / 2 - h / 2) + 'px)' },
                 { transform: 'translate(' + x1 + 'px,' + (-h - 10) + 'px)' }];
     } else {
       // el resto cruza de un lado a otro (los delfines con un saltito)
-      var y0 = 30 + Math.random() * (D - h - 70), y1 = Math.max(20, Math.min(D - h - 30, y0 + (Math.random() - .5) * 70));
+      var y0 = 20 + Math.random() * Math.max(10, D - h - 50), y1 = Math.max(10, Math.min(D - h - 20, y0 + (Math.random() - .5) * 60));
       var a0 = izq ? D + 10 : -w - 10, a1 = izq ? -w - 10 : D + 10;
       frames = [{ transform: 'translate(' + a0 + 'px,' + y0 + 'px)' },
                 { transform: 'translate(' + (a0 + a1) / 2 + 'px,' + ((y0 + y1) / 2 - (c.arc || 0)) + 'px)' },
