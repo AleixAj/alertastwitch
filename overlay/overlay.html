@@ -465,7 +465,6 @@ html.preview body { background: #1b0e2c; }
   </div>
   <div id="demo-layer"></div>
   <div id="deco" style="position:absolute;inset:0">
-  <div id="frames"></div>
   <div class="porthole">
     <div class="ring"></div>
     <div class="water">
@@ -476,6 +475,7 @@ html.preview body { background: #1b0e2c; }
     </div>
     <div class="glass"></div>
   </div>
+  <div id="frames"></div>
   <div class="title">
     <div class="title-card">
       <div class="scales"></div>
@@ -617,9 +617,9 @@ html.preview body { background: #1b0e2c; }
 
   // ----- ojo de buey: centrado en el hueco que queda encima de la cámara -----
   var ph = document.querySelector('.porthole');
-  // el aro sobresale 18 px y su sombra unos 36 px más: se deja hueco para que no caiga sobre la cámara
-  var top = LAYOUT.game.y, bottom = LAYOUT.cam.y - BORDER - 3 - 18 - 36;
-  var D = Math.min(300, bottom - top - 18, LAYOUT.cam.w - 56);
+  // la ventana va por debajo de los marcos: si su sombra llega a la cámara, queda tapada por el marco
+  var top = LAYOUT.game.y;
+  var D = Math.min(330, LAYOUT.cam.y - BORDER - top - 18 - 6, LAYOUT.cam.w - 40);
   ph.style.width = ph.style.height = D + 'px';
   ph.style.left = (LAYOUT.cam.x + LAYOUT.cam.w / 2 - D / 2) + 'px';
   ph.style.top = top + 'px';
