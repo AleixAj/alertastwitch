@@ -60,6 +60,10 @@ SI ALGO NO SALE BIEN
 --------------------
 - Sale "{name}" o algo entre llaves: revisa que pegaste los tres archivos
   en su pestaña correcta.
+- No se oye el sonido: mira que en "Sound" esté subido el sonido.mp3 y el
+  volumen no esté a 0. En OBS, si la fuente del Alert Box tiene marcado
+  "Controlar audio mediante OBS", sale en el Mezclador de audio: que no
+  esté silenciada ahí.
 - Las subs regaladas o la raid no muestran el número: la alerta sigue
   funcionando, solo sin el número. Avisa a quien te las hizo.
 
