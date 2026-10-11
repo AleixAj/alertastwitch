@@ -319,11 +319,6 @@ html, body {
   top: 154px;
   width: 300px;
   height: 300px;
-  animation: hover 7s ease-in-out infinite;
-}
-@keyframes hover {
-  0%, 100% { transform: translateY(0); }
-  50%      { transform: translateY(-6px); }
 }
 /* aro perlado */
 .porthole .ring {
@@ -334,7 +329,7 @@ html, body {
   box-shadow:
     0 0 0 3px rgba(255,95,168,.6),
     0 8px 0 3px rgba(226,49,127,.45),
-    0 18px 40px rgba(60,10,70,.5),
+    0 12px 24px rgba(60,10,70,.4),
     inset 0 0 0 3px rgba(255,255,255,.7),
     inset 0 0 14px rgba(226,49,127,.45);
 }
@@ -622,11 +617,12 @@ html.preview body { background: #1b0e2c; }
 
   // ----- ojo de buey: centrado en el hueco que queda encima de la cámara -----
   var ph = document.querySelector('.porthole');
-  var top = 122, bottom = LAYOUT.cam.y - BORDER - 10;       // espacio libre encima de la cámara
-  var D = Math.min(314, bottom - top - 40, LAYOUT.cam.w - 56);
+  // el aro sobresale 18 px y su sombra unos 36 px más: se deja hueco para que no caiga sobre la cámara
+  var top = LAYOUT.game.y, bottom = LAYOUT.cam.y - BORDER - 3 - 18 - 36;
+  var D = Math.min(300, bottom - top - 18, LAYOUT.cam.w - 56);
   ph.style.width = ph.style.height = D + 'px';
   ph.style.left = (LAYOUT.cam.x + LAYOUT.cam.w / 2 - D / 2) + 'px';
-  ph.style.top = (top + (bottom - top) / 2 - D / 2) + 'px';
+  ph.style.top = top + 'px';
   var ring = ph.querySelector('.ring');
   for (i = 0; i < 12; i++) {
     var a = i / 12 * Math.PI * 2, rv = document.createElement('div');
