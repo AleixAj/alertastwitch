@@ -164,7 +164,7 @@ html, body {
   top: -7px;
   overflow: visible;
   pointer-events: none;
-  filter: drop-shadow(0 0 4px rgba(255,80,190,1)) drop-shadow(0 0 12px rgba(255,40,160,.8));
+  filter: drop-shadow(0 0 4px #ff8ad8) drop-shadow(0 0 10px rgba(255,110,199,.95)) drop-shadow(0 0 22px rgba(255,110,199,.6));
 }
 .frame .neon rect { fill: none; stroke-linecap: round; }
 
@@ -584,18 +584,18 @@ html.preview body { background: #1b0e2c; }
   }
 
   // ----- neón: varias capas que comparten la cabeza; cuanto más larga, más fina y transparente -----
-  var NEON_CAPAS = 9, NEON_COLA = 0.42, NEON_VEL = 420;     // capas, largo de la estela (parte del borde), px por segundo
+  var NEON_CAPAS = 9, NEON_COLA = 0.42, NEON_VEL = 170;     // capas, largo de la estela (parte del borde), px por segundo
   function neonSVG(b) {
     var W = b.w + BORDER * 2, H = b.h + BORDER * 2, h = BORDER / 2, r = R + BORDER - h;
     var rect = '<rect x="' + h + '" y="' + h + '" width="' + (W - BORDER) + '" height="' + (H - BORDER) + '" rx="' + r + '" pathLength="1000"';
     // halo ancho y suave a lo largo de toda la estela
     var out = '<svg class="neon" width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '">' +
-              rect + ' data-halo="1" stroke="#ff3fae" stroke-width="20" stroke-opacity=".22"/>';
+              rect + ' data-halo="1" stroke="#ff6ec7" stroke-width="24" stroke-opacity=".28"/>';
     for (var k = 0; k < NEON_CAPAS; k++) {
       var t = k / (NEON_CAPAS - 1);                                   // 0 = cabeza, 1 = final de la cola
       var ancho = (12 - t * 8.5).toFixed(2);                          // de 12 px a 3,5 px
       var op = (1 - t * .6).toFixed(2);
-      var color = k === 0 ? '#ffffff' : (k < 3 ? '#ff8fd2' : '#ff2fa8');
+      var color = k === 0 ? '#fff0fa' : (k < 3 ? '#ffa3e0' : '#ff6ec7');      // rosa chicle neón
       out += rect + ' stroke="' + color + '" stroke-width="' + ancho + '" stroke-opacity="' + op + '"/>';
     }
     return out + '</svg>';
