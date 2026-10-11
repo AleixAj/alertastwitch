@@ -68,6 +68,24 @@ SI ALGO NO SALE BIEN
   funcionando, solo sin el número. Avisa a quien te las hizo.
 
 
+OVERLAY (marco submarino para jugar)
+-----------------------------------
+Está en la carpeta "overlay". En OBS, dentro de la escena de juego:
+
+1. Añade una fuente "Navegador", marca "Archivo local" y elige
+   overlay/overlay.html. Ancho 1920, alto 1080.
+2. Pon el juego y la cámara DEBAJO del overlay en la lista de fuentes,
+   en estas posiciones (clic derecho > Transformar > Editar transformación):
+     Juego:   posición 32, 122   tamaño 1440 x 810
+     Cámara:  posición 1504, 492  tamaño 384 x 440
+   La cámara es casi cuadrada: si tu cámara es panorámica, recórtala por
+   los lados (Alt + arrastrar en OBS) para que no se deforme.
+3. Pon el Alert Box ENCIMA del overlay, para que las alertas se vean.
+
+Para ver cómo queda sin OBS: abre overlay.html en el navegador y añade
+?demo al final de la dirección.
+
+
 ------------------------------------------------------------------
 PARA QUIEN MANTIENE LAS ALERTAS (el streamer no necesita esto)
 ------------------------------------------------------------------
