@@ -651,20 +651,25 @@ html, body {
     swimmers.appendChild(el);
 
     var frames, dur = entre(c.s) * 1000;
+    var x0, y0, x1, y1, ang;
+    function lim(v, m) { return Math.max(-m, Math.min(m, v)); }
     if (c.up) {
-      // pulpos y medusas suben desde abajo
-      var x0 = 20 + Math.random() * Math.max(10, D - w - 40), x1 = x0 + (Math.random() - .5) * 90;
-      frames = [{ transform: 'translate(' + x0 + 'px,' + (D + 10) + 'px)' },
-                { transform: 'translate(' + ((x0 + x1) / 2 + 20) + 'px,' + (D / 2 - h / 2) + 'px)' },
-                { transform: 'translate(' + x1 + 'px,' + (-h - 10) + 'px)' }];
+      // pulpos, medusas y calamares suben desde abajo, rectos o en diagonal
+      x0 = -w * .3 + Math.random() * (D - w * .4);
+      x1 = -w * .3 + Math.random() * (D - w * .4);
+      y0 = D + 10; y1 = -h - 10;
+      ang = lim(Math.atan2(x1 - x0, y0 - y1) * 180 / Math.PI, 20);          // se inclinan hacia donde van
     } else {
-      // el resto cruza de un lado a otro (los delfines con un saltito)
-      var y0 = 20 + Math.random() * Math.max(10, D - h - 50), y1 = Math.max(10, Math.min(D - h - 20, y0 + (Math.random() - .5) * 60));
-      var a0 = izq ? D + 10 : -w - 10, a1 = izq ? -w - 10 : D + 10;
-      frames = [{ transform: 'translate(' + a0 + 'px,' + y0 + 'px)' },
-                { transform: 'translate(' + (a0 + a1) / 2 + 'px,' + ((y0 + y1) / 2 - (c.arc || 0)) + 'px)' },
-                { transform: 'translate(' + a1 + 'px,' + y1 + 'px)' }];
+      // el resto entra por la izquierda o la derecha, a cualquier altura y en diagonal
+      x0 = izq ? D + 10 : -w - 10; x1 = izq ? -w - 10 : D + 10;
+      y0 = -h * .4 + Math.random() * (D - h * .2);
+      y1 = -h * .4 + Math.random() * (D - h * .2);
+      var dx = x1 - x0, dy = y1 - y0;
+      ang = lim((izq ? Math.atan2(-dy, -dx) : Math.atan2(dy, dx)) * 180 / Math.PI, 22);   // el morro apunta hacia donde va
     }
+    frames = [{ transform: 'translate(' + x0 + 'px,' + y0 + 'px) rotate(' + ang + 'deg)' },
+              { transform: 'translate(' + (x0 + x1) / 2 + 'px,' + ((y0 + y1) / 2 - (c.arc || 0)) + 'px) rotate(' + ang + 'deg)' },
+              { transform: 'translate(' + x1 + 'px,' + y1 + 'px) rotate(' + ang + 'deg)' }];
     var anim = el.animate(frames, { duration: dur, easing: 'linear' });
 
     // burbujitas mientras nada
