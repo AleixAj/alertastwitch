@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <title>Overlay Luxanita</title>
+<link rel="icon" href="data:,">
 <!--
   OVERLAY SUBMARINO PARA OBS (1920x1080) — inspirado en Nami (olas, escamas, burbujas)
   - En OBS: fuente "Navegador", archivo local = este overlay.html, 1920 x 1080.
@@ -62,7 +63,7 @@ html, body {
     rgba(255,230,245,0) 230px, rgba(255,230,245,.1) 250px, rgba(255,230,245,0) 300px);
   -webkit-mask-image: linear-gradient(180deg, #000 0%, rgba(0,0,0,.5) 45%, transparent 85%);
           mask-image: linear-gradient(180deg, #000 0%, rgba(0,0,0,.5) 45%, transparent 85%);
-  animation: rays 14s ease-in-out infinite alternate;
+  animation: rays 26s ease-in-out infinite alternate;
 }
 @keyframes rays {
   from { transform: translateX(-60px) skewX(-4deg); opacity: .8; }
@@ -83,7 +84,7 @@ html, body {
     radial-gradient(ellipse 90px 24px at 68% 45%, rgba(255,255,255,.14), transparent 70%),
     radial-gradient(ellipse 60px 18px at 86% 25%, rgba(255,255,255,.18), transparent 70%);
   background-size: 960px 260px;
-  animation: caustics 10s linear infinite;
+  animation: caustics 22s linear infinite;
   opacity: .9;
 }
 @keyframes caustics { to { background-position: 960px 0; } }
@@ -97,49 +98,37 @@ html, body {
   background-size: 30px 30px;
 }
 
-/* burbujas */
+/* burbujas: la de fuera sube en línea recta y la de dentro se mece suave
+   (dos movimientos separados = sin tirones al cambiar de dirección) */
 .bubbles span {
   position: absolute;
   bottom: -60px;
   left: var(--x);
   width: var(--s);
   height: var(--s);
-  border-radius: 50%;
-  background: radial-gradient(circle at 32% 30%, rgba(255,255,255,.95) 0 9%, rgba(255,255,255,.14) 12%, rgba(255,214,236,.1) 60%, rgba(255,214,236,.55) 100%);
-  box-shadow: inset 0 0 6px rgba(255,255,255,.55), 0 0 8px rgba(255,194,221,.25);
+  will-change: transform;
   animation: rise var(--d) linear var(--t) infinite;
 }
 .bubbles span i {
   display: block;
   width: 100%;
   height: 100%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 32% 30%, rgba(255,255,255,.95) 0 9%, rgba(255,255,255,.14) 12%, rgba(255,214,236,.1) 60%, rgba(255,214,236,.55) 100%);
+  box-shadow: inset 0 0 6px rgba(255,255,255,.55);
+  will-change: transform;
+  animation: wobble var(--b) ease-in-out var(--t) infinite alternate;
 }
 @keyframes rise {
-  0%   { transform: translate(0, 0); opacity: 0; }
-  6%   { opacity: 1; }
-  25%  { transform: translate(var(--w), -280px); }
-  50%  { transform: translate(calc(var(--w) * -1), -560px); }
-  75%  { transform: translate(var(--w), -840px); }
-  100% { transform: translate(0, -1160px); opacity: .2; }
+  0%   { transform: translateY(0); opacity: 0; }
+  8%   { opacity: 1; }
+  85%  { opacity: 1; }
+  100% { transform: translateY(-1160px); opacity: 0; }
 }
-
-/* peces pequeños que cruzan */
-.fish {
-  position: absolute;
-  left: 0;
-  top: var(--y);
-  width: 46px;
-  height: 22px;
-  color: rgba(255,214,236,.55);
-  animation: swim var(--d) linear var(--t) infinite;
+@keyframes wobble {
+  from { transform: translateX(calc(var(--w) * -1)); }
+  to   { transform: translateX(var(--w)); }
 }
-.fish svg { display: block; width: 100%; height: 100%; animation: wiggle .6s ease-in-out infinite alternate; }
-.fish.back { animation-name: swim-back; }
-.fish.back svg { transform: scaleX(-1); animation-name: wiggle-back; }
-@keyframes swim      { from { transform: translateX(-80px); }  to { transform: translateX(2000px); } }
-@keyframes swim-back { from { transform: translateX(2000px); } to { transform: translateX(-80px); } }
-@keyframes wiggle      { from { transform: skewY(-4deg); } to { transform: skewY(4deg); } }
-@keyframes wiggle-back { from { transform: scaleX(-1) skewY(-4deg); } to { transform: scaleX(-1) skewY(4deg); } }
 
 /* luces difuminadas que flotan (bokeh) */
 .bokeh span {
@@ -151,8 +140,7 @@ html, body {
   margin: calc(var(--s) / -2) 0 0 calc(var(--s) / -2);
   border-radius: 50%;
   background: radial-gradient(circle, var(--c) 0%, rgba(255,255,255,0) 70%);
-  mix-blend-mode: screen;
-  filter: blur(2px);
+  will-change: transform, opacity;
   animation: drift var(--d) ease-in-out var(--t) infinite alternate, breathe calc(var(--d) / 2.5) ease-in-out var(--t) infinite alternate;
 }
 @keyframes drift   { from { transform: translate(0, 0); } to { transform: translate(var(--dx), var(--dy)); } }
@@ -234,7 +222,7 @@ html, body {
   left: 50%;
   top: 20px;
   transform: translateX(-50%);
-  animation: float 4s ease-in-out infinite;
+  animation: float 6s ease-in-out infinite;
 }
 @keyframes float {
   0%, 100% { transform: translateX(-50%) translateY(0); }
@@ -293,20 +281,20 @@ html, body {
     drop-shadow(0 2px 0 #fff) drop-shadow(0 -2px 0 #fff)
     drop-shadow(0 5px 0 var(--pink-soft));
 }
-/* olas rizadas a los lados del título */
-.title .curl {
+/* copos de nieve a los lados del título */
+.title .flake {
   position: absolute;
   top: 50%;
-  width: 70px;
-  height: 52px;
-  margin-top: -26px;
-  filter: drop-shadow(0 0 8px rgba(127,243,230,.55));
-  animation: curl 3s ease-in-out infinite alternate;
+  width: 50px;
+  height: 50px;
+  margin-top: -25px;
+  color: #fff;
+  filter: drop-shadow(0 0 6px rgba(255,194,221,.95)) drop-shadow(0 0 12px rgba(127,243,230,.5));
+  animation: twirl 14s linear infinite;
 }
-.title .curl.l { left: -84px; }
-.title .curl.r { right: -84px; transform: scaleX(-1); animation-name: curl-r; }
-@keyframes curl   { from { transform: rotate(-4deg); } to { transform: rotate(4deg) translateY(-3px); } }
-@keyframes curl-r { from { transform: scaleX(-1) rotate(-4deg); } to { transform: scaleX(-1) rotate(4deg) translateY(-3px); } }
+.title .flake.l { left: -70px; }
+.title .flake.r { right: -70px; animation-direction: reverse; }
+@keyframes twirl { to { transform: rotate(360deg); } }
 .title svg { display: block; width: 100%; height: 100%; }
 
 /* perlitas */
@@ -331,7 +319,7 @@ html, body {
   top: 154px;
   width: 300px;
   height: 300px;
-  animation: hover 5s ease-in-out infinite;
+  animation: hover 7s ease-in-out infinite;
 }
 @keyframes hover {
   0%, 100% { transform: translateY(0); }
@@ -373,7 +361,7 @@ html, body {
 }
 .porthole .water .rays {
   inset: -20% -30% 0;
-  animation-duration: 9s;
+  animation-duration: 18s;
 }
 /* animales que pasan por la ventana (los crea el JS al azar) */
 .porthole .swimmer {
@@ -384,10 +372,11 @@ html, body {
 }
 .porthole .swimmer .flip { width: 100%; height: 100%; }
 .porthole .swimmer.left .flip { transform: scaleX(-1); }
-.porthole .swimmer svg { display: block; width: 100%; height: 100%; overflow: visible; }
-.porthole .swimmer .body { width: 100%; height: 100%; animation: bob 1.4s ease-in-out infinite alternate; }
-.porthole .swimmer.fast .body { animation-duration: .8s; }
-.porthole .swimmer.pulse .body { animation: squish 1.8s ease-in-out infinite; transform-origin: 50% 30%; }
+.porthole .swimmer svg, .porthole .swimmer img { display: block; width: 100%; height: 100%; overflow: visible; }
+.porthole .swimmer img { object-fit: contain; filter: drop-shadow(0 6px 10px rgba(60,10,70,.35)); }
+.porthole .swimmer .body { width: 100%; height: 100%; animation: bob 2.2s ease-in-out infinite alternate; }
+.porthole .swimmer.fast .body { animation-duration: 1.3s; }
+.porthole .swimmer.pulse .body { animation: squish 2.6s ease-in-out infinite; transform-origin: 50% 30%; }
 @keyframes bob    { from { transform: translateY(-3px) rotate(-2deg); } to { transform: translateY(3px) rotate(2deg); } }
 @keyframes squish { 0%, 100% { transform: scale(1, 1); } 45% { transform: scale(.88, 1.1); } }
 /* burbujitas que sueltan al nadar */
@@ -455,7 +444,6 @@ html, body {
   <div class="sea">
     <div class="rays"></div>
     <div class="caustics"></div>
-    <div class="fishes"></div>
     <div class="bokeh"></div>
     <div class="bubbles"></div>
   </div>
@@ -478,8 +466,8 @@ html, body {
       <div class="shine"></div>
       <div class="name">Luxanita</div>
     </div>
-    <div class="curl l"><svg><use href="#curl"/></svg></div>
-    <div class="curl r"><svg><use href="#curl"/></svg></div>
+    <svg class="flake l"><use href="#flake"/></svg>
+    <svg class="flake r"><use href="#flake"/></svg>
   </div>
   </div>
 </div>
@@ -488,103 +476,54 @@ html, body {
   <linearGradient id="wave-g" x1="0" y1="0" x2="0" y2="1">
     <stop offset="0" stop-color="#fff"/><stop offset=".55" stop-color="#d9fffa"/><stop offset="1" stop-color="#7ff3e6"/>
   </linearGradient>
-  <!-- ola rizada (espiral de agua) -->
-  <symbol id="curl" viewBox="0 0 70 52">
-    <path d="M4 50 C4 26 18 6 40 6 C56 6 66 16 66 28 C66 38 58 44 50 44 C42 44 38 38 38 32 C38 27 42 24 46 24 C50 24 52 27 51 30 C49 26 43 27 43 32 C43 37 47 40 52 39 C58 38 61 33 60 27 C59 18 51 12 40 12 C24 12 13 28 14 50Z" fill="url(#wave-g)" stroke="#fff" stroke-width="2" stroke-linejoin="round"/>
+  <!-- copo de nieve -->
+  <symbol id="flake" viewBox="-52 -52 104 104">
+    <g stroke="currentColor" stroke-width="7" stroke-linecap="round" fill="none">
+      <g><path d="M0 0V-44M0-24L-12-35M0-24L12-35M0-37L-7-45M0-37L7-45"/></g>
+      <g transform="rotate(60)"><path d="M0 0V-44M0-24L-12-35M0-24L12-35M0-37L-7-45M0-37L7-45"/></g>
+      <g transform="rotate(120)"><path d="M0 0V-44M0-24L-12-35M0-24L12-35M0-37L-7-45M0-37L7-45"/></g>
+      <g transform="rotate(180)"><path d="M0 0V-44M0-24L-12-35M0-24L12-35M0-37L-7-45M0-37L7-45"/></g>
+      <g transform="rotate(240)"><path d="M0 0V-44M0-24L-12-35M0-24L12-35M0-37L-7-45M0-37L7-45"/></g>
+      <g transform="rotate(300)"><path d="M0 0V-44M0-24L-12-35M0-24L12-35M0-37L-7-45M0-37L7-45"/></g>
+    </g>
+    <circle r="8" fill="currentColor"/>
   </symbol>
-  <!-- animales de la ventana (miran a la derecha) -->
-  <symbol id="c-fish" viewBox="0 0 60 34">
-    <path d="M14 17 L2 5 L6 17 L2 29Z" style="fill:var(--c2, #ff9ccb)"/>
-    <path d="M12 17 C20 4 42 3 56 17 C42 31 20 30 12 17Z" style="fill:var(--c1, #ffd3e8)"/>
-    <path d="M30 6 C26 12 26 22 30 28 M38 5 C34 12 34 22 38 29" stroke="#fff" stroke-width="2.4" fill="none" opacity=".6"/>
-    <path d="M30 26 L24 33 L36 29Z" style="fill:var(--c2, #ff9ccb)"/>
-    <circle cx="46" cy="14" r="3" fill="#3b1450"/><circle cx="47" cy="13" r="1" fill="#fff"/>
-  </symbol>
-  <symbol id="c-puffer" viewBox="0 0 56 46">
-    <path d="M10 23 L1 14 L4 23 L1 32Z" fill="#ffb86b"/>
-    <g fill="#ffcf8a"><circle cx="30" cy="5" r="2.2"/><circle cx="18" cy="9" r="2.2"/><circle cx="42" cy="9" r="2.2"/><circle cx="48" cy="22" r="2.2"/><circle cx="42" cy="37" r="2.2"/><circle cx="30" cy="42" r="2.2"/><circle cx="18" cy="37" r="2.2"/></g>
-    <circle cx="30" cy="23" r="17" fill="#ffe08f"/>
-    <path d="M15 28 C20 36 40 36 45 28 C40 32 20 32 15 28Z" fill="#fff4d6"/>
-    <circle cx="38" cy="18" r="3.4" fill="#3b1450"/><circle cx="39" cy="17" r="1.1" fill="#fff"/>
-    <circle cx="44" cy="25" r="2.6" fill="#ff8cc4" opacity=".7"/>
-    <path d="M45 28 C47 29 48 28 48 27" stroke="#3b1450" stroke-width="1.6" fill="none" stroke-linecap="round"/>
-  </symbol>
-  <symbol id="c-dolphin" viewBox="0 0 120 52">
-    <path d="M12 30 L1 18 L5 30 L1 42Z" fill="#a993e6"/>
-    <path d="M8 30 C22 14 50 8 78 12 C92 14 104 20 117 25 C109 27 100 28 93 28 C85 35 70 39 50 39 C34 39 20 36 8 30Z" fill="#b9a6f0"/>
-    <path d="M30 34 C46 38 72 36 92 28 C84 35 70 39 50 39 C40 39 34 37 30 34Z" fill="#efe6ff"/>
-    <path d="M58 12 C62 2 70 0 75 1 C70 6 68 10 68 13Z" fill="#a993e6"/>
-    <path d="M64 35 C62 43 56 48 51 49 C55 42 56 37 58 35Z" fill="#a993e6"/>
-    <circle cx="96" cy="21" r="2.6" fill="#2a1240"/><circle cx="96.8" cy="20.2" r=".9" fill="#fff"/>
-    <path d="M101 27 C106 28 110 27 113 26" stroke="#7d68c0" stroke-width="1.6" fill="none" stroke-linecap="round"/>
-  </symbol>
+  <!-- tiburón con volumen y cara de malo (dibujado a mano, mira a la derecha) -->
+  <linearGradient id="sk-body" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#a3a2bd"/><stop offset=".45" stop-color="#6d6b8c"/><stop offset="1" stop-color="#45435c"/>
+  </linearGradient>
+  <linearGradient id="sk-fin" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#77759a"/><stop offset="1" stop-color="#36344b"/>
+  </linearGradient>
+  <linearGradient id="sk-belly" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#f6f4fd"/><stop offset="1" stop-color="#bdb8d6"/>
+  </linearGradient>
+  <linearGradient id="sk-shine" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".45"/><stop offset="1" stop-color="#fff" stop-opacity="0"/>
+  </linearGradient>
+  <radialGradient id="sk-eye" cx=".4" cy=".4" r=".7">
+    <stop offset="0" stop-color="#ff6b8a"/><stop offset=".5" stop-color="#e0103f"/><stop offset="1" stop-color="#7a0020"/>
+  </radialGradient>
   <symbol id="c-shark" viewBox="0 0 160 72">
-    <!-- cola (lóbulo de arriba más grande, como un tiburón de verdad) -->
-    <path d="M22 37 C14 24 7 12 1 1 C15 9 25 21 30 33Z" fill="#4a4768"/>
-    <path d="M22 40 C15 48 10 56 7 64 C18 58 25 50 30 43Z" fill="#4a4768"/>
-    <!-- aleta de abajo -->
-    <path d="M90 46 C88 59 79 68 68 71 C76 61 80 53 82 46Z" fill="#4a4768"/>
-    <!-- cuerpo -->
-    <path d="M18 38 C32 24 62 15 100 16 C124 17 143 25 157 33 L151 37 C142 39 132 40 124 41 C106 48 74 51 48 48 C34 47 24 44 18 38Z" fill="#646184"/>
-    <!-- lomo más oscuro -->
-    <path d="M24 34 C40 23 66 17 100 18 C122 19 138 25 150 31 C132 26 112 24 98 25 C70 26 44 30 24 34Z" fill="#53506f"/>
-    <!-- barriga clara -->
-    <path d="M40 43 C64 49 100 49 124 41 C106 48 74 51 48 48 C44 47 42 45 40 43Z" fill="#d9d6ee"/>
-    <!-- aleta de arriba, afilada -->
-    <path d="M78 17 C84 2 93 -4 102 -5 C95 3 93 11 95 17Z" fill="#4a4768"/>
-    <path d="M40 30 C42 25 45 22 48 21 C47 25 47 28 48 30Z" fill="#4a4768"/>
-    <!-- branquias -->
-    <path d="M106 26 C104 31 104 35 106 39 M111 26 C109 31 109 35 111 39 M116 26 C114 31 114 35 116 38" stroke="#3a3756" stroke-width="2" fill="none" stroke-linecap="round"/>
-    <!-- cicatrices -->
-    <path d="M62 23 L72 31 M68 22 L64 32 M84 27 L92 25" stroke="#9e9bbd" stroke-width="1.6" stroke-linecap="round" opacity=".8"/>
-    <!-- boca cerrada, larga y seria, con dientes que asoman -->
-    <path d="M118 42 C128 44 140 42 152 37" stroke="#2c2a44" stroke-width="2.6" fill="none" stroke-linecap="round"/>
-    <path d="M118 42 C116 40 115 38 116 36" stroke="#2c2a44" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <path d="M22 37 C14 24 7 12 1 1 C15 9 25 21 30 33Z" fill="url(#sk-fin)"/>
+    <path d="M22 40 C15 48 10 56 7 64 C18 58 25 50 30 43Z" fill="url(#sk-fin)"/>
+    <path d="M90 46 C88 59 79 68 68 71 C76 61 80 53 82 46Z" fill="url(#sk-fin)"/>
+    <path d="M78 17 C84 2 93 -4 102 -5 C95 3 93 11 95 17Z" fill="url(#sk-fin)"/>
+    <path d="M40 30 C42 25 45 22 48 21 C47 25 47 28 48 30Z" fill="url(#sk-fin)"/>
+    <path d="M18 38 C32 24 62 15 100 16 C124 17 143 25 157 33 L151 37 C142 39 132 40 124 41 C106 48 74 51 48 48 C34 47 24 44 18 38Z" fill="url(#sk-body)"/>
+    <path d="M40 43 C64 49 100 49 124 41 C106 48 74 51 48 48 C44 47 42 45 40 43Z" fill="url(#sk-belly)"/>
+    <path d="M44 27 C64 20 96 18 128 24 C110 21 80 22 50 30Z" fill="url(#sk-shine)"/>
+    <path d="M106 27 C104 31 104 35 106 39 M111 27 C109 31 109 35 111 39 M116 27 C114 31 114 35 116 38" stroke="#3a3852" stroke-width="2" fill="none" stroke-linecap="round" opacity=".85"/>
+    <path d="M62 24 L72 31 M68 23 L64 32 M84 28 L92 26" stroke="#c4c1dc" stroke-width="1.6" stroke-linecap="round" opacity=".75"/>
+    <path d="M118 42 C128 44 140 42 152 37" stroke="#2c2a40" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+    <path d="M118 42 C116 40 115 38 116 36" stroke="#2c2a40" stroke-width="2" fill="none" stroke-linecap="round"/>
     <path d="M124 43.2 L126 47.5 L128 43.4Z M131 43.3 L133.2 48 L135.3 43.1Z M138 42.6 L140 46.8 L142 42Z M144.5 41 L146.2 44.6 L148 40Z" fill="#fff"/>
     <path d="M127 42.6 L128.6 39 L130.2 42.8Z M141 41.6 L142.6 38.2 L144 41Z" fill="#f2efff"/>
-    <!-- ojo rojo con ceño -->
-    <ellipse cx="135" cy="28" rx="4.2" ry="3" fill="#fff"/>
-    <circle cx="136" cy="28" r="2.4" fill="#e0103f"/>
-    <circle cx="136.3" cy="28" r="1" fill="#1a0610"/>
-    <circle cx="136" cy="28" r="6" fill="#ff2a5a" opacity=".25"/>
-    <path d="M127 23 L143 26.5" stroke="#2c2a44" stroke-width="3.2" stroke-linecap="round"/>
-  </symbol>
-  <symbol id="c-turtle" viewBox="0 0 96 58">
-    <path d="M30 40 C24 50 14 54 8 52 C14 46 20 42 26 38Z M62 40 C66 50 74 55 80 54 C76 47 70 42 64 38Z" fill="#8fe8d8"/>
-    <path d="M28 18 C20 10 10 8 6 10 C12 16 18 22 26 26Z M64 18 C70 8 80 4 86 6 C80 12 74 20 66 24Z" fill="#8fe8d8"/>
-    <path d="M74 26 C80 18 92 20 94 28 C92 36 82 38 76 34Z" fill="#a6f0e2"/>
-    <circle cx="87" cy="26" r="2.4" fill="#2a1240"/><circle cx="87.7" cy="25.3" r=".8" fill="#fff"/>
-    <path d="M14 30 C14 14 30 6 46 6 C62 6 78 14 78 30 C78 38 62 42 46 42 C30 42 14 38 14 30Z" fill="#4fc9b6"/>
-    <path d="M46 10 L56 20 L46 30 L36 20Z M28 16 L36 20 L32 30 L22 28Z M64 16 L56 20 L60 30 L70 28Z" fill="#7fe0cf" opacity=".8"/>
-    <path d="M14 30 C30 36 62 36 78 30 C78 38 62 42 46 42 C30 42 14 38 14 30Z" fill="#3aa897"/>
-  </symbol>
-  <symbol id="c-octopus" viewBox="0 0 70 84">
-    <g stroke="#ff7fb8" stroke-width="7" stroke-linecap="round" fill="none">
-      <path d="M16 40 C8 54 20 62 10 76"/><path d="M26 42 C22 58 32 66 26 80"/><path d="M35 42 C35 60 40 68 35 82"/>
-      <path d="M44 42 C48 58 38 66 44 80"/><path d="M54 40 C62 54 50 62 60 76"/>
-    </g>
-    <path d="M10 30 C10 12 22 2 35 2 C48 2 60 12 60 30 C60 42 50 46 35 46 C20 46 10 42 10 30Z" fill="#ff8cc4"/>
-    <path d="M18 18 C21 10 27 7 33 7" stroke="#fff" stroke-width="4" stroke-linecap="round" fill="none" opacity=".7"/>
-    <circle cx="27" cy="28" r="3.6" fill="#3b1450"/><circle cx="43" cy="28" r="3.6" fill="#3b1450"/>
-    <circle cx="28" cy="27" r="1.2" fill="#fff"/><circle cx="44" cy="27" r="1.2" fill="#fff"/>
-    <circle cx="21" cy="35" r="3" fill="#ff5fa8" opacity=".5"/><circle cx="49" cy="35" r="3" fill="#ff5fa8" opacity=".5"/>
-    <path d="M32 36 C34 38 36 38 38 36" stroke="#3b1450" stroke-width="1.8" fill="none" stroke-linecap="round"/>
-  </symbol>
-  <symbol id="c-jelly" viewBox="0 0 70 100">
-    <g stroke-linecap="round" fill="none">
-      <path d="M18 34 C8 46 28 58 16 70 C10 76 20 80 16 86" stroke="#ffd3e8" stroke-width="4.5" opacity=".75"/>
-      <path d="M28 36 C18 50 38 62 26 76 C20 84 32 88 27 96" stroke="#fff" stroke-width="5" opacity=".8"/>
-      <path d="M42 36 C52 50 32 62 44 76 C50 84 38 88 43 96" stroke="#fff" stroke-width="5" opacity=".8"/>
-      <path d="M52 34 C62 46 42 58 54 70 C60 76 50 80 54 86" stroke="#ffd3e8" stroke-width="4.5" opacity=".75"/>
-      <path d="M35 36 C27 48 43 56 35 70" stroke="#ff9ccb" stroke-width="8" opacity=".75"/>
-    </g>
-    <path d="M4 34 C4 14 18 2 35 2 C52 2 66 14 66 34 C60 30 56 37 50 33 C45 37 40 31 35 35 C30 31 25 37 20 33 C14 37 10 30 4 34Z" fill="#ff8cc4" opacity=".92"/>
-    <path d="M12 26 C14 14 23 8 34 8" stroke="#fff" stroke-width="4" stroke-linecap="round" fill="none" opacity=".8"/>
-    <circle cx="24" cy="20" r="3" fill="#fff" opacity=".7"/><circle cx="44" cy="16" r="2.2" fill="#fff" opacity=".6"/>
-  </symbol>
-  <symbol id="fish" viewBox="0 0 46 22">
-    <path d="M2 11 C10 2 26 1 34 11 C26 21 10 20 2 11Z M34 11 L45 3 L42 11 L45 19Z" fill="currentColor"/>
-    <circle cx="10" cy="9.5" r="1.6" fill="#4c1c6b"/>
+    <circle cx="136" cy="28" r="7" fill="#ff2a5a" opacity=".22"/>
+    <ellipse cx="135.5" cy="28" rx="4.4" ry="3.3" fill="url(#sk-eye)"/>
+    <circle cx="136.4" cy="28.2" r="1.3" fill="#1a0610"/>
+    <circle cx="134.4" cy="26.9" r="1" fill="#fff" opacity=".9"/>
+    <path d="M127 23 L143 26.5" stroke="#2c2a40" stroke-width="3.4" stroke-linecap="round"/>
   </symbol>
   <symbol id="bubble-ico" viewBox="0 0 16 16">
     <circle cx="6" cy="9" r="5" fill="none" stroke="currentColor" stroke-width="2"/>
@@ -671,31 +610,24 @@ html, body {
     frames.appendChild(f);
   }
 
-  frame('game', LAYOUT.game, { waves: true, spin: '14s' });
-  frame('cam',  LAYOUT.cam,  { spin: '9s' });
+  frame('game', LAYOUT.game, { waves: true, spin: '22s' });
+  frame('cam',  LAYOUT.cam,  { spin: '16s' });
 
   // ----- luces difuminadas (rosas, blancas y algún toque aguamarina) -----
   var bokeh = document.querySelector('.bokeh'), html = '';
   var tints = ['rgba(255,190,225,.75)', 'rgba(255,255,255,.6)', 'rgba(255,130,200,.7)', 'rgba(127,243,230,.5)', 'rgba(225,180,255,.65)'];
   for (var i = 0; i < 34; i++) {
     html += '<span style="--x:' + (rnd() * 100).toFixed(1) + '%;--y:' + (rnd() * 100).toFixed(1) + '%;--s:' + (60 + rnd() * 160 | 0) + 'px;--c:' + tints[i % tints.length] +
-            ';--d:' + (10 + rnd() * 12).toFixed(1) + 's;--t:' + (-rnd() * 20).toFixed(1) + 's;--dx:' + ((rnd() - .5) * 160 | 0) + 'px;--dy:' + ((rnd() - .5) * 120 | 0) + 'px"></span>';
+            ';--d:' + (18 + rnd() * 16).toFixed(1) + 's;--t:' + (-rnd() * 30).toFixed(1) + 's;--dx:' + ((rnd() - .5) * 160 | 0) + 'px;--dy:' + ((rnd() - .5) * 120 | 0) + 'px"></span>';
   }
   bokeh.innerHTML = html;
 
   // ----- burbujas -----
   var bubbles = document.querySelector('.bubbles'); html = '';
-  for (i = 0; i < 90; i++) {
-    html += '<span style="--x:' + (rnd() * 100).toFixed(1) + '%;--s:' + (6 + Math.pow(rnd(), 2) * 44 | 0) + 'px;--d:' + (9 + rnd() * 9).toFixed(1) + 's;--t:' + (-rnd() * 18).toFixed(1) + 's;--w:' + (6 + rnd() * 18 | 0) + 'px"></span>';
+  for (i = 0; i < 70; i++) {
+    html += '<span style="--x:' + (rnd() * 100).toFixed(1) + '%;--s:' + (6 + Math.pow(rnd(), 2) * 44 | 0) + 'px;--d:' + (20 + rnd() * 16).toFixed(1) + 's;--t:' + (-rnd() * 36).toFixed(1) + 's;--b:' + (2.5 + rnd() * 2.5).toFixed(1) + 's;--w:' + (6 + rnd() * 16 | 0) + 'px"><i></i></span>';
   }
   bubbles.innerHTML = html;
-
-  // ----- peces (cruzan por arriba y por abajo, donde no hay huecos) -----
-  var fishes = document.querySelector('.fishes'); html = '';
-  [[40, 26, 0, false], [78, 34, -14, true], [968, 30, -6, true], [1010, 40, -22, false], [1040, 28, -9, false]].forEach(function (f) {
-    html += '<div class="fish' + (f[3] ? ' back' : '') + '" style="--y:' + f[0] + 'px;--d:' + f[1] + 's;--t:' + f[2] + 's"><svg><use href="#fish"/></svg></div>';
-  });
-  fishes.innerHTML = html;
 
   // ----- ojo de buey: centrado en el hueco que queda encima de la cámara -----
   var ph = document.querySelector('.porthole');
@@ -713,16 +645,21 @@ html, body {
     ring.appendChild(rv);
   }
   // ----- animales que pasan por la ventana, al azar (como mucho 2 a la vez) -----
-  // w: ancho en px · s: segundos que tardan en cruzar · up: suben en vez de cruzar de lado
+  // Dibujos: Fluent Emoji de Microsoft (licencia MIT, ver animales/LICENCIA.txt); el tiburón está dibujado a mano.
+  // w: ancho en px · s: segundos que tardan en cruzar · mira: hacia dónde mira el dibujo · up: suben en vez de cruzar
   var CRIATURAS = [
-    { id: 'c-fish',    peso: 30, w: [80, 105],  s: [6, 9],   colores: [['#ffd3e8', '#ff9ccb'], ['#c8fff8', '#7ff3e6'], ['#fff1b8', '#ffc86b'], ['#e6d8ff', '#b79cff']] },
-    { id: 'c-puffer',  peso: 12, w: [78, 92],   s: [8, 11] },
-    { id: 'c-dolphin', peso: 13, w: [190, 215], s: [4.5, 6], fast: true, arc: 40 },
-    { id: 'c-shark',   peso: 11, w: [235, 265], s: [8, 10] },
-    { id: 'c-turtle',  peso: 11, w: [140, 160], s: [10, 13] },
-    { id: 'c-octopus', peso: 11, w: [90, 105],  s: [8, 11], up: true, pulse: true },
-    { id: 'c-jelly',   peso: 12, w: [84, 98],   s: [10, 13], up: true, pulse: true }
+    { img: 'animales/fish.png',          peso: 14, w: [140, 160], s: [9, 12],   mira: 'izq' },
+    { img: 'animales/tropical_fish.png', peso: 14, w: [140, 160], s: [9, 12],   mira: 'izq' },
+    { img: 'animales/blowfish.png',      peso: 10, w: [130, 145],  s: [11, 14],  mira: 'izq' },
+    { img: 'animales/dolphin.png',       peso: 10, w: [185, 205], s: [6, 8],    mira: 'izq', fast: true, arc: 30 },
+    { img: 'animales/turtle.png',        peso: 9,  w: [165, 185], s: [13, 16],  mira: 'izq' },
+    { img: 'animales/whale.png',         peso: 7,  w: [205, 225], s: [14, 17],  mira: 'izq' },
+    { svg: 'c-shark',                    peso: 10, w: [240, 265], s: [11, 14],  mira: 'der' },
+    { img: 'animales/octopus.png',       peso: 9,  w: [140, 155], s: [12, 15],  up: true, pulse: true },
+    { img: 'animales/jellyfish.png',     peso: 9,  w: [135, 150], s: [13, 16],  up: true, pulse: true },
+    { img: 'animales/squid.png',         peso: 8,  w: [140, 155], s: [11, 14],  up: true, pulse: true }
   ];
+  CRIATURAS.forEach(function (c) { c.id = c.svg || c.img.replace(/^.*\/|\.png$/g, ''); });
   var swimmers = ph.querySelector('.swimmers'), activos = 0, ultimo = '';
   function entre(r) { return r[0] + Math.random() * (r[1] - r[0]); }
   // elige uno al azar según su peso, sin repetir el último
@@ -738,19 +675,16 @@ html, body {
   }
   function soltar(forzado) {
     var c = forzado ? CRIATURAS.filter(function (x) { return x.id === forzado; })[0] : elegir(); ultimo = c.id; activos++;
-    var vb = document.getElementById(c.id).getAttribute('viewBox').split(' ');
-    var w = entre(c.w), h = w * vb[3] / vb[2];
-    var izq = !c.up && Math.random() < .5;
+    var w = entre(c.w), h = w;
+    if (c.svg) { var vb = document.getElementById(c.svg).getAttribute('viewBox').split(' '); h = w * vb[3] / vb[2]; }
+    var izq = !c.up && Math.random() < .5;            // ¿va hacia la izquierda?
+    var girar = c.mira === 'izq' ? !izq : (c.mira === 'der' ? izq : false);
     var el = document.createElement('div');
-    el.className = 'swimmer' + (izq ? ' left' : '') + (c.fast ? ' fast' : '') + (c.pulse ? ' pulse' : '');
+    el.className = 'swimmer' + (girar ? ' left' : '') + (c.fast ? ' fast' : '') + (c.pulse ? ' pulse' : '');
     el.style.width = w + 'px';
     el.style.height = h + 'px';
-    if (c.colores) {
-      var col = c.colores[Math.random() * c.colores.length | 0];
-      el.style.setProperty('--c1', col[0]);
-      el.style.setProperty('--c2', col[1]);
-    }
-    el.innerHTML = '<div class="flip"><div class="body"><svg><use href="#' + c.id + '"/></svg></div></div>';
+    el.innerHTML = '<div class="flip"><div class="body">' +
+      (c.svg ? '<svg><use href="#' + c.svg + '"/></svg>' : '<img src="' + c.img + '" alt="">') + '</div></div>';
     swimmers.appendChild(el);
 
     var frames, dur = entre(c.s) * 1000;
@@ -788,14 +722,14 @@ html, body {
   function programar(espera) {
     setTimeout(function () {
       if (activos < 2) soltar();
-      programar(3500 + Math.random() * 4500);      // el siguiente, entre 3,5 y 8 s después
+      programar(5000 + Math.random() * 5000);      // el siguiente, entre 5 y 10 s después
     }, espera);
   }
   programar(800);
-  window.soltarCriatura = soltar;   // para probar: soltarCriatura('c-shark')
+  window.soltarCriatura = soltar;   // para probar: soltarCriatura('c-shark') o soltarCriatura('dolphin')
   html = '';
   for (i = 0; i < 14; i++) {
-    html += '<span style="--x:' + (10 + rnd() * 80).toFixed(0) + '%;--s:' + (5 + rnd() * 12 | 0) + 'px;--d:' + (3.5 + rnd() * 3).toFixed(1) + 's;--t:' + (-rnd() * 6).toFixed(1) + 's;--w:' + ((rnd() - .5) * 30 | 0) + 'px"></span>';
+    html += '<span style="--x:' + (10 + rnd() * 80).toFixed(0) + '%;--s:' + (5 + rnd() * 12 | 0) + 'px;--d:' + (6 + rnd() * 4).toFixed(1) + 's;--t:' + (-rnd() * 10).toFixed(1) + 's;--w:' + ((rnd() - .5) * 30 | 0) + 'px"></span>';
   }
   ph.querySelector('.pbub').innerHTML = html;
   html = '';
