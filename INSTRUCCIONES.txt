@@ -1,0 +1,80 @@
+CÓMO INSTALAR LAS ALERTAS EN STREAMLABS
+=======================================
+
+Hay 4 alertas, cada una en su carpeta:
+
+  follow  ->  Follows                (6 segundos)
+  sub     ->  Subscriptions          (11 segundos)
+  gift    ->  Gift Subs / regaladas  (8 segundos)
+  raid    ->  Raids                  (9 segundos)
+
+En cada carpeta está todo lo que necesitas: 3 archivos de texto y el sonido.
+
+ELIGE VERSIÓN
+-------------
+- Normales (las carpetas de arriba): grandes, en el centro y con efectos por
+  toda la pantalla. Para charlar, empezar el directo, etc.
+- Compactas (carpeta "compactas"): más pequeñas y con los efectos solo
+  alrededor de la tarjeta, para no tapar el juego. Hay dos:
+    compactas/arriba   ->  salen arriba en el centro
+    compactas/centro   ->  salen en el centro
+  En las compactas la sub dura 8 segundos (no 11).
+Los pasos son los mismos; solo cambia de qué carpeta copias los archivos.
+
+
+PASOS (repítelos con cada una de las 4)
+---------------------------------------
+1. En Streamlabs abre Alert Box y entra en la alerta (por ejemplo, Follows).
+
+2. Activa "Enable Custom HTML/CSS".
+
+3. Verás tres pestañas: HTML, CSS y JS. En cada una, borra todo lo que haya
+   y pega el archivo del mismo nombre:
+     HTML  ->  alerta.html
+     CSS   ->  alerta.css
+     JS    ->  alerta.js
+   (Para copiar: abre el archivo con el Bloc de notas, Ctrl+A, Ctrl+C.)
+
+4. En "Sound", sube el sonido.mp3 de esa carpeta.
+
+5. En "Alert Duration", pon los segundos de la lista de arriba.
+
+6. Quita la imagen de la alerta y pon la animación de entrada y salida
+   más simple (fadeIn / fadeOut). La animación ya va incluida.
+
+7. Guarda.
+
+En OBS, haz que la fuente del Alert Box ocupe toda la pantalla (1920x1080).
+
+
+PROBAR
+------
+Pulsa "Test Follow", "Test Sub", etc. en Streamlabs. Tiene que salir el
+nombre de la persona, no la palabra "{name}".
+
+Para verlas sin Streamlabs: abre el preview.html de cada carpeta
+(doble clic) y pulsa "Probar alerta".
+
+
+SI ALGO NO SALE BIEN
+--------------------
+- Sale "{name}" o algo entre llaves: revisa que pegaste los tres archivos
+  en su pestaña correcta.
+- Las subs regaladas o la raid no muestran el número: la alerta sigue
+  funcionando, solo sin el número. Avisa a quien te las hizo.
+
+
+------------------------------------------------------------------
+PARA QUIEN MANTIENE LAS ALERTAS (el streamer no necesita esto)
+------------------------------------------------------------------
+- Variables de Streamlabs que se usan: {name}; {months} en sub;
+  {amount} y {gifter} en gift; {amount} en raid. Si Streamlabs usa otras,
+  se cambian en las líneas "sub-months", "gift-amount", "gift-gifter" y
+  "raid-amount" de cada alerta.html.
+- Los sonidos se generan con sonidos/generar_sonidos.py (Python + ffmpeg).
+  Volumen: línea TARGET_LUFS (más alto -18, más bajo -23). Sonidos oficiales
+  de Lux: sonidos/lux/LEEME.txt. Después de regenerar, copia cada mp3 a
+  su carpeta con el nombre sonido.mp3.
+- Las compactas se crean con "python crear_compactas.py" a partir de las
+  normales. Si cambias una normal, vuelve a ejecutarlo (no edites las
+  compactas a mano). Tamaño y posición: TAMANO y POSICIONES en el script.

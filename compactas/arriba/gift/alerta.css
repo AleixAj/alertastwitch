@@ -1,0 +1,375 @@
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&display=swap');
+
+/* =====================================================================
+   Alerta de SUBS REGALADAS — inspirada en la Chispa Final (R) de Lux
+   la luz se carga en el centro · dispara el rayo · el panel sale del rayo
+   · las letras se deshacen en luz y todo acaba en un estallido de estrellas
+   Duración total: ~8 s. Pon "Alert Duration" = 8 en Streamlabs.
+   ===================================================================== */
+
+/* ===== Colores (cámbialos aquí) ===== */
+.lux {
+  --pink: #ff5fa8;
+  --pink-soft: #ffc2dd;
+  --pink-deep: #e2317f;
+  --pink-text: #c8619a;
+  --lav: #b99cff;
+  --gold: #ffd98a;
+}
+
+html, body { background: transparent !important; margin: 0; }
+
+.lux {
+  --n: 12;           /* nº de letras (lo pone el JS) */
+  --end: 6.9s;       /* cuándo se va el panel (fijo: cuadra con el sonido) */
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  font-family: 'Fredoka', 'Nunito', 'Segoe UI Rounded', 'Arial Rounded MT Bold', 'Segoe UI', system-ui, sans-serif;
+  animation: scene-out .6s ease-in 7.3s forwards;   /* acaba a los 7.9 s (margen antes de los 8 s) */
+}
+@keyframes scene-out { to { opacity: 0; } }
+@keyframes just-fade { to { opacity: 0; } }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* estrella de 4 puntas (se reutiliza) */
+.star4 {
+  clip-path: polygon(50% 0, 61% 39%, 100% 50%, 61% 61%, 50% 100%, 39% 61%, 0 50%, 39% 39%);
+  background: radial-gradient(circle, #fff 0 20%, var(--gold) 45%, var(--pink) 100%);
+}
+
+/* ===== Fondo: estrellitas que parpadean y motas de luz que suben ===== */
+.sky span {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: var(--s);
+  height: var(--s);
+  opacity: 0;
+  animation: twinkle var(--d) ease-in-out var(--t) infinite;
+}
+@keyframes twinkle {
+  0%, 100% { transform: scale(.2) rotate(0); opacity: 0; }
+  50%      { transform: scale(1) rotate(45deg); opacity: 1; }
+}
+.motes span {
+  position: absolute;
+  left: var(--x);
+  bottom: -20px;
+  width: var(--s);
+  height: var(--s);
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff 0 30%, rgba(255,217,138,.7) 55%, rgba(255,95,168,0) 72%);
+  opacity: 0;
+  animation: mote var(--d) linear var(--t) infinite;
+}
+@keyframes mote {
+  0%   { transform: translate(0, 0); opacity: 0; }
+  15%  { opacity: .9; }
+  100% { transform: translate(var(--w), -105vh); opacity: 0; }
+}
+
+/* ===== Carga: la luz crece en el centro (0.2 - 1.5 s) ===== */
+.core {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 120px;
+  height: 120px;
+  margin: -60px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff 0 22%, var(--gold) 42%, rgba(255,95,168,.75) 62%, rgba(255,95,168,0) 72%);
+  box-shadow: 0 0 40px 14px rgba(255,217,138,.5), 0 0 90px 30px rgba(255,95,168,.35);
+  transform: scale(0);
+  animation: core-grow 1.35s cubic-bezier(.25,.6,.5,1) .1s forwards, core-pulse .12s ease-in-out 1.1s 4 alternate, just-fade .15s ease-out 1.5s forwards;
+}
+@keyframes core-grow {
+  0%   { transform: scale(0); }
+  15%  { transform: scale(.3); }
+  100% { transform: scale(1); }
+}
+@keyframes core-pulse { from { opacity: 1; } to { opacity: .7; } }
+
+/* partículas de luz que se cargan hacia el centro (0.35 - 1.5 s) */
+.charge {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+}
+.charge span {
+  position: absolute;
+  width: var(--s);
+  height: var(--s);
+  margin: calc(var(--s) / -2);
+  opacity: 0;
+  animation: charge .65s cubic-bezier(.5,0,.9,.6) var(--t) forwards;
+}
+@keyframes charge {
+  0%   { transform: rotate(var(--a)) translateX(var(--r)) scale(1.2); opacity: 0; }
+  20%  { opacity: 1; }
+  100% { transform: rotate(calc(var(--a) + 90deg)) translateX(0) scale(.3); opacity: 0; }
+}
+
+/* ===== R: rayo gigante (1.5 s) ===== */
+.flash {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, rgba(255,255,255,.75), rgba(255,200,230,.35) 40%, rgba(255,95,168,0) 70%);
+  opacity: 0;
+  animation: flash .6s ease-out 1.5s forwards;
+}
+@keyframes flash {
+  0%   { opacity: 1; }
+  100% { opacity: 0; }
+}
+.beam {
+  position: absolute;
+  left: -5%;
+  width: 110%;
+  top: 50%;
+  height: 200px;
+  margin-top: -100px;
+  transform-origin: left center;
+  transform: scaleX(0);
+  background: linear-gradient(to bottom,
+    rgba(185,156,255,0) 0%, rgba(185,156,255,.35) 18%, rgba(255,95,168,.75) 34%,
+    #fff 46%, #fff 54%, rgba(255,95,168,.75) 66%, rgba(185,156,255,.35) 82%, rgba(185,156,255,0) 100%);
+  animation: beam 1.2s cubic-bezier(.2,.8,.3,1) 1.5s forwards;
+}
+.beam::after {           /* núcleo que parpadea */
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 44%;
+  height: 12%;
+  background: #fff;
+  box-shadow: 0 0 30px 12px rgba(255,255,255,.8);
+  animation: flicker .08s steps(2) 1.5s 12;
+}
+@keyframes beam {
+  0%   { transform: scaleX(0) scaleY(.6); opacity: 1; }
+  22%  { transform: scaleX(1) scaleY(1.1); opacity: 1; }
+  65%  { transform: scaleX(1) scaleY(.9); opacity: 1; }
+  100% { transform: scaleX(1) scaleY(0); opacity: 0; }
+}
+@keyframes flicker { 50% { opacity: .55; } }
+
+/* estrellas que salen disparadas */
+.burst {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+}
+.burst.one { --at: 1.5s; }
+.burst.two { --at: var(--end); }
+.burst span {
+  position: absolute;
+  width: var(--s);
+  height: var(--s);
+  margin: calc(var(--s) / -2);
+  opacity: 0;
+  animation: burst 1s cubic-bezier(.15,.8,.3,1) var(--at) forwards;
+}
+@keyframes burst {
+  0%   { transform: rotate(var(--a)) translateX(30px) scale(.4); opacity: 1; }
+  70%  { opacity: 1; }
+  100% { transform: rotate(var(--a)) translateX(var(--dist)) rotate(180deg) scale(1); opacity: 0; }
+}
+
+/* rayos de luz detrás del panel */
+.rays {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 1100px;
+  height: 1100px;
+  margin: -550px 0 0 -550px;
+  background: repeating-conic-gradient(from 0deg, rgba(255,236,190,.2) 0deg 6deg, rgba(255,255,255,0) 6deg 20deg);
+  -webkit-mask-image: radial-gradient(closest-side, #000 15%, rgba(0,0,0,.5) 45%, transparent 75%);
+          mask-image: radial-gradient(closest-side, #000 15%, rgba(0,0,0,.5) 45%, transparent 75%);
+  opacity: 0;
+  animation: rays-in .8s ease-out 1.6s forwards, spin 18s linear infinite, just-fade .6s ease-in var(--end) forwards;
+}
+@keyframes rays-in { to { opacity: 1; } }
+
+/* ===== Panel ===== */
+.card-wrap {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+/* sale "desplegándose" desde dentro del rayo */
+.card-pop { animation: card-in .8s cubic-bezier(.3,1.4,.5,1) 1.6s both; }
+@keyframes card-in {
+  0%   { transform: scale(.25, .04); opacity: 0; }
+  30%  { transform: scale(1.05, .12); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.card {
+  position: relative;
+  padding: 44px 64px 34px;
+  text-align: center;
+  white-space: nowrap;
+  animation: bob 2.6s ease-in-out 2.4s infinite;
+}
+@keyframes bob {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-8px); }
+}
+.glow {
+  position: absolute;
+  inset: -90% -30%;
+  z-index: -2;
+  background: radial-gradient(closest-side, rgba(255,95,168,.5), rgba(185,156,255,.2) 55%, rgba(185,156,255,0));
+  animation: glow-pulse 2.4s ease-in-out infinite, just-fade .5s ease-in var(--end) forwards;
+}
+@keyframes glow-pulse {
+  0%, 100% { opacity: .75; transform: scale(.95); }
+  50%      { opacity: 1;   transform: scale(1.05); }
+}
+.card-bg {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: 54px;
+  background:
+    radial-gradient(circle at 12% 20%, rgba(255,217,138,.35) 0 2px, transparent 3px) 0 0 / 46px 46px,
+    linear-gradient(180deg, #fff 0%, #fff1f8 50%, #f1e6ff 100%);
+  border: 5px solid #fff;
+  box-shadow: 0 9px 0 #e7d6ff, 0 22px 50px rgba(185,110,220,.45), inset 0 0 30px rgba(255,194,221,.5);
+  animation: card-bg-out .45s ease-in var(--end) forwards;
+}
+@keyframes card-bg-out {
+  to { transform: scale(.08); opacity: 0; border-radius: 50%; }
+}
+
+/* emblema: estrella dorada con alas arriba del panel */
+.crest {
+  position: absolute;
+  left: 50%;
+  top: -62px;
+  width: 170px;
+  height: 90px;
+  margin-left: -85px;
+  animation: crest-in .6s cubic-bezier(.34,1.56,.64,1) 2.0s both, just-fade .3s ease-in var(--end) forwards;
+}
+.crest svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.crest .shine-star { transform-origin: 85px 45px; animation: spin 6s linear infinite; }
+@keyframes crest-in {
+  from { transform: translateY(-30px) scale(.2); opacity: 0; }
+  to   { transform: none; opacity: 1; }
+}
+
+.sub {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 22px 8px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #ff86c0 0%, var(--pink) 55%, #e24d9e 100%);
+  color: #fff;
+  font-size: 25px;
+  font-weight: 700;
+  letter-spacing: .03em;
+  text-shadow: 0 2px 0 rgba(160,20,90,.35);
+  box-shadow: inset 0 2px 0 rgba(255,255,255,.45), 0 4px 0 var(--pink-deep), 0 0 18px rgba(255,95,168,.5);
+  animation: sub-in .5s cubic-bezier(.34,1.56,.64,1) 1.9s both, fade-out .4s ease-in 6.3s forwards;
+}
+.sub i {
+  width: 18px;
+  height: 18px;
+  display: inline-block;
+  animation: spin 3s linear infinite;
+}
+@keyframes sub-in { from { transform: scale(0); } to { transform: none; } }
+.name {
+  margin: 14px 0 6px;
+  font-size: 76px;
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--pink-deep);
+}
+.name .ch .f, .name:not([data-split]) {
+  background: linear-gradient(180deg, #ff8cc4 0%, #ff4f9f 45%, #b44bd6 100%);
+  -webkit-background-clip: text;
+          background-clip: text;
+  color: transparent;
+}
+.thanks svg { width: .9em; height: .9em; vertical-align: -.1em; margin-left: 4px; }
+.thanks {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--pink-text);
+  animation: fade-out .4s ease-in 6.3s forwards;
+}
+@keyframes fade-out { to { opacity: 0; transform: translateY(-10px) scale(.9); } }
+
+/* cada letra: .o contorno blanco + relieve (detrás), .g brillo de luz, .f la letra */
+.ch { position: relative; display: inline-block; }
+.ch i { position: relative; display: inline-block; font-style: normal; }
+.ch b { font-weight: inherit; }
+.ch .o, .ch .g { position: absolute; left: 0; top: 0; }
+.ch .f { position: relative; }
+.ch .o {
+  color: #fff;
+  text-shadow:
+    2px 0 #fff, -2px 0 #fff, 0 2px #fff, 0 -2px #fff,
+    2px 2px #fff, -2px -2px #fff, 2px -2px #fff, -2px 2px #fff,
+    0 6px #e7d6ff;
+}
+.ch .g {
+  color: transparent;
+  text-shadow: 0 0 10px #fff, 0 0 18px var(--gold), 0 0 4px #fff;
+  opacity: 0;
+  animation: lit .35s ease-out calc(6.3s + var(--i) / var(--n) * .3s) forwards;
+}
+@keyframes lit { to { opacity: 1; } }
+.ch i {
+  animation:
+    letter-in .55s cubic-bezier(.34,1.56,.64,1) calc(1.95s + var(--i) / var(--n) * .5s) both,
+    letter-out .45s ease-in calc(6.45s + var(--i) / var(--n) * .3s) forwards;
+}
+@keyframes letter-in {
+  from { transform: translateY(20px) scale(.2); opacity: 0; }
+  to   { transform: none; opacity: 1; }
+}
+/* las letras se deshacen en luz */
+@keyframes letter-out {
+  0%   { transform: none; opacity: 1; }
+  40%  { transform: scale(1.25); opacity: 1; }
+  100% { transform: translateY(-14px) scale(0); opacity: 0; }
+}
+
+/* destellos junto al panel */
+.spark {
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  opacity: 0;
+  animation: twinkle 1.3s ease-in-out calc(2.2s + var(--t)) 3;
+}
+
+/* ===== Salida (6.9 s): destello suave y estallido de estrellas ===== */
+.flash.two {
+  background: radial-gradient(ellipse at center, rgba(255,255,255,.55), rgba(255,200,230,.25) 35%, rgba(255,95,168,0) 60%);
+  animation: flash .6s ease-out var(--end) forwards;
+}
+
+/* ===== Versión compacta (arriba) — creada por crear_compactas.py ===== */
+.lux {
+  --s: 0.6;                      /* tamaño (1 = pantalla completa) */
+  --y: 20vh;                     /* altura del centro de la tarjeta */
+  transform: translateY(calc(var(--y) - var(--s) * 50vh)) scale(var(--s));
+  transform-origin: 50% 0;
+  /* los efectos se apagan al alejarse de la tarjeta */
+  -webkit-mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 58%, transparent 100%);
+          mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 58%, transparent 100%);
+}

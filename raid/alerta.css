@@ -1,0 +1,371 @@
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&display=swap');
+
+/* =====================================================================
+   Alerta de RAID — cielo estrellado con auroras boreales
+   las auroras se despliegan sobre un cielo estrellado · estrellas fugaces
+   · pilar de luz · banda de cristal oscuro con el nombre en colores de aurora
+   · contador de raiders · al salir todo se recoge
+   Duración total: ~9 s. Pon "Alert Duration" = 9 en Streamlabs.
+   ===================================================================== */
+
+/* ===== Colores (cámbialos aquí) ===== */
+.aurora-raid {
+  --pink: #ff5fa8;
+  --violet: #a78bff;
+  --teal: #5ff2d0;
+  --ice: #bfe9ff;
+  --night: rgba(16, 12, 42, .82);
+}
+
+html, body { background: transparent !important; margin: 0; }
+
+.aurora-raid {
+  --n: 12;          /* nº de letras (lo pone el JS) */
+  --end: 6.9s;      /* cuándo se va el panel (fijo: cuadra con el sonido) */
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  font-family: 'Fredoka', 'Nunito', 'Segoe UI Rounded', 'Arial Rounded MT Bold', 'Segoe UI', system-ui, sans-serif;
+  animation: scene-out .5s ease-in-out 8.3s forwards;   /* acaba a los 8.8 s (margen antes de los 9 s) */
+}
+@keyframes scene-out { to { opacity: 0; } }
+@keyframes just-fade { to { opacity: 0; } }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.star4 {
+  clip-path: polygon(50% 0, 61% 39%, 100% 50%, 61% 61%, 50% 100%, 39% 61%, 0 50%, 39% 39%);
+  background: radial-gradient(circle, #fff 0 25%, var(--ice) 55%, var(--violet) 100%);
+}
+
+/* ===== Sombra suave solo detrás de la tarjeta (el resto queda transparente) ===== */
+.night {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 100%;
+  background: radial-gradient(ellipse 34% 30% at 50% 50%, rgba(10,8,34,.35), rgba(10,8,34,0) 100%);
+  opacity: 0;
+  animation: night-in .8s ease-out forwards, just-fade 1s ease-in-out 7.5s forwards;
+}
+@keyframes night-in { to { opacity: 1; } }
+
+.sky span {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: var(--s);
+  height: var(--s);
+  opacity: 0;
+  animation: twinkle var(--d) ease-in-out var(--t) infinite;
+}
+@keyframes twinkle {
+  0%, 100% { transform: scale(.2); opacity: 0; }
+  50%      { transform: scale(1); opacity: 1; }
+}
+
+/* ===== Auroras boreales =====
+   Se dibujan en tiempo real con ruido procedural (alerta.js): cortinas de rayos
+   verticales, verdes y brillantes abajo con un fleco rosa en el borde, que se
+   desvanecen hacia arriba en violeta. El lienzo es de baja resolución y se amplía:
+   así la luz queda suave y difusa, como en una foto real. */
+.aurora-sky {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 80vh;
+  opacity: 0;
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 12%, #000 72%, transparent);
+          mask-image: linear-gradient(to bottom, transparent, #000 12%, #000 72%, transparent);
+  animation: sky-in 1.2s ease-out forwards, sky-out .5s ease-in 8.1s forwards;   /* encendido y apagado principales: los hace el JS */
+}
+.aurora-canvas { display: block; width: 100%; height: 100%; filter: blur(3px); }   /* toque de difuminado de ensueño */
+/* resplandor rosado donde nace la aurora */
+.aurora-sky::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 4%;
+  height: 40%;
+  background: radial-gradient(ellipse 70% 60% at 50% 70%, rgba(255,110,190,.35), rgba(200,90,220,.15) 50%, rgba(200,90,220,0) 75%);
+  animation: just-fade 1.2s ease-in-out 6.9s forwards;   /* se apaga a la vez que la aurora */
+}
+@keyframes sky-in  { from { opacity: 0; } to { opacity: 1; } }
+@keyframes sky-out { from { opacity: 1; } to { opacity: 0; } }
+/* la aurora "se enciende" en el momento clave */
+.aur-flash {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 55vh;
+  background: radial-gradient(ellipse 60% 70% at 50% 20%, rgba(255,255,255,.35), rgba(167,139,255,.18) 45%, rgba(167,139,255,0) 75%);
+  opacity: 0;
+  animation: pulse 1.2s ease-out 1.45s forwards;
+}
+@keyframes pulse {
+  0%   { opacity: 0; }
+  25%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* ===== Estrellas fugaces =====
+   Cada una con su dirección (--r), longitud (--l), recorrido (--d) y duración (--s). */
+.shoot {
+  position: absolute;
+  top: var(--y);
+  left: var(--x);
+  width: var(--l, 200px);
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, rgba(255,255,255,0), rgba(191,233,255,.7) 70%, #fff);
+  box-shadow: 0 0 8px rgba(191,233,255,.8);
+  transform-origin: 100% 50%;
+  opacity: 0;
+  animation: shoot var(--s, .8s) cubic-bezier(.3,.6,.4,1) var(--t) forwards;
+}
+@keyframes shoot {
+  0%   { transform: rotate(var(--r)) translateX(0) scaleX(.1); opacity: 0; }
+  15%  { opacity: 1; transform: rotate(var(--r)) translateX(calc(var(--d, 500px) * .12)) scaleX(1); }
+  100% { transform: rotate(var(--r)) translateX(var(--d, 500px)) scaleX(.4); opacity: 0; }
+}
+
+/* ===== Pilar de luz y onda (1.45 s) ===== */
+.pillar {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 180px;
+  margin-left: -90px;
+  background: linear-gradient(90deg, rgba(191,233,255,0), rgba(255,255,255,.75) 50%, rgba(191,233,255,0));
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 30%, #000 70%, transparent);
+          mask-image: linear-gradient(to bottom, transparent, #000 30%, #000 70%, transparent);
+  transform: scaleX(0);
+  opacity: 0;
+  animation: pillar .9s ease-out 1.45s forwards;
+}
+@keyframes pillar {
+  0%   { transform: scaleX(.1); opacity: 1; }
+  30%  { transform: scaleX(1); opacity: 1; }
+  100% { transform: scaleX(1.6); opacity: 0; }
+}
+.ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 280px;
+  height: 280px;
+  margin: -140px 0 0 -140px;
+  border-radius: 50%;
+  border: 4px solid rgba(255,255,255,.9);
+  box-shadow: 0 0 22px var(--teal), inset 0 0 22px var(--pink);
+  opacity: 0;
+  transform: scale(.3);
+  animation: ring 1s cubic-bezier(.2,.7,.3,1) 1.5s forwards;
+}
+@keyframes ring {
+  0%   { transform: scale(.3); opacity: 1; }
+  100% { transform: scale(3.4, 1.4); opacity: 0; }
+}
+
+/* ===== Banda de cristal oscuro con el nombre ===== */
+.card-wrap {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+/* La banda se abre como una puerta de luz:
+   1.5 s  sale una línea del pilar y se estira de lado a lado
+   1.75 s la línea se abre hacia arriba y abajo y aparece la banda
+   6.8 s  al final hace lo mismo al revés: se cierra en línea, se encoge a un punto y se apaga */
+.card {
+  position: relative;
+  padding: 26px 80px 28px;
+  text-align: center;
+  white-space: nowrap;
+  animation: float 3s ease-in-out 2.2s infinite;
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-6px); }
+}
+.glow {
+  position: absolute;
+  inset: -70% -20%;
+  z-index: -2;
+  background: radial-gradient(closest-side, rgba(167,139,255,.45), rgba(95,242,208,.15) 55%, rgba(95,242,208,0));
+  opacity: 0;
+  animation: glow-in .8s ease-out 1.9s forwards, glow-pulse 2.6s ease-in-out 2.7s infinite, glow-out .6s ease-in 6.6s forwards;
+}
+@keyframes glow-in  { to { opacity: .85; } }
+@keyframes glow-out { from { opacity: .85; } to { opacity: 0; } }
+@keyframes glow-pulse {
+  0%, 100% { opacity: .7; transform: scale(.96); }
+  50%      { opacity: 1;  transform: scale(1.04); }
+}
+.card-bg {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: 999px;
+  overflow: hidden;              /* el reflejo que cruza no se ve fuera de la banda */
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,0) 45%),
+    var(--night);
+  box-shadow: 0 0 0 2px rgba(255,255,255,.22), 0 0 30px rgba(167,139,255,.5), 0 18px 40px rgba(0,0,0,.35);
+  transform: scale(0, .03);
+  animation: band-open .65s cubic-bezier(.2,.8,.2,1) 1.5s forwards, band-close .45s cubic-bezier(.6,0,.4,1) 6.85s forwards;
+}
+@keyframes band-open {
+  0%   { transform: scale(0, .03); }
+  45%  { transform: scale(1, .03); }
+  80%  { transform: scale(1, 1.04); }
+  100% { transform: scale(1, 1); }
+}
+@keyframes band-close {
+  0%   { transform: scale(1, 1); opacity: 1; }
+  80%  { transform: scale(1, .03); opacity: 1; }
+  100% { transform: scale(1, .03); opacity: 0; }   /* la línea brillante sigue sola */
+}
+/* línea de luz brillante (al abrirse y al cerrarse la banda) */
+.band-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 4px;
+  margin-top: -2px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, rgba(95,242,208,0), var(--teal) 15%, #fff 50%, var(--pink) 85%, rgba(255,95,168,0));
+  box-shadow: 0 0 14px rgba(255,255,255,.8), 0 0 30px rgba(167,139,255,.7);
+  transform: scaleX(0);
+  opacity: 0;
+  animation: line-in .55s cubic-bezier(.2,.8,.2,1) 1.5s forwards, line-out .6s cubic-bezier(.6,0,.4,1) 7.05s forwards;
+}
+@keyframes line-in {
+  0%   { transform: scaleX(0); opacity: 1; }
+  55%  { transform: scaleX(1); opacity: 1; }
+  100% { transform: scaleX(1) scaleY(.5); opacity: 0; }
+}
+@keyframes line-out {
+  0%   { transform: scaleX(1); opacity: 1; }
+  100% { transform: scaleX(0); opacity: 1; }
+}
+
+/* punto de luz donde se cierra la línea */
+.close-spark {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 140px;
+  height: 140px;
+  margin: -70px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, #fff, rgba(191,233,255,.6) 35%, rgba(167,139,255,0));
+  transform: scale(0);
+  opacity: 0;
+  animation: close-spark .7s ease-out 7.55s forwards;
+}
+@keyframes close-spark {
+  0%   { transform: scale(.2); opacity: 1; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+/* borde con los colores de la aurora */
+.card-bg::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 3px;
+  background: linear-gradient(90deg, var(--teal), var(--violet), var(--pink), var(--violet), var(--teal));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+}
+/* reflejo de luz que cruza la banda */
+.card-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(100deg, rgba(255,255,255,0) 40%, rgba(255,255,255,.22) 50%, rgba(255,255,255,0) 60%);
+  transform: translateX(-100%);
+  animation: sweep 1.6s ease-in-out 2.1s 2;
+}
+@keyframes sweep { to { transform: translateX(100%); } }
+
+.tag {
+  display: inline-block;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: .35em;
+  padding-left: .35em;
+  background: linear-gradient(90deg, var(--teal), #fff 50%, var(--pink));
+  -webkit-background-clip: text;
+          background-clip: text;
+  color: transparent;
+  animation: tag-in .6s ease-out 2.0s both, fade-up .35s ease-in 6.4s forwards;
+}
+@keyframes tag-in { from { opacity: 0; letter-spacing: 1em; } to { opacity: 1; } }
+.name {
+  margin: 6px 0 4px;
+  font-size: 74px;
+  font-weight: 700;
+  line-height: 1.1;
+  color: #fff;
+}
+.name .ch .f, .name:not([data-split]) {
+  background: linear-gradient(90deg, var(--teal), #fff 30%, var(--violet) 60%, var(--pink));
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+          background-clip: text;
+  color: transparent;
+}
+.thanks {
+  font-size: 23px;
+  font-weight: 500;
+  color: rgba(255,255,255,.9);
+  animation: rise-in .5s ease-out 2.35s both, fade-up .35s ease-in 6.45s forwards;
+}
+.thanks b { color: var(--teal); font-weight: 700; display: inline-block; font-variant-numeric: tabular-nums; }
+@keyframes fade-up { to { opacity: 0; transform: translateY(-10px); } }
+@keyframes rise-in { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+
+/* cada letra: .o brillo detrás, .g destello, .f la letra con los colores de la aurora */
+.ch { position: relative; display: inline-block; }
+.ch i { position: relative; display: inline-block; font-style: normal; }
+.ch b { font-weight: inherit; }
+.ch .o, .ch .g { position: absolute; left: 0; top: 0; }
+.ch .f { position: relative; }
+.ch .o { color: transparent; text-shadow: 0 0 14px rgba(167,139,255,.9), 0 0 4px rgba(255,255,255,.6); }
+.ch .g { color: transparent; opacity: 0; }
+.ch i {
+  animation:
+    letter-in .55s cubic-bezier(.22,1.2,.36,1) calc(2.0s + var(--i) / var(--n) * .45s) both,
+    letter-out .5s cubic-bezier(.4,0,.6,1) calc(6.1s + var(--i) / var(--n) * .25s) forwards;
+}
+/* las letras suben suavemente desde abajo */
+@keyframes letter-in {
+  from { transform: translateY(22px) scale(.85); opacity: 0; }
+  to   { transform: none; opacity: 1; }
+}
+/* y al final suben un poco y se desvanecen, una detrás de otra */
+@keyframes letter-out {
+  0%   { transform: none; opacity: 1; }
+  100% { transform: translateY(-26px) scale(1.06); opacity: 0; }
+}
+
+/* destellos en la banda */
+.spark {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  opacity: 0;
+  animation: twinkle 1.3s ease-in-out calc(2.2s + var(--t)) 3;
+}

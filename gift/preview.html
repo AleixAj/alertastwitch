@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Prueba alerta regalo</title>
+<link rel="stylesheet" href="alerta.css">
+<style>
+  body {
+    min-height: 100vh;
+    background: #1b1530 url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80"><rect width="80" height="80" fill="%231b1530"/><rect width="40" height="40" fill="%23221a3b"/><rect x="40" y="40" width="40" height="40" fill="%23221a3b"/></svg>') !important;
+    font-family: system-ui, sans-serif;
+  }
+  .controls {
+    position: fixed; left: 16px; bottom: 16px; z-index: 10;
+    display: flex; gap: 8px; align-items: center;
+    background: rgba(0,0,0,.55); padding: 10px; border-radius: 12px; color: #fff;
+  }
+  .controls input { padding: 8px 10px; border-radius: 8px; border: 0; font-size: 15px; width: 220px; }
+  .controls button { padding: 8px 14px; border-radius: 8px; border: 0; background: #ff5fa8; color: #fff; font-weight: 600; cursor: pointer; }
+</style>
+</head>
+<body>
+<div id="stage"></div>
+<div class="controls">
+  <input id="n" value="Luxanita" maxlength="25">
+  <label style="font-size:13px">Subs regaladas <input id="m" type="number" min="1" max="500" value="5" style="width:56px;padding:6px;border-radius:8px;border:0"></label>
+  <button id="go">Probar alerta</button>
+  <label style="display:flex;align-items:center;gap:6px;font-size:13px">🔈 <input id="vol" type="range" min="0" max="100" value="100" style="width:110px;accent-color:#ff5fa8"> <span id="volv">100%</span></label>
+  <span id="snd" style="font-size:13px;opacity:.85"></span>
+</div>
+<template id="tpl">
+<div class="lux">
+  <div class="sky">
+    <span class="star4" style="--x:63%;--y:5%;--s:12px;--d:2.0s;--t:0.3s"></span>
+    <span class="star4" style="--x:12%;--y:71%;--s:18px;--d:1.7s;--t:1.1s"></span>
+    <span class="star4" style="--x:5%;--y:23%;--s:18px;--d:2.6s;--t:1.4s"></span>
+    <span class="star4" style="--x:70%;--y:68%;--s:14px;--d:2.0s;--t:1.5s"></span>
+    <span class="star4" style="--x:79%;--y:4%;--s:10px;--d:2.7s;--t:0.9s"></span>
+    <span class="star4" style="--x:17%;--y:91%;--s:12px;--d:1.8s;--t:0.9s"></span>
+    <span class="star4" style="--x:36%;--y:35%;--s:12px;--d:2.9s;--t:1.8s"></span>
+    <span class="star4" style="--x:53%;--y:93%;--s:14px;--d:1.7s;--t:0.7s"></span>
+    <span class="star4" style="--x:62%;--y:84%;--s:12px;--d:2.5s;--t:1.8s"></span>
+    <span class="star4" style="--x:6%;--y:24%;--s:12px;--d:3.2s;--t:2.1s"></span>
+    <span class="star4" style="--x:84%;--y:38%;--s:14px;--d:2.6s;--t:0.9s"></span>
+    <span class="star4" style="--x:37%;--y:22%;--s:12px;--d:2.7s;--t:1.7s"></span>
+    <span class="star4" style="--x:9%;--y:61%;--s:18px;--d:2.8s;--t:0.4s"></span>
+    <span class="star4" style="--x:38%;--y:94%;--s:22px;--d:2.7s;--t:0.5s"></span>
+    <span class="star4" style="--x:33%;--y:74%;--s:8px;--d:2.0s;--t:0.1s"></span>
+    <span class="star4" style="--x:32%;--y:28%;--s:10px;--d:3.1s;--t:1.4s"></span>
+    <span class="star4" style="--x:70%;--y:23%;--s:14px;--d:2.2s;--t:2.3s"></span>
+    <span class="star4" style="--x:46%;--y:27%;--s:10px;--d:2.8s;--t:1.3s"></span>
+    <span class="star4" style="--x:73%;--y:42%;--s:18px;--d:2.2s;--t:0.5s"></span>
+    <span class="star4" style="--x:97%;--y:50%;--s:8px;--d:2.8s;--t:2.2s"></span>
+    <span class="star4" style="--x:17%;--y:18%;--s:22px;--d:2.3s;--t:0.2s"></span>
+    <span class="star4" style="--x:38%;--y:95%;--s:18px;--d:2.0s;--t:1.4s"></span>
+    <span class="star4" style="--x:92%;--y:66%;--s:8px;--d:2.7s;--t:1.3s"></span>
+    <span class="star4" style="--x:27%;--y:62%;--s:8px;--d:2.1s;--t:0.4s"></span>
+    <span class="star4" style="--x:2%;--y:69%;--s:22px;--d:2.0s;--t:1.3s"></span>
+    <span class="star4" style="--x:19%;--y:87%;--s:22px;--d:2.1s;--t:1.6s"></span>
+    <span class="star4" style="--x:60%;--y:17%;--s:10px;--d:2.5s;--t:1.9s"></span>
+    <span class="star4" style="--x:52%;--y:3%;--s:12px;--d:2.4s;--t:0.3s"></span>
+    <span class="star4" style="--x:36%;--y:94%;--s:12px;--d:2.0s;--t:0.6s"></span>
+    <span class="star4" style="--x:56%;--y:10%;--s:22px;--d:2.4s;--t:0.2s"></span>
+  </div>
+  <div class="motes">
+    <span style="--x:75%;--s:8px;--d:4.9s;--t:1.9s;--w:10px"></span>
+    <span style="--x:17%;--s:18px;--d:7.6s;--t:1.7s;--w:-33px"></span>
+    <span style="--x:91%;--s:8px;--d:7.0s;--t:1.6s;--w:25px"></span>
+    <span style="--x:64%;--s:14px;--d:7.6s;--t:1.8s;--w:-29px"></span>
+    <span style="--x:23%;--s:10px;--d:4.6s;--t:2.2s;--w:15px"></span>
+    <span style="--x:22%;--s:6px;--d:7.0s;--t:0.2s;--w:-52px"></span>
+    <span style="--x:89%;--s:10px;--d:4.7s;--t:1.0s;--w:25px"></span>
+    <span style="--x:48%;--s:18px;--d:5.0s;--t:3.7s;--w:13px"></span>
+    <span style="--x:57%;--s:8px;--d:7.2s;--t:3.2s;--w:-36px"></span>
+    <span style="--x:10%;--s:14px;--d:5.7s;--t:1.6s;--w:50px"></span>
+    <span style="--x:72%;--s:6px;--d:4.7s;--t:2.9s;--w:42px"></span>
+    <span style="--x:85%;--s:8px;--d:5.2s;--t:2.1s;--w:-43px"></span>
+    <span style="--x:42%;--s:10px;--d:6.1s;--t:3.5s;--w:-51px"></span>
+    <span style="--x:44%;--s:18px;--d:4.8s;--t:2.6s;--w:9px"></span>
+    <span style="--x:82%;--s:6px;--d:7.7s;--t:3.4s;--w:-39px"></span>
+    <span style="--x:40%;--s:14px;--d:5.2s;--t:1.6s;--w:-53px"></span>
+    <span style="--x:17%;--s:6px;--d:7.9s;--t:1.1s;--w:40px"></span>
+    <span style="--x:77%;--s:10px;--d:6.0s;--t:3.8s;--w:40px"></span>
+    <span style="--x:55%;--s:14px;--d:5.0s;--t:1.2s;--w:-53px"></span>
+    <span style="--x:57%;--s:18px;--d:4.7s;--t:1.3s;--w:-54px"></span>
+    <span style="--x:58%;--s:18px;--d:7.7s;--t:2.1s;--w:-53px"></span>
+    <span style="--x:94%;--s:6px;--d:7.5s;--t:0.3s;--w:-52px"></span>
+  </div>
+
+  <!-- Carga de la Chispa Final: la luz se concentra en el centro -->
+  <div class="core"></div>
+  <div class="charge"><span class="star4" style="--a:-2deg;--r:394px;--s:18px;--t:0.11s"></span><span class="star4" style="--a:10deg;--r:321px;--s:14px;--t:0.15s"></span><span class="star4" style="--a:33deg;--r:353px;--s:18px;--t:0.22s"></span><span class="star4" style="--a:47deg;--r:424px;--s:19px;--t:0.23s"></span><span class="star4" style="--a:64deg;--r:349px;--s:26px;--t:0.30s"></span><span class="star4" style="--a:71deg;--r:424px;--s:15px;--t:0.33s"></span><span class="star4" style="--a:89deg;--r:433px;--s:18px;--t:0.34s"></span><span class="star4" style="--a:106deg;--r:485px;--s:13px;--t:0.39s"></span><span class="star4" style="--a:116deg;--r:508px;--s:13px;--t:0.40s"></span><span class="star4" style="--a:136deg;--r:327px;--s:22px;--t:0.40s"></span><span class="star4" style="--a:148deg;--r:476px;--s:13px;--t:0.47s"></span><span class="star4" style="--a:170deg;--r:432px;--s:26px;--t:0.48s"></span><span class="star4" style="--a:177deg;--r:455px;--s:13px;--t:0.54s"></span><span class="star4" style="--a:190deg;--r:425px;--s:23px;--t:0.55s"></span><span class="star4" style="--a:214deg;--r:416px;--s:23px;--t:0.61s"></span><span class="star4" style="--a:227deg;--r:373px;--s:20px;--t:0.63s"></span><span class="star4" style="--a:241deg;--r:334px;--s:14px;--t:0.69s"></span><span class="star4" style="--a:251deg;--r:436px;--s:23px;--t:0.69s"></span><span class="star4" style="--a:270deg;--r:464px;--s:25px;--t:0.74s"></span><span class="star4" style="--a:289deg;--r:350px;--s:16px;--t:0.75s"></span><span class="star4" style="--a:303deg;--r:372px;--s:20px;--t:0.82s"></span><span class="star4" style="--a:318deg;--r:533px;--s:23px;--t:0.84s"></span><span class="star4" style="--a:330deg;--r:362px;--s:26px;--t:0.83s"></span><span class="star4" style="--a:345deg;--r:356px;--s:16px;--t:0.87s"></span></div>
+
+  <!-- R (Chispa Final): rayo gigante -->
+  <div class="rays"></div>
+  <div class="flash"></div>
+  <div class="beam"></div>
+  <div class="burst one"><span class="star4" style="--a:1deg;--s:19px;--dist:274px"></span><span class="star4" style="--a:24deg;--s:19px;--dist:267px"></span><span class="star4" style="--a:44deg;--s:24px;--dist:312px"></span><span class="star4" style="--a:70deg;--s:26px;--dist:292px"></span><span class="star4" style="--a:96deg;--s:32px;--dist:365px"></span><span class="star4" style="--a:120deg;--s:17px;--dist:263px"></span><span class="star4" style="--a:149deg;--s:24px;--dist:251px"></span><span class="star4" style="--a:160deg;--s:26px;--dist:273px"></span><span class="star4" style="--a:192deg;--s:21px;--dist:353px"></span><span class="star4" style="--a:221deg;--s:33px;--dist:242px"></span><span class="star4" style="--a:235deg;--s:18px;--dist:416px"></span><span class="star4" style="--a:260deg;--s:33px;--dist:249px"></span><span class="star4" style="--a:291deg;--s:34px;--dist:381px"></span><span class="star4" style="--a:308deg;--s:29px;--dist:272px"></span><span class="star4" style="--a:329deg;--s:25px;--dist:333px"></span></div>
+
+  <div class="card-wrap">
+    <div class="card-pop">
+    <div class="card">
+      <div class="glow"></div>
+      <div class="card-bg"></div>
+      <div class="crest"><svg viewBox="0 0 170 90" aria-hidden="true">
+          <defs>
+            <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff4c8"/><stop offset="1" stop-color="#ffc35c"/></linearGradient>
+            <linearGradient id="wing" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#ff9ccb" stop-opacity="0"/><stop offset="1" stop-color="#ff9ccb"/></linearGradient>
+          </defs>
+          <path d="M72 50 C52 30 24 30 4 38 C24 42 38 50 46 60 C30 58 18 62 10 70 C34 70 54 66 72 56Z" fill="url(#wing)" stroke="#fff" stroke-width="2.5"/>
+          <path d="M98 50 C118 30 146 30 166 38 C146 42 132 50 124 60 C140 58 152 62 160 70 C136 70 116 66 98 56Z" fill="url(#wing)" stroke="#fff" stroke-width="2.5"/>
+          <polygon points="85.0,13.0 76.2,34.9 52.7,36.5 70.7,51.6 65.0,74.5 85.0,62.0 105.0,74.5 99.3,51.6 117.3,36.5 93.8,34.9" fill="url(#gold)" stroke="#fff" stroke-width="4" stroke-linejoin="round"/>
+          <polygon points="85.0,35.0 82.1,43.0 73.6,43.3 80.2,48.5 77.9,56.7 85.0,52.0 92.1,56.7 89.8,48.5 96.4,43.3 87.9,43.0" fill="#ff6fb1"/>
+          <g class="shine-star"><polygon points="85,2 88,44 85,92 82,44" fill="#fff" opacity=".7"/><polygon points="40,47 85,44 130,47 85,50" fill="#fff" opacity=".7"/></g>
+        </svg></div>
+      <span class="spark star4" style="left:-24px;top:30px;--t:0s"></span>
+      <span class="spark star4" style="left:44px;bottom:-22px;--t:.5s;width:16px;height:16px"></span>
+      <span class="spark star4" style="right:-28px;bottom:22px;--t:.9s"></span>
+      <span class="spark star4" style="right:70px;top:-26px;--t:.3s;width:14px;height:14px"></span>
+
+      <div class="sub"><i class="star4"></i>¡Subs de regalo!<i class="star4"></i></div>
+      <div class="name" id="sub-name">{name}</div>
+      <span id="gift-amount" hidden>{amount}</span>
+      <span id="gift-gifter" hidden>{gifter}</span>
+      <div class="thanks"><span id="gift-text">ha regalado subs</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.3 3 4.5 6.8 4.5c2.2 0 3.6 1.2 5.2 3 1.6-1.8 3-3 5.2-3 3.8 0 5.9 3.8 4.4 7.3C19.5 16.4 12 21 12 21z" fill="#ff5fa8"/></svg></div>
+    </div>
+    </div>
+  </div>
+
+  <!-- salida: destello de luz y estallido de estrellas -->
+  <div class="flash two"></div>
+  <div class="burst two"><span class="star4" style="--a:-7deg;--s:27px;--dist:293px"></span><span class="star4" style="--a:23deg;--s:19px;--dist:330px"></span><span class="star4" style="--a:53deg;--s:20px;--dist:300px"></span><span class="star4" style="--a:69deg;--s:21px;--dist:345px"></span><span class="star4" style="--a:88deg;--s:21px;--dist:325px"></span><span class="star4" style="--a:125deg;--s:23px;--dist:308px"></span><span class="star4" style="--a:141deg;--s:19px;--dist:337px"></span><span class="star4" style="--a:161deg;--s:31px;--dist:296px"></span><span class="star4" style="--a:190deg;--s:30px;--dist:329px"></span><span class="star4" style="--a:217deg;--s:23px;--dist:297px"></span><span class="star4" style="--a:232deg;--s:22px;--dist:342px"></span><span class="star4" style="--a:266deg;--s:24px;--dist:257px"></span><span class="star4" style="--a:288deg;--s:27px;--dist:404px"></span><span class="star4" style="--a:320deg;--s:28px;--dist:413px"></span><span class="star4" style="--a:338deg;--s:16px;--dist:269px"></span></div>
+</div>
+</template>
+<script>
+  var tpl = document.getElementById('tpl').innerHTML;
+  function play(withSound) {
+    var name = document.getElementById('n').value || 'Anónimo';
+    var safe = name.replace(/[&<>"]/g, function (c) { return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; });
+    document.getElementById('stage').innerHTML = tpl.replace('{name}', safe).replace('{amount}', document.getElementById('m').value || '1');
+    // sonido (en Streamlabs se sube aparte, en el apartado Sound). Solo al pulsar el botón.
+    if (withSound !== false) {
+      if (!window.sfx) window.sfx = new Audio('../sonidos/gift.mp3');
+      sfx.volume = document.getElementById('vol').value / 100;
+      sfx.currentTime = 0;
+      var snd = document.getElementById('snd');
+      sfx.play().then(function () { snd.textContent = '🔊 sonando'; })
+        .catch(function (e) { snd.textContent = e.name === 'NotAllowedError' ? '🔇 pulsa Probar alerta para oírlo' : '🔇 no se pudo cargar el sonido'; });
+    }
+    var old = document.getElementById('alerta-js'); if (old) old.remove();
+    var s = document.createElement('script');
+    s.id = 'alerta-js';
+    s.src = 'alerta.js?' + Date.now();
+    document.body.appendChild(s);
+  }
+  document.getElementById('go').onclick = play;
+  // volumen (se recuerda en este navegador)
+  var vol = document.getElementById('vol');
+  try { var saved = localStorage.getItem('alerta-vol2'); if (saved !== null) vol.value = saved; } catch (e) {}
+  function showVol() {
+    document.getElementById('volv').textContent = vol.value + '%';
+    if (window.sfx) sfx.volume = vol.value / 100;
+    try { localStorage.setItem('alerta-vol2', vol.value); } catch (e) {}
+  }
+  vol.oninput = showVol;
+  showVol();
+  play(false);   // al abrir: solo la animación, sin sonido
+</script>
+</body>
+</html>

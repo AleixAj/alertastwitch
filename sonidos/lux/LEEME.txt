@@ -1,0 +1,14 @@
+SONIDOS OFICIALES DE LUX (opcional)
+
+Deja aquí los clips con estos nombres (vale .wav, .mp3 u .ogg):
+
+  carga.mp3          -> el sonido de Lux cargando la Chispa Final
+  chispa_final.mp3   -> el disparo del rayo
+  salida.mp3         -> un brillo o sonido corto para el final (opcional)
+
+Después ejecuta generar_sonidos.py (doble clic o "python generar_sonidos.py").
+El script busca el momento más fuerte de cada clip y lo hace coincidir
+con la animación. Si falta alguno, usa el sonido sintetizado.
+
+Ojo: los sonidos de League of Legends son de Riot Games. Úsalos solo si
+estás de acuerdo con su política de contenido de fans.

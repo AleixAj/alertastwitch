@@ -1,0 +1,573 @@
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&display=swap');
+
+/* ===== Colores (cámbialos aquí) ===== */
+.snowscape {
+  --pink: #ff5fa8;
+  --pink-soft: #ffc2dd;
+  --pink-deep: #e2317f;
+  --pink-text: #d8629a;
+  --ice: #eaf4ff;
+}
+
+html, body { background: transparent !important; margin: 0; }
+
+/* Duración total: ~8 s. Pon "Alert Duration" = 8 en Streamlabs. */
+.snowscape {
+  --n: 12;                                   /* nº de letras (lo pone el JS) */
+  --end: 6.242s;                              /* cuándo se va la tarjeta (fijo: cuadra con el sonido) */
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  font-family: 'Fredoka', 'Nunito', 'Segoe UI Rounded', 'Arial Rounded MT Bold', 'Segoe UI', system-ui, sans-serif;
+  animation: scene-out 0.438s ease-in calc(var(--end) + 1.022s) forwards;
+}
+@keyframes scene-out { to { opacity: 0; } }
+@keyframes just-fade { to { opacity: 0; } }
+
+.flake-svg { display: block; width: 100%; height: 100%; color: #fff; overflow: visible; }
+
+/* ===== Nieve que cae ===== */
+.snow span {
+  position: absolute;
+  top: -50px;
+  left: var(--x);
+  width: var(--s);
+  height: var(--s);
+  opacity: 0;
+  animation: fall var(--d) linear var(--t) infinite;
+}
+.snow span i {
+  display: block;
+  width: 100%;
+  height: 100%;
+  animation: sway calc(var(--d) / 2) ease-in-out infinite alternate;
+}
+.snow .dot i {
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff 0 35%, rgba(255,255,255,.6) 55%, rgba(255,255,255,0) 72%);
+}
+.snow .fl i { opacity: .95; }
+@keyframes fall {
+  0%   { transform: translateY(0) rotate(0); opacity: 0; }
+  8%   { opacity: var(--o, .95); }
+  90%  { opacity: var(--o, .95); }
+  100% { transform: translateY(calc(100vh + 80px)) rotate(var(--r, 240deg)); opacity: 0; }
+}
+@keyframes sway {
+  from { transform: translateX(-18px); }
+  to   { transform: translateX(18px); }
+}
+
+/* ===== Entrada: remolino de copos que se junta en el centro ===== */
+.swirl {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+}
+.swirl span {
+  position: absolute;
+  width: var(--s);
+  height: var(--s);
+  margin: calc(var(--s) / -2);
+  opacity: 0;
+  animation: swirl 0.73s cubic-bezier(.5,0,.75,.6) var(--t) forwards;
+}
+@keyframes swirl {
+  0%   { transform: rotate(var(--a)) translateX(var(--r)) rotate(0) scale(1.3); opacity: .7; }
+  10%  { opacity: 1; }
+  100% { transform: rotate(calc(var(--a) + 220deg)) translateX(10px) rotate(360deg) scale(.3); opacity: 0; }
+}
+
+/* ===== Copos grandes desenfocados delante (profundidad) ===== */
+.bokeh span {
+  position: absolute;
+  top: -120px;
+  left: var(--x);
+  width: var(--s);
+  height: var(--s);
+  opacity: 0;
+  animation: fall var(--d) linear var(--t) infinite;
+  --o: .55;
+}
+.bokeh span i { display: block; width: 100%; height: 100%; }
+
+/* ===== Entrada: copo gigante que se dibuja mientras baja girando
+         y a los 1.05 s se rompe en 6 brazos que salen disparados ===== */
+.hero {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 270px;
+  height: 270px;
+  margin: -135px 0 0 -135px;
+  animation: hero-in 0.766s cubic-bezier(.2,.8,.3,1) both;
+}
+@keyframes hero-in {
+  0%   { transform: translateY(-60vh) scale(.35); opacity: 0; }
+  25%  { opacity: 1; }
+  100% { transform: none; opacity: 1; }
+}
+.hero-spin {
+  position: absolute;
+  inset: 0;
+  animation: hero-spin 0.766s cubic-bezier(.2,.8,.3,1) both;
+}
+@keyframes hero-spin { from { transform: rotate(-320deg); } to { transform: rotate(0); } }
+.arm {
+  position: absolute;
+  inset: 0;
+  transform: rotate(calc(var(--k) * 60deg));
+  animation: arm-fly 0.584s cubic-bezier(.15,.75,.3,1) 0.766s forwards;
+}
+.arm svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.arm path {
+  fill: none;
+  stroke: #fff;
+  stroke-width: 6;
+  stroke-linecap: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: draw 0.547s ease-out calc(0.073s + var(--k) * 0.036s) forwards;
+}
+@keyframes draw { to { stroke-dashoffset: 0; } }
+@keyframes arm-fly {
+  0%   { transform: rotate(calc(var(--k) * 60deg)) translateY(0) scale(1); opacity: 1; }
+  100% { transform: rotate(calc(var(--k) * 60deg + 90deg)) translateY(-340px) scale(.45); opacity: 0; }
+}
+.hero-core {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 22px;
+  height: 22px;
+  margin: -11px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 18px #fff, 0 0 30px var(--pink);
+  animation: core-pulse 0.256s ease-in-out 0.365s 2 alternate, just-fade 0.11s ease-out 0.766s forwards;
+}
+@keyframes core-pulse { to { transform: scale(1.6); } }
+/* copo fantasma detrás, girando al revés */
+.hero-ghost {
+  position: absolute;
+  inset: -12%;
+  opacity: .35;
+  animation: ghost 0.766s ease-in both, just-fade 0.146s ease-out 0.766s forwards;
+}
+@keyframes ghost { from { transform: rotate(200deg) scale(.6); } to { transform: rotate(-30deg) scale(1); } }
+.hero-glow {
+  position: absolute;
+  inset: -40%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(255,255,255,.55), rgba(255,95,168,.25) 50%, rgba(255,95,168,0));
+  animation: glow-in 0.766s ease-in both, just-fade 0.182s ease-out 0.766s forwards;
+}
+@keyframes glow-in { from { transform: scale(.4); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+/* onda de hielo con forma de cristal */
+.ice-wave {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 300px;
+  height: 300px;
+  margin: -150px 0 0 -150px;
+  opacity: 0;
+  animation: ice-wave 0.73s cubic-bezier(.15,.7,.3,1) 0.766s forwards;
+}
+.ice-wave svg { width: 100%; height: 100%; overflow: visible; }
+.ice-wave polygon {
+  fill: none;
+  stroke: #fff;
+  stroke-width: 2.5;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 0 6px var(--pink)) drop-shadow(0 0 3px #fff);
+}
+@keyframes ice-wave {
+  0%   { transform: scale(.3) rotate(0); opacity: 1; }
+  100% { transform: scale(3.4) rotate(40deg); opacity: 0; }
+}
+
+/* destello y onda */
+.flash {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 700px;
+  height: 700px;
+  border-radius: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  background: radial-gradient(closest-side, rgba(255,255,255,.95), rgba(255,200,228,.5) 40%, rgba(255,95,168,0));
+  animation: flash 0.511s ease-out 0.766s forwards;
+}
+@keyframes flash {
+  0%   { transform: translate(-50%, -50%) scale(.2); opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(1.3); opacity: 0; }
+}
+.ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 260px;
+  height: 260px;
+  border-radius: 50%;
+  border: 6px solid #fff;
+  box-shadow: 0 0 20px var(--pink), inset 0 0 20px var(--pink);
+  transform: translate(-50%, -50%) scale(0);
+  animation: ring 0.584s cubic-bezier(.2,.7,.3,1) var(--at, 0.766s) forwards;
+}
+.ring.two { --at: 0.876s; border-width: 3px; }
+@keyframes ring {
+  0%   { transform: translate(-50%, -50%) scale(.3); opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(3.2); opacity: 0; }
+}
+
+/* copitos que salen disparados */
+.burst {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+}
+.burst.one { --at: 0.766s; }
+.burst.two { --at: calc(var(--end) + 0.73s); }
+.burst span {
+  position: absolute;
+  width: var(--s, 30px);
+  height: var(--s, 30px);
+  margin: calc(var(--s, 30px) / -2);
+  opacity: 0;
+  animation: burst 0.73s cubic-bezier(.15,.8,.3,1) var(--at) forwards;
+}
+@keyframes burst {
+  0%   { transform: rotate(var(--a)) translateX(40px) rotate(0) scale(.4); opacity: 1; }
+  70%  { opacity: 1; }
+  100% { transform: rotate(var(--a)) translateX(var(--dist, 300px)) rotate(200deg) scale(1); opacity: 0; }
+}
+
+/* ===== Rayos de luz detrás ===== */
+.rays {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 1100px;
+  height: 1100px;
+  margin: -550px 0 0 -550px;
+  background: repeating-conic-gradient(from 0deg, rgba(255,255,255,.22) 0deg 7deg, rgba(255,255,255,0) 7deg 22deg);
+  -webkit-mask-image: radial-gradient(closest-side, #000 15%, rgba(0,0,0,.5) 45%, transparent 75%);
+          mask-image: radial-gradient(closest-side, #000 15%, rgba(0,0,0,.5) 45%, transparent 75%);
+  opacity: 0;
+  animation:
+    rays-in 0.584s ease-out 0.803s forwards,
+    rays-spin 11.68s linear infinite,
+    just-fade 0.438s ease-in var(--end) forwards;
+}
+@keyframes rays-in { to { opacity: 1; } }
+@keyframes rays-spin { to { transform: rotate(360deg); } }
+
+/* ===== Aurora rosa detrás de la tarjeta ===== */
+.aurora {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  animation: aurora-in 0.73s ease-out 0.876s forwards, just-fade 0.584s ease-in var(--end) forwards;
+}
+@keyframes aurora-in { to { opacity: 1; } }
+.aurora i {
+  position: absolute;
+  width: 1000px;
+  height: 230px;
+  margin: -115px 0 0 -500px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(255,110,190,.5), rgba(200,150,255,.28) 55%, rgba(190,150,255,0));
+  animation: aurora-a 3.285s ease-in-out infinite alternate;
+}
+.aurora .a2 {
+  top: 70px;
+  height: 160px;
+  opacity: .7;
+  background: radial-gradient(closest-side, rgba(150,200,255,.42), rgba(255,130,205,.22) 55%, rgba(255,130,205,0));
+  animation: aurora-b 2.628s ease-in-out infinite alternate;
+}
+@keyframes aurora-a {
+  from { transform: translate(-70px, -120px) rotate(-6deg) scaleY(.8); }
+  to   { transform: translate(70px, -95px) rotate(4deg) scaleY(1.15); }
+}
+@keyframes aurora-b {
+  from { transform: translate(80px, 10px) rotate(5deg); }
+  to   { transform: translate(-80px, 30px) rotate(-4deg); }
+}
+
+/* ===== Tarjeta ===== */
+/* centrado con flex (no depende del tamaño de la tarjeta, así no salta) */
+.card-wrap {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.card-pop {
+  animation: card-in 0.547s cubic-bezier(.34,1.56,.64,1) 0.766s both;
+}
+@keyframes card-in {
+  from { transform: scale(0) rotate(-8deg); }
+  to   { transform: scale(1) rotate(0); }
+}
+.card {
+  position: relative;
+  padding: 34px 64px 34px;
+  text-align: center;
+  white-space: nowrap;
+  animation: bob 1.898s ease-in-out 1.314s infinite;
+}
+@keyframes bob {
+  0%, 100% { transform: translateY(0) rotate(-.5deg); }
+  50%      { transform: translateY(-8px) rotate(.5deg); }
+}
+
+.glow {
+  position: absolute;
+  inset: -90% -30%;
+  z-index: -2;
+  background: radial-gradient(closest-side, rgba(255,95,168,.55), rgba(255,95,168,.15) 55%, rgba(255,95,168,0));
+  animation: glow-pulse 1.752s ease-in-out infinite, just-fade 0.365s ease-in var(--end) forwards;
+}
+@keyframes glow-pulse {
+  0%, 100% { opacity: .75; transform: scale(.95); }
+  50%      { opacity: 1;   transform: scale(1.05); }
+}
+
+.card-bg {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: 54px;
+  background: linear-gradient(180deg, #fff 0%, #fff2f8 50%, #ffdcec 100%);
+  border: 5px solid #fff;
+  box-shadow: 0 9px 0 var(--pink-soft), 0 22px 50px rgba(226,49,127,.45), inset 0 0 30px rgba(255,194,221,.6);
+  animation: card-bg-out 0.365s ease-in var(--end) forwards;
+}
+@keyframes card-bg-out {
+  to { transform: scale(.1) rotate(90deg); opacity: 0; border-radius: 50%; }
+}
+/* brillo que cruza la tarjeta */
+.shine {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: 54px;
+}
+.shine::after {
+  content: '';
+  position: absolute;
+  top: -20%;
+  bottom: -20%;
+  left: 0;
+  width: 100%;
+  background: linear-gradient(90deg, rgba(255,255,255,0) 42%, rgba(255,255,255,.95) 50%, rgba(255,255,255,0) 58%);
+  transform: translateX(-100%) skewX(-20deg);
+  animation: shine 0.803s ease-in-out 1.46s 3;
+  animation-delay: 1.46s;
+}
+@keyframes shine {
+  0%        { transform: translateX(-100%) skewX(-20deg); }
+  55%, 100% { transform: translateX(100%) skewX(-20deg); }
+}
+.shine { animation: just-fade 0.219s ease-in var(--end) forwards; }
+
+/* carámbanos colgando por debajo */
+.icicles {
+  position: absolute;
+  left: 40px;
+  right: 40px;
+  bottom: -30px;
+  height: 36px;
+  animation: ice-in 0.438s cubic-bezier(.34,1.56,.64,1) 1.241s both, just-fade 0.219s ease-in var(--end) forwards;
+}
+.icicles svg { display: block; width: 100%; height: 100%; filter: drop-shadow(0 0 4px rgba(190,225,255,.9)); }
+@keyframes ice-in {
+  from { transform: scaleY(0); transform-origin: top; opacity: 0; }
+  to   { transform: scaleY(1); transform-origin: top; opacity: 1; }
+}
+
+/* borde de luz que da vueltas alrededor de la tarjeta
+   (la luz es una capa que gira dentro de un marco con la forma del panel: muy fluido) */
+.edge {
+  position: absolute;
+  inset: -3px;                 /* pegado al borde blanco del panel */
+  border-radius: 57px;         /* mismo redondeo que el panel (54px) + 3px */
+  padding: 6px;
+  overflow: hidden;
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  opacity: 0;
+  animation: edge-in 0.365s ease-out 1.241s forwards, just-fade 0.219s ease-in var(--end) forwards;
+}
+.edge::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 900px;
+  height: 900px;
+  margin: -450px 0 0 -450px;
+  background: conic-gradient(rgba(255,95,168,0) 0deg 200deg, rgba(255,95,168,.95) 280deg, #fff 330deg, rgba(255,95,168,0) 360deg);
+  animation: edge-spin 1.606s linear 1.241s infinite;
+}
+@keyframes edge-in { to { opacity: 1; } }
+@keyframes edge-spin { to { transform: rotate(360deg); } }
+
+/* capa de nieve encima de la tarjeta */
+.snowcap {
+  position: absolute;
+  left: 18px;
+  right: 18px;
+  top: -20px;
+  height: 44px;
+  animation: cap-in 0.365s cubic-bezier(.34,1.56,.64,1) 1.095s both, just-fade 0.219s ease-in var(--end) forwards;
+}
+.snowcap svg { display: block; width: 100%; height: 100%; filter: drop-shadow(0 3px 0 rgba(255,194,221,.9)); }
+@keyframes cap-in {
+  from { transform: translateY(-30px) scaleY(.3); opacity: 0; }
+  to   { transform: none; opacity: 1; }
+}
+
+.sub {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 22px 8px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #ff78b6, var(--pink));
+  color: #fff;
+  font-size: 25px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  box-shadow: 0 4px 0 var(--pink-deep), 0 0 18px rgba(255,95,168,.5);
+}
+.sub svg { width: 22px; height: 22px; animation: spin 2.92s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.name {
+  margin: 14px 0 6px;
+  font-size: 76px;
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--pink-deep);
+}
+/* cada letra tiene 3 capas: .o contorno blanco + sombra 3D (detrás), .g brillo y .f la letra rosa.
+   Se dibujan una sola vez, así las letras se mueven sin coste */
+.ch i { position: relative; }
+.ch b { font-weight: inherit; }
+.ch .o, .ch .g { position: absolute; left: 0; top: 0; }
+.ch .f { position: relative; }
+.ch .o {
+  color: #fff;
+  text-shadow:
+    2px 0 #fff, -2px 0 #fff, 0 2px #fff, 0 -2px #fff,
+    2px 2px #fff, -2px -2px #fff, 2px -2px #fff, -2px 2px #fff,
+    0 6px var(--pink-soft);
+}
+.ch .g { color: transparent; opacity: 0; }
+.name .ch .f, .name:not([data-split]) {
+  background: linear-gradient(180deg, #ff8cc4 0%, #ff4f9f 45%, #d42475 100%);
+  -webkit-background-clip: text;
+          background-clip: text;
+  color: transparent;
+}
+.thanks svg { width: .9em; height: .9em; vertical-align: -.1em; margin-left: 4px; }
+.thanks {
+  font-size: 23px;
+  font-weight: 500;
+  color: var(--pink-text);
+}
+.sub, .thanks { animation: fade-out 0.292s ease-in 5.256s forwards; }
+.sub { animation: sub-in 0.365s cubic-bezier(.34,1.56,.64,1) 0.986s both, fade-out 0.292s ease-in 5.256s forwards; }
+@keyframes sub-in { from { transform: scale(0); } to { transform: none; } }
+@keyframes fade-out { to { opacity: 0; transform: translateY(-10px) scale(.9); } }
+
+/* ===== Letras: entran, se congelan y el viento se las lleva ===== */
+.ch {
+  position: relative;
+  display: inline-block;
+  animation: blow 0.803s cubic-bezier(.4,0,.6,.7) calc(5.548s + (var(--n) - 1 - var(--i)) / var(--n) * 0.329s) forwards;
+}
+.ch i {
+  display: inline-block;
+  font-style: normal;
+  animation:
+    letter-in 0.438s cubic-bezier(.34,1.56,.64,1) calc(0.949s + var(--i) / var(--n) * 0.438s) both;
+}
+@keyframes letter-in {
+  from { transform: translateY(-40px) scale(.2) rotate(-30deg); opacity: 0; }
+  to   { transform: none; opacity: 1; }
+}
+/* escarcha: las letras siguen rosas y ganan un brillo blanco helado */
+/* escarcha: brillo blanco detrás de cada letra que aparece con opacidad (fluido) */
+.ch .g {
+  text-shadow: 0 0 8px rgba(255,255,255,.95), 0 0 16px rgba(255,210,235,.9), 0 0 3px #fff;
+  animation: freeze 0.365s ease-out calc(5.037s + var(--i) / var(--n) * 0.256s) forwards;
+}
+@keyframes freeze {
+  to { opacity: 1; }
+}
+@keyframes blow {
+  0%   { transform: translate(0, 0) rotate(0) scale(1); opacity: 1; }
+  20%  { transform: translate(-10px, -6px) rotate(-8deg) scale(1.08); }
+  100% { transform: translate(var(--dx), var(--dy)) rotate(var(--rot)) scale(.3); opacity: 0; }
+}
+
+/* ===== Destellos ===== */
+.spark {
+  position: absolute;
+  color: #fff;
+  font-size: 24px;
+  text-shadow: 0 0 8px var(--pink), 0 0 2px var(--pink);
+  opacity: 0;
+  animation: twinkle 0.949s ease-in-out calc(1.095s + var(--t)) 4;
+}
+@keyframes twinkle {
+  0%, 100% { transform: scale(.2) rotate(0); opacity: 0; }
+  50%      { transform: scale(1) rotate(90deg); opacity: 1; }
+}
+
+/* ===== Salida: la tarjeta se convierte en copo y explota ===== */
+@keyframes hero-burst {
+  to { transform: translate(-50%, -50%) rotate(40deg) scale(1.8); opacity: 0; }
+}
+.outro-flake {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 150px;
+  height: 150px;
+  filter: drop-shadow(0 0 10px #fff) drop-shadow(0 0 20px var(--pink));
+  transform: translate(-50%, -50%) scale(0);
+  animation:
+    outro-in 0.73s cubic-bezier(.3,.7,.4,1) var(--end) forwards,
+    hero-burst 0.219s ease-out calc(var(--end) + 0.73s) forwards;
+}
+@keyframes outro-in {
+  0%   { transform: translate(-50%, -50%) rotate(-180deg) scale(0); }
+  60%  { transform: translate(-50%, -50%) rotate(0) scale(1.1); }
+  100% { transform: translate(-50%, -50%) rotate(60deg) scale(1); }
+}
+
+/* ===== Versión compacta (centro) — creada por crear_compactas.py ===== */
+.snowscape {
+  --s: 0.6;                      /* tamaño (1 = pantalla completa) */
+  --y: 50vh;                     /* altura del centro de la tarjeta */
+  transform: translateY(calc(var(--y) - var(--s) * 50vh)) scale(var(--s));
+  transform-origin: 50% 0;
+  /* los efectos se apagan al alejarse de la tarjeta */
+  -webkit-mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 58%, transparent 100%);
+          mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 58%, transparent 100%);
+}
