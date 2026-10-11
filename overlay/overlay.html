@@ -639,16 +639,17 @@ html.preview body { background: #1b0e2c; }
   // Dibujos: Fluent Emoji de Microsoft (licencia MIT, ver animales/LICENCIA.txt).
   // w: ancho en px · s: segundos que tardan en cruzar · mira: hacia dónde mira el dibujo · up: suben en vez de cruzar
   var CRIATURAS = [
-    { img: 'animales/fish.png',          peso: 14, w: [140, 160], s: [9, 12],   mira: 'izq' },
-    { img: 'animales/tropical_fish.png', peso: 14, w: [140, 160], s: [9, 12],   mira: 'izq' },
-    { img: 'animales/blowfish.png',      peso: 10, w: [130, 145],  s: [11, 14],  mira: 'izq' },
-    { img: 'animales/dolphin.png',       peso: 10, w: [185, 205], s: [6, 8],    mira: 'izq', fast: true, arc: 30 },
-    { img: 'animales/turtle.png',        peso: 9,  w: [165, 185], s: [13, 16],  mira: 'izq' },
-    { img: 'animales/whale.png',         peso: 7,  w: [205, 225], s: [14, 17],  mira: 'izq' },
-    { img: 'animales/shark.png',         peso: 10, w: [200, 220], s: [11, 14],  mira: 'izq' },
+    // tamaños aproximados a la realidad: la ballena no cabe entera en la ventana
+    { img: 'animales/fish.png',          peso: 14, w: [95, 115],  s: [8, 11],   mira: 'izq' },
+    { img: 'animales/tropical_fish.png', peso: 14, w: [95, 115],  s: [8, 11],   mira: 'izq' },
+    { img: 'animales/blowfish.png',      peso: 10, w: [90, 105],  s: [10, 13],  mira: 'izq' },
+    { img: 'animales/jellyfish.png',     peso: 9,  w: [115, 130], s: [13, 16],  up: true, pulse: true },
     { img: 'animales/octopus.png',       peso: 9,  w: [140, 155], s: [12, 15],  up: true, pulse: true },
-    { img: 'animales/jellyfish.png',     peso: 9,  w: [135, 150], s: [13, 16],  up: true, pulse: true },
-    { img: 'animales/squid.png',         peso: 8,  w: [140, 155], s: [11, 14],  up: true, pulse: true }
+    { img: 'animales/squid.png',         peso: 8,  w: [150, 165], s: [11, 14],  up: true, pulse: true },
+    { img: 'animales/turtle.png',        peso: 9,  w: [175, 195], s: [14, 17],  mira: 'izq' },
+    { img: 'animales/dolphin.png',       peso: 10, w: [230, 250], s: [7, 9],    mira: 'izq', fast: true, arc: 30 },
+    { img: 'animales/shark.png',         peso: 10, w: [270, 295], s: [12, 15],  mira: 'izq', giro: 14 },
+    { img: 'animales/whale.png',         peso: 7,  w: [470, 520], s: [22, 26],  mira: 'izq', giro: 6 }
   ];
   CRIATURAS.forEach(function (c) { c.id = c.svg || c.img.replace(/^.*\/|\.png$/g, ''); });
   var swimmers = ph.querySelector('.swimmers'), activos = 0, ultimo = '';
@@ -693,7 +694,7 @@ html.preview body { background: #1b0e2c; }
       y0 = -h * .4 + Math.random() * (D - h * .2);
       y1 = -h * .4 + Math.random() * (D - h * .2);
       var dx = x1 - x0, dy = y1 - y0;
-      ang = lim((izq ? Math.atan2(-dy, -dx) : Math.atan2(dy, dx)) * 180 / Math.PI, 22);   // el morro apunta hacia donde va
+      ang = lim((izq ? Math.atan2(-dy, -dx) : Math.atan2(dy, dx)) * 180 / Math.PI, c.giro || 22);   // el morro apunta hacia donde va
     }
     frames = [{ transform: 'translate(' + x0 + 'px,' + y0 + 'px) rotate(' + ang + 'deg)' },
               { transform: 'translate(' + (x0 + x1) / 2 + 'px,' + ((y0 + y1) / 2 - (c.arc || 0)) + 'px) rotate(' + ang + 'deg)' },
