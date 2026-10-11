@@ -157,29 +157,16 @@ html, body {
     0 8px 0 3px rgba(226,49,127,.45),
     0 18px 44px rgba(60,10,70,.5);
 }
-/* brillo perlado que recorre el marco */
-.frame .edge {
+/* luz de neón rosa que recorre el borde (la dibuja el JS: una estela que se va afinando) */
+.frame .neon {
   position: absolute;
-  inset: -10px;
-  border-radius: 42px;
-  padding: 4px;
-  overflow: hidden;
-  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-          mask-composite: exclude;
+  left: -7px;
+  top: -7px;
+  overflow: visible;
+  pointer-events: none;
+  filter: drop-shadow(0 0 4px rgba(255,80,190,1)) drop-shadow(0 0 12px rgba(255,40,160,.8));
 }
-.frame .edge::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 2400px;
-  height: 2400px;
-  margin: -1200px 0 0 -1200px;
-  background: conic-gradient(from 0deg, rgba(127,243,230,0) 0deg, rgba(127,243,230,0) 290deg, var(--aqua) 325deg, #fff 345deg, rgba(255,95,168,0) 360deg);
-  animation: spin var(--spin, 9s) linear infinite;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
+.frame .neon rect { fill: none; stroke-linecap: round; }
 
 /* ola que se riza sobre el marco del juego */
 .wave {
@@ -589,15 +576,44 @@ html.preview body { background: #1b0e2c; }
     var f = document.createElement('div');
     f.className = 'frame';
     place(f, b, BORDER);
-    f.style.setProperty('--spin', opts.spin);
-    f.innerHTML = '<div class="edge"></div>' +
+    f.innerHTML = neonSVG(b) +
       (opts.waves ? '<div class="wave">' + WAVE + '</div><div class="wave r">' + WAVE + '</div>' : '') +
       (opts.tag ? '<div class="tag">' + opts.tag + '</div>' : '');
     frames.appendChild(f);
+    animarNeon(f, b);
   }
 
-  frame('game', LAYOUT.game, { waves: true, spin: '22s' });
-  frame('cam',  LAYOUT.cam,  { spin: '16s' });
+  // ----- neón: varias capas que comparten la cabeza; cuanto más larga, más fina y transparente -----
+  var NEON_CAPAS = 9, NEON_COLA = 0.42, NEON_VEL = 420;     // capas, largo de la estela (parte del borde), px por segundo
+  function neonSVG(b) {
+    var W = b.w + BORDER * 2, H = b.h + BORDER * 2, h = BORDER / 2, r = R + BORDER - h;
+    var rect = '<rect x="' + h + '" y="' + h + '" width="' + (W - BORDER) + '" height="' + (H - BORDER) + '" rx="' + r + '" pathLength="1000"';
+    // halo ancho y suave a lo largo de toda la estela
+    var out = '<svg class="neon" width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '">' +
+              rect + ' data-halo="1" stroke="#ff3fae" stroke-width="20" stroke-opacity=".22"/>';
+    for (var k = 0; k < NEON_CAPAS; k++) {
+      var t = k / (NEON_CAPAS - 1);                                   // 0 = cabeza, 1 = final de la cola
+      var ancho = (12 - t * 8.5).toFixed(2);                          // de 12 px a 3,5 px
+      var op = (1 - t * .6).toFixed(2);
+      var color = k === 0 ? '#ffffff' : (k < 3 ? '#ff8fd2' : '#ff2fa8');
+      out += rect + ' stroke="' + color + '" stroke-width="' + ancho + '" stroke-opacity="' + op + '"/>';
+    }
+    return out + '</svg>';
+  }
+  function animarNeon(f, b) {
+    var per = 2 * (b.w + b.h + BORDER * 2) - (8 - 2 * Math.PI) * (R + BORDER / 2);   // perímetro aprox.
+    var dur = per / NEON_VEL * 1000;
+    var rects = f.querySelectorAll('.neon rect');
+    rects.forEach(function (rc, k) {
+      var largo = rc.dataset.halo ? 1000 * NEON_COLA : 1000 * NEON_COLA * Math.pow(k / NEON_CAPAS, 1.4) + 6;   // la cabeza es la capa más corta
+      rc.setAttribute('stroke-dasharray', largo.toFixed(1) + ' ' + (1000 - largo).toFixed(1));
+      rc.animate([{ strokeDashoffset: largo }, { strokeDashoffset: largo - 1000 }],
+                 { duration: dur, iterations: Infinity, easing: 'linear' });
+    });
+  }
+
+  frame('game', LAYOUT.game, { waves: true });
+  frame('cam',  LAYOUT.cam,  {});
 
   // ----- luces difuminadas (rosas, blancas y algún toque aguamarina) -----
   var bokeh = document.querySelector('.bokeh'), html = '';
