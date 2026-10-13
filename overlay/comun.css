@@ -170,7 +170,7 @@ html, body {
   position: absolute;
   left: 0;
   top: 0;
-  border-radius: 2px;
+  border-radius: 4px;
   opacity: 0;
   will-change: transform, opacity;
 }
@@ -179,17 +179,21 @@ html, body {
 .frame .cometa::after {
   content: '';
   position: absolute;
-  inset: -4px;
-  border-radius: 8px;
+  inset: -6px;
+  border-radius: 10px;
   background: inherit;
-  filter: blur(4px);
-  opacity: .6;
+  filter: blur(5px);
+  opacity: .9;
 }
 /* la punta va hacia donde se mueve; termina en suave, sin borde duro */
-.frame .cometa.h  { height: 3px; margin-top: 2px; background: linear-gradient(90deg,  rgba(255,60,170,0), rgba(255,60,170,.5) 50%, #ff4fb3 84%, #ffd6ef 95%, rgba(255,214,239,0)); }
-.frame .cometa.hi { height: 3px; margin-top: 2px; background: linear-gradient(270deg, rgba(255,60,170,0), rgba(255,60,170,.5) 50%, #ff4fb3 84%, #ffd6ef 95%, rgba(255,214,239,0)); }
-.frame .cometa.v  { width: 3px;  margin-left: 2px; background: linear-gradient(180deg, rgba(255,60,170,0), rgba(255,60,170,.5) 50%, #ff4fb3 84%, #ffd6ef 95%, rgba(255,214,239,0)); }
-.frame .cometa.vi { width: 3px;  margin-left: 2px; background: linear-gradient(0deg,   rgba(255,60,170,0), rgba(255,60,170,.5) 50%, #ff4fb3 84%, #ffd6ef 95%, rgba(255,214,239,0)); }
+.frame .cometa.h  { height: 7px; background: linear-gradient(90deg,  rgba(255,60,170,0), rgba(255,60,170,.5) 50%, #ff4fb3 84%, #ffd6ef 95%, rgba(255,214,239,0)); }
+.frame .cometa.hi { height: 7px; background: linear-gradient(270deg, rgba(255,60,170,0), rgba(255,60,170,.5) 50%, #ff4fb3 84%, #ffd6ef 95%, rgba(255,214,239,0)); }
+.frame .cometa.v  { width: 7px;  background: linear-gradient(180deg, rgba(255,60,170,0), rgba(255,60,170,.5) 50%, #ff4fb3 84%, #ffd6ef 95%, rgba(255,214,239,0)); }
+.frame .cometa.vi { width: 7px;  background: linear-gradient(0deg,   rgba(255,60,170,0), rgba(255,60,170,.5) 50%, #ff4fb3 84%, #ffd6ef 95%, rgba(255,214,239,0)); }
+/* cámara sola dentro del juego: un solo destello, más fino y suave (que no distraiga) */
+.frame.solo .cometa.h, .frame.solo .cometa.hi { height: 3px; margin-top: 2px; }
+.frame.solo .cometa.v, .frame.solo .cometa.vi { width: 3px; margin-left: 2px; }
+.frame.solo .cometa::after { inset: -4px; filter: blur(4px); opacity: .6; }
 
 /* ola que se riza sobre el marco del juego */
 .wave {
