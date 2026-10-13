@@ -741,6 +741,12 @@ html.preview.sin-fondo #stage { background: repeating-conic-gradient(#d9d3e3 0 2
   font-size: 26px;
   font-weight: 600;
 }
+.pantalla .nota small {
+  margin-left: 4px;
+  font-size: 22px;
+  font-weight: 600;
+  color: #ff9ad9;
+}
 .pantalla .nota b {
   display: grid;
   place-items: center;
