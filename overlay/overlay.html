@@ -610,14 +610,17 @@ html.preview body { background: #1b0e2c; }
       (opts.waves ? '<div class="wave">' + WAVE + '</div><div class="wave r">' + WAVE + '</div>' : '') +
       (opts.tag ? '<div class="tag">' + opts.tag + '</div>' : '');
     frames.appendChild(f);
+    // dos destellos por marco, siempre en lados opuestos (media vuelta de diferencia)
     cometa(f.querySelector('.ring-luz'), b, opts.desfase || 0);
+    cometa(f.querySelector('.ring-luz'), b, (opts.desfase || 0) + .5);
   }
 
   // ----- destello que recorre el borde: 4 barritas (una por lado) encadenadas -----
-  var COMETA_LARGO = 420, COMETA_VEL = 110;          // largo de la estela en px, velocidad en px por segundo
+  var COMETA_VEL = 110;                               // velocidad en px por segundo
   function cometa(ring, b, desfase) {
-    var L = COMETA_LARGO, W = b.w + BORDER * 2, H = b.h + BORDER * 2, o = 12 - BORDER;   // o: donde empieza el borde dentro del anillo
+    var W = b.w + BORDER * 2, H = b.h + BORDER * 2, o = 12 - BORDER;   // o: donde empieza el borde dentro del anillo
     var per = 2 * (W + H), total = per / COMETA_VEL * 1000;
+    var L = Math.round(Math.max(520, Math.min(900, per * .2)));          // largo de la estela: una quinta parte del borde
     // [clase, x0, y0, x1, y1, largo del lado]  (posiciones dentro del anillo; la punta va delante)
     var lados = [
       ['h',  o - L,     o,          o + W - L, o,          W],    // arriba: de izquierda a derecha
