@@ -179,13 +179,23 @@ html, body {
   border-radius: 4px;
   opacity: 0;
   will-change: transform, opacity;
-  box-shadow: 0 0 8px 1px rgba(255,79,179,.85), 0 0 18px 2px rgba(255,79,179,.45);
 }
-/* la punta va hacia donde se mueve */
-.frame .cometa.h  { height: 7px; background: linear-gradient(90deg,  rgba(255,60,170,0), rgba(255,60,170,.55) 55%, #ff4fb3 85%, #ffe6f5); }
-.frame .cometa.hi { height: 7px; background: linear-gradient(270deg, rgba(255,60,170,0), rgba(255,60,170,.55) 55%, #ff4fb3 85%, #ffe6f5); }
-.frame .cometa.v  { width: 7px;  background: linear-gradient(180deg, rgba(255,60,170,0), rgba(255,60,170,.55) 55%, #ff4fb3 85%, #ffe6f5); }
-.frame .cometa.vi { width: 7px;  background: linear-gradient(0deg,   rgba(255,60,170,0), rgba(255,60,170,.55) 55%, #ff4fb3 85%, #ffe6f5); }
+/* resplandor: una copia difuminada del mismo degradado, así también se apaga hacia la cola
+   (se difumina una sola vez; luego solo se desplaza con la barrita) */
+.frame .cometa::after {
+  content: '';
+  position: absolute;
+  inset: -6px;
+  border-radius: 10px;
+  background: inherit;
+  filter: blur(5px);
+  opacity: .9;
+}
+/* la punta va hacia donde se mueve; termina en suave, sin borde duro */
+.frame .cometa.h  { height: 7px; background: linear-gradient(90deg,  rgba(255,60,170,0), rgba(255,60,170,.5) 50%, #ff4fb3 84%, #ffd6ef 95%, rgba(255,214,239,0)); }
+.frame .cometa.hi { height: 7px; background: linear-gradient(270deg, rgba(255,60,170,0), rgba(255,60,170,.5) 50%, #ff4fb3 84%, #ffd6ef 95%, rgba(255,214,239,0)); }
+.frame .cometa.v  { width: 7px;  background: linear-gradient(180deg, rgba(255,60,170,0), rgba(255,60,170,.5) 50%, #ff4fb3 84%, #ffd6ef 95%, rgba(255,214,239,0)); }
+.frame .cometa.vi { width: 7px;  background: linear-gradient(0deg,   rgba(255,60,170,0), rgba(255,60,170,.5) 50%, #ff4fb3 84%, #ffd6ef 95%, rgba(255,214,239,0)); }
 
 /* ola que se riza sobre el marco del juego */
 .wave {
@@ -613,13 +623,15 @@ html.preview body { background: #1b0e2c; }
   function cometa(ring, b, desfase) {
     var W = b.w + BORDER * 2, H = b.h + BORDER * 2, o = 12 - BORDER;   // o: donde empieza el borde dentro del anillo
     var per = 2 * (W + H), total = per / COMETA_VEL * 1000;
-    var L = Math.round(Math.max(520, Math.min(900, per * .2)));          // largo de la estela: una quinta parte del borde
+    var L = Math.round(Math.max(300, Math.min(720, per * .16)));         // largo de cada estela: ~1/6 del borde (dos estelas = 1/3 iluminado)
     // [clase, x0, y0, x1, y1, largo del lado]  (posiciones dentro del anillo; la punta va delante)
     var lados = [
-      ['h',  o - L,     o,          o + W - L, o,          W],    // arriba: de izquierda a derecha
-      ['v',  o + W - 7, o - L,      o + W - 7, o + H - L,  H],    // derecha: de arriba abajo
-      ['hi', o + W,     o + H - 7,  o,         o + H - 7,  W],    // abajo: de derecha a izquierda
-      ['vi', o,         o + H,      o,         o,          H]     // izquierda: de abajo arriba
+      // cada barrita entra con la punta en una esquina y sigue hasta que su cola ha pasado la siguiente
+      // (la parte que se sale del borde la tapa la máscara del anillo): así no se corta de golpe
+      ['h',  o - L,     o,          o + W,     o,          W],    // arriba: de izquierda a derecha
+      ['v',  o + W - 7, o - L,      o + W - 7, o + H,      H],    // derecha: de arriba abajo
+      ['hi', o + W,     o + H - 7,  o - L,     o + H - 7,  W],    // abajo: de derecha a izquierda
+      ['vi', o,         o + H,      o,         o - L,      H]     // izquierda: de abajo arriba
     ];
     var hecho = 0;
     lados.forEach(function (ld) {
