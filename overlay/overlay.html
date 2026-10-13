@@ -82,9 +82,10 @@ html, body {
 .caustics {
   position: absolute;
   left: 0;
-  right: 0;
   top: 0;
+  width: 2880px;             /* 3 veces el dibujo de 960 px: se desplaza 960 px y vuelve a empezar */
   height: 260px;
+  will-change: transform;
   background:
     radial-gradient(ellipse 60px 18px at 10% 30%, rgba(255,255,255,.18), transparent 70%),
     radial-gradient(ellipse 80px 22px at 28% 55%, rgba(255,255,255,.14), transparent 70%),
@@ -95,16 +96,7 @@ html, body {
   animation: caustics 22s linear infinite;
   opacity: .9;
 }
-@keyframes caustics { to { background-position: 960px 0; } }
-
-/* puntitos de plancton */
-.sea::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image: radial-gradient(rgba(255,255,255,.08) 1.4px, transparent 1.6px);
-  background-size: 30px 30px;
-}
+@keyframes caustics { to { transform: translateX(-960px); } }
 
 /* burbujas: la de fuera sube en línea recta y la de dentro se mece suave
    (dos movimientos separados = sin tirones al cambiar de dirección) */
@@ -123,19 +115,12 @@ html, body {
   height: 100%;
   border-radius: 50%;
   background: radial-gradient(circle at 32% 30%, rgba(255,255,255,.95) 0 9%, rgba(255,255,255,.14) 12%, rgba(255,214,236,.1) 60%, rgba(255,214,236,.55) 100%);
-  box-shadow: inset 0 0 6px rgba(255,255,255,.55);
-  will-change: transform;
-  animation: wobble var(--b) ease-in-out var(--t) infinite alternate;
 }
 @keyframes rise {
   0%   { transform: translateY(0); opacity: 0; }
   8%   { opacity: 1; }
   85%  { opacity: 1; }
   100% { transform: translateY(-1160px); opacity: 0; }
-}
-@keyframes wobble {
-  from { transform: translateX(calc(var(--w) * -1)); }
-  to   { transform: translateX(var(--w)); }
 }
 
 /* luces difuminadas que flotan (bokeh) */
@@ -148,11 +133,7 @@ html, body {
   margin: calc(var(--s) / -2) 0 0 calc(var(--s) / -2);
   border-radius: 50%;
   background: radial-gradient(circle, var(--c) 0%, rgba(255,255,255,0) 70%);
-  will-change: transform, opacity;
-  animation: drift var(--d) ease-in-out var(--t) infinite alternate, breathe calc(var(--d) / 2.5) ease-in-out var(--t) infinite alternate;
 }
-@keyframes drift   { from { transform: translate(0, 0); } to { transform: translate(var(--dx), var(--dy)); } }
-@keyframes breathe { from { opacity: .45; } to { opacity: 1; } }
 
 /* ===== Marcos color perla ===== */
 .frame {
@@ -172,7 +153,6 @@ html, body {
   top: -7px;
   overflow: visible;
   pointer-events: none;
-  filter: drop-shadow(0 0 4px #ff8ad8) drop-shadow(0 0 10px rgba(255,110,199,.95)) drop-shadow(0 0 22px rgba(255,110,199,.6));
 }
 .frame .neon rect { fill: none; stroke-linecap: round; }
 
@@ -215,7 +195,7 @@ html, body {
 .title {
   position: absolute;
   left: 50%;
-  top: 10px;
+  top: 64px;
   transform: translateX(-50%);
   animation: float 6s ease-in-out infinite;
 }
@@ -225,7 +205,7 @@ html, body {
 }
 .title-card {
   position: relative;
-  padding: 2px 72px 8px;
+  padding: 8px 60px 4px;
   border-radius: 999px;
   background:
     radial-gradient(circle at 50% 120%, rgba(127,243,230,.25), transparent 60%),
@@ -234,8 +214,13 @@ html, body {
   box-shadow:
     0 0 0 3px rgba(255,95,168,.55),
     0 8px 0 3px rgba(226,49,127,.45),
-    0 16px 36px rgba(60,10,70,.55),
-    inset 0 0 22px rgba(255,194,221,.8);
+    inset 0 0 22px rgba(255,194,221,.8);      /* sin sombra difusa: el título queda encima del juego y no debe oscurecerlo */
+}
+/* escamas y brillo van recortados a la forma del cartel; el nombre puede sobresalir */
+.title-card .clip {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
   overflow: hidden;
 }
 /* escamas de sirena muy suaves */
@@ -264,11 +249,14 @@ html, body {
 .name {
   position: relative;
   font-family: 'Dream American Diner', 'Fredoka', cursive;
-  font-size: 80px;
+  font-size: 86px;
   font-weight: normal;
-  line-height: 1.04;
+  line-height: .78;      /* las letras sobresalen un poco por arriba del cartel */
   letter-spacing: 0;
-  padding: 0 6px;
+  /* caja más grande que las letras (el degradado solo se pinta dentro de la caja),
+     con márgenes negativos para que el cartel no crezca */
+  padding: 40px 24px 26px;
+  margin: -40px -24px -26px;
   background: linear-gradient(180deg, #ff8cc4 0%, #ff4f9f 45%, #d42475 100%);
   -webkit-background-clip: text;
           background-clip: text;
@@ -378,11 +366,6 @@ html, body {
   height: var(--s);
   border-radius: 50%;
   background: radial-gradient(circle at 32% 30%, rgba(255,255,255,.95) 0 12%, rgba(255,255,255,.15) 16%, rgba(255,214,236,.6) 100%);
-  animation: trail 1.6s ease-out forwards;
-}
-@keyframes trail {
-  from { transform: translate(0, 0) scale(.6); opacity: 1; }
-  to   { transform: translate(var(--dx), -60px) scale(1); opacity: 0; }
 }
 .porthole .pbub span {
   position: absolute;
@@ -392,12 +375,6 @@ html, body {
   height: var(--s);
   border-radius: 50%;
   background: radial-gradient(circle at 32% 30%, rgba(255,255,255,.95) 0 10%, rgba(255,255,255,.15) 14%, rgba(255,214,236,.55) 100%);
-  animation: prise var(--d) ease-in var(--t) infinite;
-}
-@keyframes prise {
-  0%   { transform: translate(0, 0); opacity: 0; }
-  10%  { opacity: 1; }
-  100% { transform: translate(var(--w, 10px), -340px); opacity: 0; }
 }
 /* brillo del cristal */
 .porthole .glass {
@@ -473,15 +450,15 @@ html.preview body { background: #1b0e2c; }
     <div class="glass"></div>
   </div>
   <div id="frames"></div>
+  </div>
+  <!-- el título va fuera del recorte: puede quedar por encima del marco del juego -->
   <div class="title">
     <div class="title-card">
-      <div class="scales"></div>
-      <div class="shine"></div>
+      <div class="clip"><div class="scales"></div><div class="shine"></div></div>
       <div class="name">Luxanita</div>
     </div>
     <svg class="flake l"><use href="#flake"/></svg>
     <svg class="flake r"><use href="#flake"/></svg>
-  </div>
   </div>
 </div>
 
@@ -512,8 +489,8 @@ html.preview body { background: #1b0e2c; }
   // ===== Huecos (en píxeles de una pantalla 1920x1080) =====
   // Si los cambias, cambia también las posiciones en OBS (INSTRUCCIONES.txt).
   var LAYOUT = {
-    game: { x: 32,   y: 122, w: 1392, h: 783 },   // 16:9 (el cliente del LoL, 1280x720, cabe sin perder nitidez)
-    cam:  { x: 1448, y: 425, w: 440,  h: 480 }    // un poco más alta que ancha, alineada abajo con el juego
+    game: { x: 32,   y: 182, w: 1392, h: 783 },   // 16:9 (el cliente del LoL, 1280x720, cabe sin perder nitidez)
+    cam:  { x: 1448, y: 485, w: 440,  h: 480 }    // un poco más alta que ancha, alineada abajo con el juego
   };
   var R = 28;          // redondeo de las esquinas de los huecos
   var BORDER = 7;      // grosor del marco
@@ -600,7 +577,8 @@ html.preview body { background: #1b0e2c; }
     var rect = '<rect x="' + h + '" y="' + h + '" width="' + (W - BORDER) + '" height="' + (H - BORDER) + '" rx="' + r + '" pathLength="1000"';
     // halo ancho y suave a lo largo de toda la estela
     var out = '<svg class="neon" width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '">' +
-              rect + ' data-halo="1" stroke="#ff6ec7" stroke-width="24" stroke-opacity=".28"/>';
+              rect + ' data-halo="1" stroke="#ff6ec7" stroke-width="34" stroke-opacity=".14"/>' +
+              rect + ' data-halo="1" stroke="#ff8ad8" stroke-width="20" stroke-opacity=".3"/>';
     for (var k = 0; k < NEON_CAPAS; k++) {
       var t = k / (NEON_CAPAS - 1);                                   // 0 = cabeza, 1 = final de la cola
       var ancho = (12 - t * 8.5).toFixed(2);                          // de 12 px a 3,5 px
@@ -614,8 +592,9 @@ html.preview body { background: #1b0e2c; }
     var per = 2 * (b.w + b.h + BORDER * 2) - (8 - 2 * Math.PI) * (R + BORDER / 2);   // perímetro aprox.
     var dur = per / NEON_VEL * 1000;
     var rects = f.querySelectorAll('.neon rect');
-    rects.forEach(function (rc, k) {
-      var largo = rc.dataset.halo ? 1000 * NEON_COLA : 1000 * NEON_COLA * Math.pow(k / NEON_CAPAS, 1.4) + 6;   // la cabeza es la capa más corta
+    var capa = 0;
+    rects.forEach(function (rc) {
+      var largo = rc.dataset.halo ? 1000 * NEON_COLA : 1000 * NEON_COLA * Math.pow(++capa / NEON_CAPAS, 1.4) + 6;   // la cabeza es la capa más corta
       rc.setAttribute('stroke-dasharray', largo.toFixed(1) + ' ' + (1000 - largo).toFixed(1));
       rc.animate([{ strokeDashoffset: largo }, { strokeDashoffset: largo - 1000 }],
                  { duration: dur, iterations: Infinity, easing: 'linear' });
@@ -628,18 +607,32 @@ html.preview body { background: #1b0e2c; }
   // ----- luces difuminadas (rosas, blancas y algún toque aguamarina) -----
   var bokeh = document.querySelector('.bokeh'), html = '';
   var tints = ['rgba(255,190,225,.75)', 'rgba(255,255,255,.6)', 'rgba(255,130,200,.7)', 'rgba(127,243,230,.5)', 'rgba(225,180,255,.65)'];
-  for (var i = 0; i < 34; i++) {
-    html += '<span style="--x:' + (rnd() * 100).toFixed(1) + '%;--y:' + (rnd() * 100).toFixed(1) + '%;--s:' + (60 + rnd() * 160 | 0) + 'px;--c:' + tints[i % tints.length] +
-            ';--d:' + (18 + rnd() * 16).toFixed(1) + 's;--t:' + (-rnd() * 30).toFixed(1) + 's;--dx:' + ((rnd() - .5) * 160 | 0) + 'px;--dy:' + ((rnd() - .5) * 120 | 0) + 'px"></span>';
+  for (var i = 0; i < 20; i++) {
+    html += '<span style="--x:' + (rnd() * 100).toFixed(1) + '%;--y:' + (rnd() * 100).toFixed(1) + '%;--s:' + (60 + rnd() * 160 | 0) + 'px;--c:' + tints[i % tints.length] + '"></span>';
   }
   bokeh.innerHTML = html;
+  // luces: se desplazan y "respiran" despacio (solo transform y opacidad: lo hace la tarjeta gráfica)
+  function luces(cont, mov, dmin, dvar) {
+    cont.querySelectorAll('span').forEach(function (el) {
+      var d = (dmin + rnd() * dvar) * 1000, dx = (rnd() - .5) * mov, dy = (rnd() - .5) * mov * .75;
+      el.animate([{ transform: 'translate(0,0)', opacity: .45 }, { transform: 'translate(' + dx + 'px,' + dy + 'px)', opacity: 1 }],
+                 { duration: d, delay: -rnd() * d, iterations: Infinity, direction: 'alternate', easing: 'ease-in-out' });
+    });
+  }
+  luces(bokeh, 160, 18, 16);
 
   // ----- burbujas -----
   var bubbles = document.querySelector('.bubbles'); html = '';
-  for (i = 0; i < 70; i++) {
-    html += '<span style="--x:' + (rnd() * 100).toFixed(1) + '%;--s:' + (6 + Math.pow(rnd(), 2) * 44 | 0) + 'px;--d:' + (20 + rnd() * 16).toFixed(1) + 's;--t:' + (-rnd() * 36).toFixed(1) + 's;--b:' + (2.5 + rnd() * 2.5).toFixed(1) + 's;--w:' + (6 + rnd() * 16 | 0) + 'px"><i></i></span>';
+  for (i = 0; i < 45; i++) {
+    html += '<span style="--x:' + (rnd() * 100).toFixed(1) + '%;--s:' + (6 + Math.pow(rnd(), 2) * 44 | 0) + 'px;--d:' + (20 + rnd() * 16).toFixed(1) + 's;--t:' + (-rnd() * 36).toFixed(1) + 's"><i></i></span>';
   }
   bubbles.innerHTML = html;
+  // balanceo de cada burbuja, aparte de la subida (así no hay tirones)
+  bubbles.querySelectorAll('i').forEach(function (el) {
+    var w = 6 + rnd() * 16, d = (2.5 + rnd() * 2.5) * 1000;
+    el.animate([{ transform: 'translateX(' + (-w) + 'px)' }, { transform: 'translateX(' + w + 'px)' }],
+               { duration: d, delay: -rnd() * d, iterations: Infinity, direction: 'alternate', easing: 'ease-in-out' });
+  });
 
   // ----- ojo de buey: centrado en el hueco que queda encima de la cámara -----
   var ph = document.querySelector('.porthole');
@@ -729,11 +722,11 @@ html.preview body { background: #1b0e2c; }
       var b = document.createElement('div');
       b.className = 'trail';
       b.style.setProperty('--s', (4 + Math.random() * 6) + 'px');
-      b.style.setProperty('--dx', ((Math.random() - .5) * 20) + 'px');
       b.style.left = (m.e + (c.up ? w / 2 : (izq ? w * .9 : w * .1))) + 'px';
       b.style.top = (m.f + (c.up ? h * .9 : h * .4)) + 'px';
       swimmers.appendChild(b);
-      setTimeout(function () { b.remove(); }, 1700);
+      b.animate([{ transform: 'translate(0,0) scale(.6)', opacity: 1 }, { transform: 'translate(' + ((Math.random() - .5) * 20) + 'px,-60px) scale(1)', opacity: 0 }],
+                { duration: 1600, easing: 'ease-out', fill: 'forwards' }).onfinish = function () { b.remove(); };
     }, 450 + Math.random() * 300);
 
     anim.onfinish = function () { clearInterval(burb); el.remove(); activos--; };
@@ -747,16 +740,21 @@ html.preview body { background: #1b0e2c; }
   programar(800);
   window.soltarCriatura = soltar;   // para probar: soltarCriatura('shark')
   html = '';
-  for (i = 0; i < 14; i++) {
-    html += '<span style="--x:' + (10 + rnd() * 80).toFixed(0) + '%;--s:' + (5 + rnd() * 12 | 0) + 'px;--d:' + (6 + rnd() * 4).toFixed(1) + 's;--t:' + (-rnd() * 10).toFixed(1) + 's;--w:' + ((rnd() - .5) * 30 | 0) + 'px"></span>';
+  for (i = 0; i < 12; i++) {
+    html += '<span style="--x:' + (10 + rnd() * 80).toFixed(0) + '%;--s:' + (5 + rnd() * 12 | 0) + 'px"></span>';
   }
   ph.querySelector('.pbub').innerHTML = html;
+  ph.querySelectorAll('.pbub span').forEach(function (el) {
+    var d = (6 + rnd() * 4) * 1000, w = (rnd() - .5) * 30;
+    el.animate([{ transform: 'translate(0,0)', opacity: 0 }, { opacity: 1, offset: .1 }, { transform: 'translate(' + w + 'px,-340px)', opacity: 0 }],
+               { duration: d, delay: -rnd() * d, iterations: Infinity, easing: 'ease-in' });
+  });
   html = '';
-  for (i = 0; i < 7; i++) {
-    html += '<span style="--x:' + (rnd() * 100).toFixed(0) + '%;--y:' + (rnd() * 100).toFixed(0) + '%;--s:' + (50 + rnd() * 70 | 0) + 'px;--c:' + tints[i % tints.length] +
-            ';--d:' + (8 + rnd() * 8).toFixed(1) + 's;--t:' + (-rnd() * 10).toFixed(1) + 's;--dx:' + ((rnd() - .5) * 60 | 0) + 'px;--dy:' + ((rnd() - .5) * 60 | 0) + 'px"></span>';
+  for (i = 0; i < 5; i++) {
+    html += '<span style="--x:' + (rnd() * 100).toFixed(0) + '%;--y:' + (rnd() * 100).toFixed(0) + '%;--s:' + (50 + rnd() * 70 | 0) + 'px;--c:' + tints[i % tints.length] + '"></span>';
   }
   ph.querySelector('.pbokeh').innerHTML = html;
+  luces(ph.querySelector('.pbokeh'), 60, 8, 8);
 
   // ----- perlitas -----
   var sea = document.querySelector('.sea');
