@@ -63,43 +63,58 @@ html, body {
     linear-gradient(180deg, #3a1238 0%, #250f2f 28%, #160a22 62%, #0d0715 100%);
 }
 
-/* rayos de luz desde la superficie */
+/* reflejos de luz bajo el agua (cáusticas), solo en el centro de arriba.
+   Dos capas de la misma red de luz que se desplazan despacio en direcciones distintas:
+   al cruzarse parece que la luz "baila". Texturas: fondo/causticas*.png (generar_causticas.py) */
 .rays {
   position: absolute;
-  inset: -10% -10% 0;
-  background: repeating-linear-gradient(100deg,
-    rgba(255,140,200,0) 0 70px, rgba(255,140,200,.2) 92px, rgba(255,140,200,0) 140px,
-    rgba(255,140,200,0) 230px, rgba(255,170,215,.13) 252px, rgba(255,170,215,0) 300px);
-  -webkit-mask-image: linear-gradient(180deg, #000 0%, rgba(0,0,0,.6) 40%, transparent 90%);
-          mask-image: linear-gradient(180deg, #000 0%, rgba(0,0,0,.6) 40%, transparent 90%);
-  animation: rays 26s ease-in-out infinite alternate;
+  left: 50%;
+  top: -40px;
+  width: 1700px;
+  height: 760px;
+  margin-left: -850px;
+  overflow: hidden;
+  -webkit-mask-image: radial-gradient(ellipse 50% 100% at 50% 0, #000 0%, rgba(0,0,0,.6) 35%, transparent 75%);
+          mask-image: radial-gradient(ellipse 50% 100% at 50% 0, #000 0%, rgba(0,0,0,.6) 35%, transparent 75%);
 }
-@keyframes rays {
-  from { transform: translateX(-60px) skewX(-4deg); opacity: .8; }
-  to   { transform: translateX(60px) skewX(4deg); opacity: 1; }
+.rays::before, .rays::after {
+  content: '';
+  position: absolute;
+  will-change: transform;
+}
+.rays::before {
+  left: -512px;
+  top: -512px;
+  width: calc(100% + 1024px);
+  height: calc(100% + 1024px);
+  background: url('fondo/causticas1.png') 0 0 / 512px 512px;
+  opacity: .7;
+  animation: caust1 46s linear infinite;
+}
+.rays::after {
+  left: -640px;
+  top: -640px;
+  width: calc(100% + 1280px);
+  height: calc(100% + 1280px);
+  background: url('fondo/causticas2.png') 0 0 / 640px 640px;
+  opacity: .5;
+  animation: caust2 64s linear infinite;
+}
+/* se desplazan justo una baldosa: al terminar empiezan igual y no se nota el salto */
+@keyframes caust1 { to { transform: translate(512px, 512px); } }
+@keyframes caust2 { to { transform: translate(-640px, 640px); } }
+/* el "sol": un brillo rosa en el centro de la superficie */
+.sun {
+  position: absolute;
+  left: 50%;
+  top: -220px;
+  width: 760px;
+  height: 420px;
+  margin-left: -380px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at 50% 50%, rgba(255,235,245,.55) 0%, rgba(255,150,205,.35) 30%, rgba(255,110,181,0) 70%);
 }
 
-/* reflejos de agua (cáusticas) que se mueven arriba */
-.caustics {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 2880px;             /* 3 veces el dibujo de 960 px: se desplaza 960 px y vuelve a empezar */
-  height: 260px;
-  will-change: transform;
-  background:
-    radial-gradient(ellipse 70px 16px at 8% 30%, rgba(255,170,215,.28), transparent 70%),
-    radial-gradient(ellipse 90px 20px at 24% 58%, rgba(255,140,200,.22), transparent 70%),
-    radial-gradient(ellipse 60px 14px at 38% 18%, rgba(255,210,235,.26), transparent 70%),
-    radial-gradient(ellipse 80px 18px at 52% 42%, rgba(255,150,205,.22), transparent 70%),
-    radial-gradient(ellipse 100px 22px at 68% 66%, rgba(255,130,195,.18), transparent 70%),
-    radial-gradient(ellipse 70px 16px at 84% 28%, rgba(255,190,225,.26), transparent 70%),
-    radial-gradient(ellipse 50px 12px at 94% 60%, rgba(255,160,210,.2), transparent 70%);
-  background-size: 960px 260px;
-  animation: caustics 22s linear infinite;
-  opacity: .9;
-}
-@keyframes caustics { to { transform: translateX(-960px); } }
 
 /* burbujas: la de fuera sube en línea recta y la de dentro se mece suave
    (dos movimientos separados = sin tirones al cambiar de dirección) */
@@ -343,8 +358,13 @@ html, body {
   box-shadow: inset 0 0 30px rgba(40,5,50,.55);
 }
 .porthole .water .rays {
-  inset: -20% -30% 0;
-  animation-duration: 18s;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  -webkit-mask-image: linear-gradient(180deg, #000, transparent 85%);
+          mask-image: linear-gradient(180deg, #000, transparent 85%);
 }
 /* animales que pasan por la ventana (los crea el JS al azar) */
 .porthole .swimmer {
@@ -435,8 +455,8 @@ html.preview body { background: #1b0e2c; }
 <body>
 <div id="stage">
   <div class="sea">
+    <div class="sun"></div>
     <div class="rays"></div>
-    <div class="caustics"></div>
     <div class="bokeh"></div>
     <div class="bubbles"></div>
   </div>
@@ -574,35 +594,47 @@ html.preview body { background: #1b0e2c; }
   }
 
   // ----- neón: varias capas que comparten la cabeza; cuanto más larga, más fina y transparente -----
-  var NEON_CAPAS = 9, NEON_COLA = 0.55, NEON_VEL = 170;     // capas, largo de la estela (parte del borde), px por segundo
+  var NEON_CAPAS = 6, NEON_COLA = 0.55, NEON_VEL = 170, NEON_FPS = 30;   // capas, largo de la estela, px por segundo, veces por segundo que se redibuja
   function neonSVG(b) {
     var W = b.w + BORDER * 2, H = b.h + BORDER * 2, h = BORDER / 2, r = R + BORDER - h;
     var rect = '<rect x="' + h + '" y="' + h + '" width="' + (W - BORDER) + '" height="' + (H - BORDER) + '" rx="' + r + '" pathLength="1000"';
     // halo ancho y suave a lo largo de toda la estela
     var out = '<svg class="neon" width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '">' +
-              rect + ' data-halo="1" stroke="#ff6ec7" stroke-width="34" stroke-opacity=".14"/>' +
-              rect + ' data-halo="1" stroke="#ff8ad8" stroke-width="20" stroke-opacity=".3"/>';
+              rect + ' data-halo="1" stroke="#ff7fcf" stroke-width="26" stroke-opacity=".22"/>';
     for (var k = 0; k < NEON_CAPAS; k++) {
       var t = k / (NEON_CAPAS - 1);                                   // 0 = cabeza, 1 = final de la cola
       var ancho = (12 - t * 8.5).toFixed(2);                          // de 12 px a 3,5 px
       var op = (1 - t * .6).toFixed(2);
-      var color = k === 0 ? '#fff0fa' : (k < 3 ? '#ffa3e0' : '#ff6ec7');      // rosa chicle neón
+      var color = k === 0 ? '#fff0fa' : (k < 2 ? '#ffa3e0' : '#ff6ec7');      // rosa chicle neón
       out += rect + ' stroke="' + color + '" stroke-width="' + ancho + '" stroke-opacity="' + op + '"/>';
     }
     return out + '</svg>';
   }
+  // El neón no lo puede mover la tarjeta gráfica (es un trazo que avanza), así que se redibuja
+  // solo NEON_FPS veces por segundo: va tan despacio que no se nota y gasta mucho menos.
+  var neones = [];
   function animarNeon(f, b) {
     var per = 2 * (b.w + b.h + BORDER * 2) - (8 - 2 * Math.PI) * (R + BORDER / 2);   // perímetro aprox.
-    var dur = per / NEON_VEL * 1000;
-    var rects = f.querySelectorAll('.neon rect');
-    var capa = 0;
-    rects.forEach(function (rc) {
+    var capa = 0, n = { dur: per / NEON_VEL * 1000, rects: [] };
+    f.querySelectorAll('.neon rect').forEach(function (rc) {
       var largo = rc.dataset.halo ? 1000 * NEON_COLA : 1000 * NEON_COLA * Math.pow(++capa / NEON_CAPAS, 1.4) + 6;   // la cabeza es la capa más corta
       rc.setAttribute('stroke-dasharray', largo.toFixed(1) + ' ' + (1000 - largo).toFixed(1));
-      rc.animate([{ strokeDashoffset: largo }, { strokeDashoffset: largo - 1000 }],
-                 { duration: dur, iterations: Infinity, easing: 'linear' });
+      n.rects.push({ el: rc, largo: largo });
     });
+    neones.push(n);
   }
+  var ultimoNeon = -1e9;
+  function moverNeon(t) {
+    if (t - ultimoNeon >= 1000 / NEON_FPS - 1) {
+      ultimoNeon = t;
+      neones.forEach(function (n) {
+        var avance = (t % n.dur) / n.dur * 1000;
+        n.rects.forEach(function (r) { r.el.setAttribute('stroke-dashoffset', (r.largo - avance).toFixed(1)); });
+      });
+    }
+    requestAnimationFrame(moverNeon);
+  }
+  requestAnimationFrame(moverNeon);
 
   frame('game', LAYOUT.game, {});
   frame('cam',  LAYOUT.cam,  {});
@@ -610,7 +642,7 @@ html.preview body { background: #1b0e2c; }
   // ----- luces difuminadas (rosas, blancas y algún toque aguamarina) -----
   var bokeh = document.querySelector('.bokeh'), html = '';
   var tints = ['rgba(255,110,181,.5)', 'rgba(255,180,220,.4)', 'rgba(255,80,170,.42)', 'rgba(127,243,230,.22)', 'rgba(190,120,255,.35)'];
-  for (var i = 0; i < 20; i++) {
+  for (var i = 0; i < 14; i++) {
     html += '<span style="--x:' + (rnd() * 100).toFixed(1) + '%;--y:' + (rnd() * 100).toFixed(1) + '%;--s:' + (60 + rnd() * 160 | 0) + 'px;--c:' + tints[i % tints.length] + '"></span>';
   }
   bokeh.innerHTML = html;
@@ -626,7 +658,7 @@ html.preview body { background: #1b0e2c; }
 
   // ----- burbujas -----
   var bubbles = document.querySelector('.bubbles'); html = '';
-  for (i = 0; i < 45; i++) {
+  for (i = 0; i < 30; i++) {
     html += '<span style="--x:' + (rnd() * 100).toFixed(1) + '%;--s:' + (6 + Math.pow(rnd(), 2) * 44 | 0) + 'px;--d:' + (20 + rnd() * 16).toFixed(1) + 's;--t:' + (-rnd() * 36).toFixed(1) + 's"><i></i></span>';
   }
   bubbles.innerHTML = html;
