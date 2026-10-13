@@ -692,7 +692,7 @@ html.preview body { background: #1b0e2c; }
     ring.appendChild(rv);
   }
   // ----- animales que pasan por la ventana, al azar (como mucho 2 a la vez) -----
-  // Dibujos: Fluent Emoji de Microsoft (licencia MIT, ver animales/LICENCIA.txt).
+  // Dibujos: Fluent Emoji de Microsoft (MIT) y la orca de Twemoji retocada (CC BY 4.0). Ver animales/LICENCIA.txt.
   // w: ancho en px · s: segundos que tardan en cruzar · mira: hacia dónde mira el dibujo · up: suben en vez de cruzar
   var CRIATURAS = [
     // tamaños aproximados a la realidad: la ballena no cabe entera en la ventana
@@ -706,6 +706,7 @@ html.preview body { background: #1b0e2c; }
     { img: 'animales/dolphin.png',       peso: 10, w: [230, 250], s: [7, 9],    mira: 'izq', fast: true, arc: 30 },
     { img: 'animales/shark.png',         peso: 10, w: [270, 295], s: [12, 15],  mira: 'izq', giro: 14 },
     { img: 'animales/whale.png',         peso: 7,  w: [470, 520], s: [22, 26],  mira: 'izq', giro: 6 },
+    { img: 'animales/orca.png',          peso: 8,  w: [230, 255], s: [11, 14],  mira: 'izq', giro: 12 },   // Twemoji retocada (CC BY 4.0)
     { img: 'animales/seal.png',          peso: 7,  w: [160, 180], s: [9, 12],   mira: 'izq' },
     { img: 'animales/otter.png',         peso: 6,  w: [150, 170], s: [12, 15],  mira: 'izq', giro: 10 },
     { img: 'animales/shrimp.png',        peso: 8,  w: [85, 100],  s: [8, 11],   mira: 'izq' },

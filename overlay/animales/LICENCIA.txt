@@ -1,4 +1,4 @@
-Dibujos de animales (*.png) de esta carpeta: Fluent Emoji de Microsoft
+Dibujos de animales (*.png) de esta carpeta: Fluent Emoji de Microsoft, salvo orca.png (ver abajo)
 https://github.com/microsoft/fluentui-emoji
 Se usan sin cambios bajo la licencia MIT, cuyo texto completo es:
 
@@ -23,3 +23,13 @@ Se usan sin cambios bajo la licencia MIT, cuyo texto completo es:
     LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     SOFTWARE
+
+
+------------------------------------------------------------------
+orca.png
+Basada en el emoji de orca de Twemoji (https://github.com/jdecked/twemoji),
+de Twitter, Inc. y otros colaboradores, con licencia CC BY 4.0
+(https://creativecommons.org/licenses/by/4.0/).
+Cambios: se le añadieron degradados, brillos y sombras para que combine con
+los dibujos 3D de Fluent Emoji. El archivo de partida y el retocado están en
+fuentes/orca_twemoji.svg y fuentes/orca_3d.svg.
