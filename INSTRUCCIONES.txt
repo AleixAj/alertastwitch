@@ -89,7 +89,7 @@ transformación):
                   Cámara  posición 1448, 485  tamaño 440 x 480
   charla.html:    Cámara  posición 32, 182    tamaño 1392 x 783
   partida.html:   Juego   posición 0, 0       tamaño 1920 x 1080
-                  Cámara  posición 24, 64     tamaño 320 x 352
+                  Cámara  posición 24, 34     tamaño 320 x 352
 
 La cámara pequeña es casi cuadrada: si tu cámara es panorámica, recórtala por
 los lados (Alt + arrastrar en OBS) para que no se deforme.

@@ -183,7 +183,8 @@
         nm.className = 'nombre-mini';
         nm.innerHTML = '<i></i>' + b.nombre.toUpperCase() + '<i></i>';
         nm.style.left = (b.x + b.w / 2) + 'px';
-        nm.style.top = (b.y - BORDER - 40) + 'px';
+        nm.style.top = (b.y - BORDER / 2) + 'px';           // centrado sobre el borde de arriba, como una pestaña
+        nm.style.transform = 'translate(-50%, -50%)';
         stage.appendChild(nm);
       }
     });
