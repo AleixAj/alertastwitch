@@ -3,13 +3,14 @@
 /* Overlay submarino de Luxanita: estilos comunes a todas las escenas (juego, charla, empezando...).
    Cada escena es un .html pequeño que carga este archivo y comun.js. */
 
-/* Tipografía del logotipo «Luxanita» (la misma que la web luxanita.aleixaj.com).
-   Versión demo: solo letras, y licencia de uso personal (ver fuentes/LEEME.txt). */
+/* Lilita One: nombre pequeño encima de la cámara y cabecera del chat (licencia OFL). */
 @font-face {
   font-family: 'Lilita One';
   src: url('fuentes/LilitaOne-400-latin.woff2') format('woff2');
   font-display: block;
 }
+/* Tipografía del logotipo «Luxanita» (la misma que la web luxanita.aleixaj.com).
+   Versión demo: solo letras, y licencia de uso personal (ver fuentes/LEEME.txt). */
 @font-face {
   font-family: 'Dream American Diner';
   src: url('fuentes/Dream-American-Diner-demo.ttf.woff') format('woff');

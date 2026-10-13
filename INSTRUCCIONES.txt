@@ -113,7 +113,16 @@ Cuenta atrás en empezando y descanso: en vez de "Archivo local", desmarca esa
 casilla y pon en URL la ruta del archivo terminada en ?minutos=5 (o los
 minutos que quieras), por ejemplo:
   file:///C:/ruta/a/overlay/empezando.html?minutos=5
-Sin eso sale una barra de carga animada.
+Sin eso sale una barra de carga animada. Marca también "Actualizar el
+navegador cuando la escena se active": así la cuenta empieza al cambiar a
+esa escena (si no, empieza al abrir OBS).
+
+Para que gaste menos ordenador: en cada fuente del overlay marca "Apagar la
+fuente cuando no esté visible".
+
+Si en OBS los huecos salen a cuadritos o de color oscuro (no debería pasar):
+en la fuente del overlay, en "CSS personalizado", añade esta línea:
+  html.preview body, #stage { background: none !important; } .transp { display: none !important; }
 
 Para ver cómo queda sin OBS: abre el archivo en el navegador (pulsa F11 para
 verlo a pantalla completa). Los huecos salen a cuadritos: eso significa que en

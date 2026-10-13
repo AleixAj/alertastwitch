@@ -87,7 +87,8 @@
     var demo = /[?&]demo\b/.test(location.search);
     // En OBS (existe window.obsstudio) los huecos son transparentes de verdad.
     // Abierto en un navegador normal se marcan con cuadritos para que se vea que son transparentes.
-    var enOBS = !!window.obsstudio;
+    // (por si algún programa no crea window.obsstudio, también se mira su nombre en el navegador)
+    var enOBS = !!window.obsstudio || /OBS\/|Streamlabs|XSplit/i.test(navigator.userAgent);
     if (!enOBS) document.documentElement.classList.add('preview');
     if (!conFondo) document.documentElement.classList.add('sin-fondo');
 
@@ -249,13 +250,14 @@
       sea0.insertBefore(fondoArte, sea0.firstChild);            // las burbujas y reflejos van por encima de la imagen
       var txt = document.createElement('div');
       txt.className = 'pantalla';
-      var minutos = parseFloat((location.search.match(/[?&]minutos=([\d.]+)/) || [])[1]);
+      // cuenta atrás (escena.html?minutos=5): solo en las pantallas que tienen textoReloj (no en la despedida)
+      var minutos = pt.textoReloj ? parseFloat((location.search.match(/[?&]minutos=([\d.]+)/) || [])[1]) : 0;
       txt.innerHTML = '<div class="texto">' +
         '<div class="logo">Luxanita</div>' +
         '<div class="linea-rosa"></div>' +
         '<div class="titular">' + pt.mensaje + (pt.puntos ? '<span class="puntos"><i>.</i><i>.</i><i>.</i></span>' : '') + '</div>' +
         (pt.sub ? '<div class="sub">' + pt.sub + '</div>' : '') +
-        (minutos > 0 ? '<div class="reloj"><small>' + (pt.textoReloj || 'Empezamos en') + '</small><span>--:--</span></div>'
+        (minutos > 0 ? '<div class="reloj"><small>' + pt.textoReloj + '</small><span>--:--</span></div>'
                      : (pt.carga ? '<div class="carga"><i></i></div>' : '')) +
         (pt.notas ? '<div class="notas">' + pt.notas.map(function (n) { return '<div class="nota"><b>' + n[0] + '</b>' + n[1] + '</div>'; }).join('') + '</div>' : '') +
         '</div>';
@@ -264,9 +266,14 @@
       if (minutos > 0) {
         var fin = Date.now() + minutos * 60000, span = txt.querySelector('.reloj span');
         (function tic() {
-          var s = Math.max(0, Math.round((fin - Date.now()) / 1000));
-          span.textContent = s > 0 ? Math.floor(s / 60) + ':' + ('0' + s % 60).slice(-2) : '¡ya!';
-          if (s > 0) setTimeout(tic, 250);
+          var s = Math.max(0, Math.ceil((fin - Date.now()) / 1000));
+          if (s > 0) {
+            span.textContent = Math.floor(s / 60) + ':' + ('0' + s % 60).slice(-2);
+            setTimeout(tic, 250);
+          } else {
+            txt.querySelector('.reloj small').remove();      // "Empezamos en ¡ya!" sonaría raro: solo el aviso
+            span.textContent = '¡Ya casi! 💖';
+          }
         })();
       }
       // marco fino de neón alrededor de toda la pantalla, con sus dos destellos
@@ -420,6 +427,7 @@
 
       // burbujitas mientras nada
       var burb = setInterval(function () {
+        if (document.hidden || swimmers.childElementCount > 40) return;
         var m = new DOMMatrix(getComputedStyle(el).transform);
         var b = document.createElement('div');
         b.className = 'trail';
@@ -431,11 +439,14 @@
                   { duration: 1600, easing: 'ease-out', fill: 'forwards' }).onfinish = function () { b.remove(); };
       }, 450 + Math.random() * 300);
 
-      anim.onfinish = function () { clearInterval(burb); el.remove(); activos--; };
+      var quitado = false;
+      function quitar() { if (quitado) return; quitado = true; clearInterval(burb); el.remove(); activos--; }
+      anim.onfinish = anim.oncancel = quitar;
+      setTimeout(quitar, dur + 5000);
     }
     function programar(espera) {
       setTimeout(function () {
-        if (activos < 2) soltar();
+        if (activos < 2 && !document.hidden) soltar();
         programar(5000 + Math.random() * 5000);      // el siguiente, entre 5 y 10 s después
       }, espera);
     }
