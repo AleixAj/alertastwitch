@@ -7,3 +7,7 @@ correcto es comprar la licencia comercial a su autor.
 LilitaOne-400-latin.woff2
 Tipografía Lilita One (Google Fonts), copiada del proyecto de la web. Licencia SIL Open Font
 License 1.1: se puede usar libremente, también en directos con ingresos.
+
+Fredoka-latin.woff2 y Fredoka-latin-ext.woff2
+Tipografía Fredoka (Google Fonts), descargada de fonts.gstatic.com. Licencia SIL Open Font
+License 1.1: se puede usar libremente, también en directos con ingresos.
