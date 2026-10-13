@@ -98,9 +98,13 @@
     var html, i;
 
     // escala el escenario de 1920x1080 a la ventana, centrado (por si no es 16:9)
+    // tamaño del lienzo: pantalla completa (1920x1080) o el que pida la escena (p. ej. solo el marco de la cámara)
+    var LW = cfg.lienzo ? cfg.lienzo.w : 1920, LH = cfg.lienzo ? cfg.lienzo.h : 1080;
+    stage.style.width = LW + 'px';
+    stage.style.height = LH + 'px';
     function fit() {
-      var s = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
-      var x = (window.innerWidth - 1920 * s) / 2, y = (window.innerHeight - 1080 * s) / 2;
+      var s = Math.min(window.innerWidth / LW, window.innerHeight / LH);
+      var x = (window.innerWidth - LW * s) / 2, y = (window.innerHeight - LH * s) / 2;
       stage.style.transform = 'translate(' + x + 'px,' + y + 'px) scale(' + s + ')';
     }
     window.addEventListener('resize', fit);
@@ -115,7 +119,7 @@
              'V' + (y + r) + 'A' + r + ' ' + r + ' 0 0 1 ' + (x + r) + ' ' + y + 'Z';
     }
     if (huecos.length) {
-      var path = 'M0 0H1920V1080H0Z' + huecos.map(rr).join('');
+      var path = 'M0 0H' + LW + 'V' + LH + 'H0Z' + huecos.map(rr).join('');
       document.querySelector('.sea').style.clipPath = "path(evenodd, '" + path + "')";
       document.getElementById('deco').style.clipPath = "path(evenodd, '" + path + "')";
     }

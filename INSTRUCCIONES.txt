@@ -91,6 +91,16 @@ transformación):
   partida.html:   Juego   posición 0, 0       tamaño 1920 x 1080
                   Cámara  posición 24, 34     tamaño 320 x 352
 
+MARCO DE CÁMARA SUELTO (para ponerlo donde quieras mientras juegas):
+camara.html es solo el marco con el nombre, con el fondo transparente.
+  1. Fuente "Navegador" con "Archivo local" = overlay/camara.html,
+     ancho 416 y alto 460.
+  2. Pon la cámara DEBAJO, con tamaño 320 x 352, en la posición del marco
+     más 48 a la derecha y 40 hacia abajo (si el marco está en 0, 0, la
+     cámara va en 48, 40).
+  3. Selecciona las dos fuentes, clic derecho > Agrupar selección. Ahora
+     puedes mover o escalar el grupo a cualquier sitio y van juntas.
+
 La cámara pequeña es casi cuadrada: si tu cámara es panorámica, recórtala por
 los lados (Alt + arrastrar en OBS) para que no se deforme.
 Pon el Alert Box ENCIMA del overlay, para que las alertas se vean.

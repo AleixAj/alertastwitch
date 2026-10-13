@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Luxanita · Marco de cámara</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="comun.css">
+<!--
+  MARCO DE CÁMARA SUELTO: solo el marco con sus destellos y el nombre, con fondo transparente.
+  - En OBS: fuente "Navegador", archivo local = este archivo, ancho 416 y alto 460.
+  - Pon la cámara debajo, en la posición 48, 40 respecto a esta fuente y con tamaño 320 x 352,
+    agrúpalas y muévelas o escálalas juntas a donde quieras.
+-->
+</head>
+<body>
+<script src="comun.js"></script>
+<script>
+  montarEscena({
+    lienzo: { w: 416, h: 460 },                 // el marco con margen para su brillo y su sombra
+    fondo: false,
+    huecos: [
+      { tipo: 'cam', x: 48, y: 40, w: 320, h: 352, nombre: 'Luxanita' }
+    ],
+    titulo: false
+  });
+</script>
+</body>
+</html>
