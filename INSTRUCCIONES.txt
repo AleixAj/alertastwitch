@@ -76,8 +76,8 @@ Está en la carpeta "overlay". En OBS, dentro de la escena de juego:
    overlay/overlay.html. Ancho 1920, alto 1080.
 2. Pon el juego y la cámara DEBAJO del overlay en la lista de fuentes,
    en estas posiciones (clic derecho > Transformar > Editar transformación):
-     Juego:   posición 32, 122   tamaño 1440 x 810
-     Cámara:  posición 1504, 492  tamaño 384 x 440
+     Juego:   posición 32, 122    tamaño 1392 x 783
+     Cámara:  posición 1448, 425  tamaño 440 x 480
    La cámara es casi cuadrada: si tu cámara es panorámica, recórtala por
    los lados (Alt + arrastrar en OBS) para que no se deforme.
 3. Pon el Alert Box ENCIMA del overlay, para que las alertas se vean.
