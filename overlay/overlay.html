@@ -164,42 +164,35 @@ html, body {
     0 8px 0 3px rgba(226,49,127,.45),
     0 18px 44px rgba(60,10,70,.5);
 }
-/* ===== Haz de luz neón que recorre el borde =====
-   Dos destellos opuestos (rosa chicle con la punta casi blanca y cola que se desvanece) que giran.
-   El destello se dibuja una vez y luego solo GIRA: lo hace la tarjeta gráfica, casi no gasta.
-   Una máscara deja ver el giro solo en la franja del borde (.beam) o justo por fuera (.beam.glow). */
-.frame .beam {
+/* ===== Destello de neón que recorre el borde =====
+   Una barrita de luz rosa (punta casi blanca, cola que se apaga) que da la vuelta al marco.
+   Hay una por lado; el JS las encadena para que parezca un solo destello que dobla las esquinas.
+   Solo se desplazan (transform) y se encienden/apagan (opacity): lo hace la tarjeta gráfica.
+   .ring recorta el destello a la forma redondeada del borde (más un poco de brillo por fuera). */
+.frame .ring-luz {
   position: absolute;
-  inset: -7px;                 /* encima del borde perla de 7 px */
-  padding: 7px;
-  border-radius: 35px;
-  overflow: hidden;
+  inset: -12px;
+  padding: 12px;
+  border-radius: 40px;
   pointer-events: none;
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
   -webkit-mask-composite: xor;
           mask-composite: exclude;
 }
-.frame .beam.glow {
-  inset: -26px;                /* resplandor: franja de 19 px por fuera del borde, más el borde */
-  padding: 26px;
-  border-radius: 54px;
-  opacity: .95;
-}
-.frame .beam i {
+.frame .cometa {
   position: absolute;
-  left: 50%;
-  top: 50%;
-  width: var(--d);
-  height: var(--d);
-  margin: calc(var(--d) / -2) 0 0 calc(var(--d) / -2);
-  background: conic-gradient(from 0deg,
-    rgba(255,60,170,0) 0deg 75deg, rgba(255,60,170,.6) 135deg, #ff4fb3 163deg, #ff9ad9 173deg, #ffe6f5 178.5deg, rgba(255,230,245,0) 180deg,
-    rgba(255,60,170,0) 180deg 255deg, rgba(255,60,170,.6) 315deg, #ff4fb3 343deg, #ff9ad9 353deg, #ffe6f5 358.5deg, rgba(255,230,245,0) 360deg);
-  will-change: transform;
-  animation: haz var(--vuelta, 16s) linear infinite;
+  left: 0;
+  top: 0;
+  border-radius: 4px;
+  opacity: 0;
+  will-change: transform, opacity;
+  box-shadow: 0 0 8px 1px rgba(255,79,179,.85), 0 0 18px 2px rgba(255,79,179,.45);
 }
-.frame .beam.glow i { filter: blur(10px); }   /* se difumina una sola vez; luego solo gira */
-@keyframes haz { to { transform: rotate(360deg); } }
+/* la punta va hacia donde se mueve */
+.frame .cometa.h  { height: 7px; background: linear-gradient(90deg,  rgba(255,60,170,0), rgba(255,60,170,.55) 55%, #ff4fb3 85%, #ffe6f5); }
+.frame .cometa.hi { height: 7px; background: linear-gradient(270deg, rgba(255,60,170,0), rgba(255,60,170,.55) 55%, #ff4fb3 85%, #ffe6f5); }
+.frame .cometa.v  { width: 7px;  background: linear-gradient(180deg, rgba(255,60,170,0), rgba(255,60,170,.55) 55%, #ff4fb3 85%, #ffe6f5); }
+.frame .cometa.vi { width: 7px;  background: linear-gradient(0deg,   rgba(255,60,170,0), rgba(255,60,170,.55) 55%, #ff4fb3 85%, #ffe6f5); }
 
 /* ola que se riza sobre el marco del juego */
 .wave {
@@ -613,18 +606,45 @@ html.preview body { background: #1b0e2c; }
     var f = document.createElement('div');
     f.className = 'frame';
     place(f, b, BORDER);
-    // diámetro del cuadrado que gira: la diagonal del marco (así cubre todo el borde)
-    var dg = Math.ceil(Math.hypot(b.w, b.h) + 80);
-    f.style.setProperty('--d', dg + 'px');
-    f.style.setProperty('--vuelta', (opts.vuelta || 16) + 's');
-    f.innerHTML = '<div class="beam glow"><i></i></div><div class="beam"><i></i></div>' +
+    f.innerHTML = '<div class="ring-luz"></div>' +
       (opts.waves ? '<div class="wave">' + WAVE + '</div><div class="wave r">' + WAVE + '</div>' : '') +
       (opts.tag ? '<div class="tag">' + opts.tag + '</div>' : '');
     frames.appendChild(f);
+    cometa(f.querySelector('.ring-luz'), b, opts.desfase || 0);
+  }
+
+  // ----- destello que recorre el borde: 4 barritas (una por lado) encadenadas -----
+  var COMETA_LARGO = 420, COMETA_VEL = 110;          // largo de la estela en px, velocidad en px por segundo
+  function cometa(ring, b, desfase) {
+    var L = COMETA_LARGO, W = b.w + BORDER * 2, H = b.h + BORDER * 2, o = 12 - BORDER;   // o: donde empieza el borde dentro del anillo
+    var per = 2 * (W + H), total = per / COMETA_VEL * 1000;
+    // [clase, x0, y0, x1, y1, largo del lado]  (posiciones dentro del anillo; la punta va delante)
+    var lados = [
+      ['h',  o - L,     o,          o + W - L, o,          W],    // arriba: de izquierda a derecha
+      ['v',  o + W - 7, o - L,      o + W - 7, o + H - L,  H],    // derecha: de arriba abajo
+      ['hi', o + W,     o + H - 7,  o,         o + H - 7,  W],    // abajo: de derecha a izquierda
+      ['vi', o,         o + H,      o,         o,          H]     // izquierda: de abajo arriba
+    ];
+    var hecho = 0;
+    lados.forEach(function (ld) {
+      var el = document.createElement('div');
+      el.className = 'cometa ' + ld[0];
+      if (ld[0] === 'h' || ld[0] === 'hi') el.style.width = L + 'px'; else el.style.height = L + 'px';
+      ring.appendChild(el);
+      var dur = (ld[5] + L) / COMETA_VEL * 1000;               // lo que tarda la barrita en cruzar el lado entero
+      var fin = Math.min(1, dur / total);
+      el.animate([
+        { offset: 0,          transform: 'translate(' + ld[1] + 'px,' + ld[2] + 'px)', opacity: 1 },
+        { offset: fin * .999, transform: 'translate(' + ld[3] + 'px,' + ld[4] + 'px)', opacity: 1 },
+        { offset: fin,        transform: 'translate(' + ld[3] + 'px,' + ld[4] + 'px)', opacity: 0 },
+        { offset: 1,          transform: 'translate(' + ld[3] + 'px,' + ld[4] + 'px)', opacity: 0 }
+      ], { duration: total, iterations: Infinity, delay: hecho / COMETA_VEL * 1000 - total * (1 + desfase) });
+      hecho += ld[5];
+    });
   }
 
   frame('game', LAYOUT.game, {});
-  frame('cam',  LAYOUT.cam,  { vuelta: 11 });
+  frame('cam',  LAYOUT.cam,  { desfase: .5 });
 
   // ----- luces difuminadas (rosas, blancas y algún toque aguamarina) -----
   var bokeh = document.querySelector('.bokeh'), html = '';
