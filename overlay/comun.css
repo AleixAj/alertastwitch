@@ -214,6 +214,10 @@ html, body {
   will-change: transform;
 }
 @keyframes girar { to { transform: rotate(360deg); } }
+/* sin fondo (cámara sola): esquinas menos redondeadas por dentro para que el marco, que es opaco,
+   tape del todo las esquinas de la cámara (que es rectangular). Interior 16px + borde 7px = 23px. */
+.frame.solo { border-radius: 23px; }
+.frame.solo .luz-giro .ring-luz { border-radius: 23px; }
 
 /* ola que se riza sobre el marco del juego */
 .wave {
@@ -625,6 +629,7 @@ html.preview body { background: #1b0e2c; }
 html.sin-fondo .sea { display: none; }
 html.preview.sin-fondo #stage { background: repeating-conic-gradient(#d9d3e3 0 25%, #f4f1f8 0 50%) 0 0 / 32px 32px; }
 .demo.full { border-radius: 0; }
+.demo.cuadrada, .transp.cuadrada { border-radius: 0; }
 .demo.full::after { content: 'PARTIDA A PANTALLA COMPLETA'; font-size: 48px; }
 
 /* ===================================================================

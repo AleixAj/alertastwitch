@@ -133,7 +133,7 @@
     }
     function marco(b, desfase) {
       var f = document.createElement('div');
-      f.className = 'frame';
+      f.className = conFondo ? 'frame' : 'frame solo';
       place(f, b, BORDER);
       if (!conFondo) {
         // cámara sola dentro del juego: un destello que gira siguiendo las esquinas redondeadas
@@ -186,6 +186,7 @@
       if (demo || !enOBS) {
         var d = document.createElement('div');
         d.className = demo ? 'demo ' + b.tipo : 'transp';
+        if (!conFondo) d.className += ' cuadrada';       // así se ve como queda la cámara real (rectangular) debajo del marco
         place(d, b, 0);
         document.getElementById('demo-layer').appendChild(d);
       }
