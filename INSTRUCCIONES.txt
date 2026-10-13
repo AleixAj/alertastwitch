@@ -1,25 +1,26 @@
 CÓMO INSTALAR LAS ALERTAS EN STREAMLABS
 =======================================
 
-Hay 4 alertas, cada una en su carpeta:
+Hay 4 alertas:
 
   follow  ->  Follows                (6 segundos)
   sub     ->  Subscriptions          (11 segundos)
   gift    ->  Gift Subs / regaladas  (8 segundos)
   raid    ->  Raids                  (9 segundos)
 
-En cada carpeta está todo lo que necesitas: 3 archivos de texto y el sonido.
+Cada una está en su carpeta, con todo lo que necesitas: 3 archivos de texto
+y el sonido.
 
 ELIGE VERSIÓN
 -------------
-- Normales (las carpetas de arriba): grandes, en el centro y con efectos por
-  toda la pantalla. Para charlar, empezar el directo, etc.
-- Compactas (carpeta "compactas"): más pequeñas y con los efectos solo
-  alrededor de la tarjeta, para no tapar el juego. Hay dos:
-    compactas/arriba   ->  salen arriba en el centro
-    compactas/centro   ->  salen en el centro
-  En las compactas la sub dura 8 segundos (no 11).
-Los pasos son los mismos; solo cambia de qué carpeta copias los archivos.
+- grandes/            ->  grandes, en el centro y con efectos por toda la
+                          pantalla. Para charlar, empezar el directo, etc.
+- compactas/arriba/   ->  más pequeñas, arriba en el centro, con los efectos
+                          solo alrededor de la tarjeta (no tapan el juego).
+- compactas/centro/   ->  igual que las de arriba, pero en el centro.
+En las compactas la sub dura 8 segundos (no 11).
+Los pasos son los mismos; solo cambia de qué carpeta copias los archivos
+(por ejemplo grandes/follow o compactas/arriba/follow).
 
 
 PASOS (repítelos con cada una de las 4)
@@ -127,7 +128,9 @@ PARA QUIEN MANTIENE LAS ALERTAS (el streamer no necesita esto)
 - Los sonidos se generan con sonidos/generar_sonidos.py (Python + ffmpeg).
   Volumen: línea TARGET_LUFS (más alto -18, más bajo -23). Sonidos oficiales
   de Lux: sonidos/lux/LEEME.txt. Después de regenerar, copia cada mp3 a
-  su carpeta con el nombre sonido.mp3.
+  grandes/<alerta>/sonido.mp3 y vuelve a crear las compactas.
 - Las compactas se crean con "python crear_compactas.py" a partir de las
-  normales. Si cambias una normal, vuelve a ejecutarlo (no edites las
+  grandes. Si cambias una grande, vuelve a ejecutarlo (no edites las
   compactas a mano). Tamaño y posición: TAMANO y POSICIONES en el script.
+- Si cambias un alerta.html de grandes/, ejecuta "python sync_preview.py"
+  para que su preview.html se actualice.

@@ -116,7 +116,7 @@
     document.getElementById('stage').innerHTML = tpl.replace('{name}', safe).replace('{amount}', document.getElementById('m').value || '1');
     // sonido (en Streamlabs se sube aparte, en el apartado Sound). Solo al pulsar el botón.
     if (withSound !== false) {
-      if (!window.sfx) window.sfx = new Audio('../sonidos/raid.mp3');
+      if (!window.sfx) window.sfx = new Audio('sonido.mp3');
       sfx.volume = document.getElementById('vol').value / 100;
       sfx.currentTime = 0;
       var snd = document.getElementById('snd');

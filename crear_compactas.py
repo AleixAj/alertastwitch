@@ -1,5 +1,5 @@
 # Crea las versiones compactas (compactas/arriba y compactas/centro) a partir de las
-# alertas normales. Las originales no se tocan. Vuelve a ejecutarlo si cambias alguna.
+# alertas grandes (carpeta grandes/). Las grandes no se tocan. Vuelve a ejecutarlo si cambias alguna.
 #
 #   python crear_compactas.py
 #
@@ -46,7 +46,7 @@ def acelerar_tiempos(texto, f):
 
 def crear(pos, y):
     for a, root in ALERTAS.items():
-        src, dst = BASE / a, OUT / pos / a
+        src, dst = BASE / "grandes" / a, OUT / pos / a
         dst.mkdir(parents=True, exist_ok=True)
 
         css = (src / "alerta.css").read_text(encoding="utf-8")
