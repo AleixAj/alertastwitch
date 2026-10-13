@@ -185,7 +185,8 @@
       if (b.nombre) {
         var nm = document.createElement('div');
         nm.className = 'nombre-mini';
-        nm.innerHTML = '<i></i>' + b.nombre.toUpperCase() + '<i></i>';
+        var copo = '<svg class="copo"><use href="#flake"/></svg>';
+        nm.innerHTML = copo + b.nombre.toUpperCase() + copo;
         nm.style.left = (b.x + b.w / 2) + 'px';
         nm.style.top = (b.y - BORDER / 2) + 'px';           // centrado sobre el borde de arriba, como una pestaña
         nm.style.transform = 'translate(-50%, -50%)';
