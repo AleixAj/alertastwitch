@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Luxanita · Empezando</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="comun.css">
+<!--
+  PANTALLA DE EMPEZANDO: antes de arrancar el directo.
+  - Cuenta atrás opcional: en OBS usa la dirección empezando.html?minutos=5 (o los minutos que quieras).
+  - En OBS: fuente "Navegador", archivo local = este archivo, 1920 x 1080.
+  - El diseño común está en comun.css y comun.js.
+-->
+</head>
+<body>
+<script src="comun.js"></script>
+<script>
+  montarEscena({
+    titulo: false,
+    pantalla: {
+      arte: 'escenas/p-empezando.jpg',
+      mensaje: 'Empezamos enseguida', puntos: true,
+      sub: 'Coge algo de beber y saluda en el chat 💖',
+      carga: true, textoReloj: 'Empezamos en',
+      notas: [['☕', 'Prepara tu bebida'], ['💬', 'Saluda en el chat'], ['🔔', 'Activa las notificaciones'], ['💖', 'Sigue el canal']]
+    }
+  });
+</script>
+</body>
+</html>

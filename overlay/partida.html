@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Luxanita · Partida</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="comun.css">
+<!--
+  ESCENA DE PARTIDA: juego a pantalla completa (sin fondo) y la cámara pequeña arriba a la izquierda,
+  donde el LoL no tiene nada importante. El hueco de la cámara es transparente.
+  - En OBS: fuente "Navegador", archivo local = este archivo, 1920 x 1080.
+  - El diseño común está en comun.css y comun.js.
+-->
+</head>
+<body>
+<script src="comun.js"></script>
+<script>
+  montarEscena({
+    fondo: false,
+    huecos: [
+      { tipo: 'cam', x: 24, y: 24, w: 320, h: 352 }   // cámara pequeña, un poco más alta que ancha
+    ],
+    titulo: { cx: 184, y: 396, escala: .5 }           // el nombre, pequeño, debajo de la cámara
+  });
+</script>
+</body>
+</html>

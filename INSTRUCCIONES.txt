@@ -68,24 +68,43 @@ SI ALGO NO SALE BIEN
   funcionando, solo sin el número. Avisa a quien te las hizo.
 
 
-OVERLAY (marco submarino para jugar)
------------------------------------
-Está en la carpeta "overlay". En OBS, dentro de la escena de juego:
+OVERLAY (escenas submarinas para OBS)
+------------------------------------
+Está en la carpeta "overlay". Hay una escena por archivo; en OBS crea una
+escena para cada una y añade una fuente "Navegador" con "Archivo local",
+ancho 1920 y alto 1080:
 
-1. Añade una fuente "Navegador", marca "Archivo local" y elige
-   overlay/overlay.html. Ancho 1920, alto 1080.
-2. Pon el juego y la cámara DEBAJO del overlay en la lista de fuentes,
-   en estas posiciones (clic derecho > Transformar > Editar transformación):
-     Juego:   posición 32, 182    tamaño 1392 x 783
-     Cámara:  posición 1448, 485  tamaño 440 x 480
-   La cámara es casi cuadrada: si tu cámara es panorámica, recórtala por
-   los lados (Alt + arrastrar en OBS) para que no se deforme.
-3. Pon el Alert Box ENCIMA del overlay, para que las alertas se vean.
+  overlay.html    ->  Juego / navegador: juego grande y cámara a la derecha
+  charla.html     ->  Charla: la cámara en grande
+  partida.html    ->  Partida: el juego a pantalla completa y la cámara pequeña
+  empezando.html  ->  Antes de empezar el directo
+  descanso.html   ->  Pausa
+  final.html      ->  Despedida
 
-Para ver cómo queda sin OBS: abre overlay.html en el navegador (pulsa F11
-para verlo a pantalla completa). Los huecos salen a cuadritos: eso significa
-que en OBS son transparentes. Añadiendo ?demo al final de la dirección se ve
-con un juego y una cámara de ejemplo.
+En las escenas con cámara o juego, pon esas fuentes DEBAJO del overlay en la
+lista de fuentes, en estas posiciones (clic derecho > Transformar > Editar
+transformación):
+
+  overlay.html:   Juego   posición 32, 182    tamaño 1392 x 783
+                  Cámara  posición 1448, 485  tamaño 440 x 480
+  charla.html:    Cámara  posición 32, 182    tamaño 1392 x 783
+  partida.html:   Juego   posición 0, 0       tamaño 1920 x 1080
+                  Cámara  posición 24, 24     tamaño 320 x 352
+
+La cámara pequeña es casi cuadrada: si tu cámara es panorámica, recórtala por
+los lados (Alt + arrastrar en OBS) para que no se deforme.
+Pon el Alert Box ENCIMA del overlay, para que las alertas se vean.
+
+Cuenta atrás en empezando y descanso: en vez de "Archivo local", desmarca esa
+casilla y pon en URL la ruta del archivo terminada en ?minutos=5 (o los
+minutos que quieras), por ejemplo:
+  file:///C:/ruta/a/overlay/empezando.html?minutos=5
+Sin eso sale una barra de carga animada.
+
+Para ver cómo queda sin OBS: abre el archivo en el navegador (pulsa F11 para
+verlo a pantalla completa). Los huecos salen a cuadritos: eso significa que en
+OBS son transparentes. Añadiendo ?demo al final de la dirección se ve con un
+juego y una cámara de ejemplo.
 
 
 ------------------------------------------------------------------

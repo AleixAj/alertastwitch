@@ -1,0 +1,750 @@
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&display=swap');
+
+/* Overlay submarino de Luxanita: estilos comunes a todas las escenas (juego, charla, empezando...).
+   Cada escena es un .html pequeño que carga este archivo y comun.js. */
+
+/* Tipografía del logotipo «Luxanita» (la misma que la web luxanita.aleixaj.com).
+   Versión demo: solo letras, y licencia de uso personal (ver fuentes/LEEME.txt). */
+@font-face {
+  font-family: 'Dream American Diner';
+  src: url('fuentes/Dream-American-Diner-demo.ttf.woff') format('woff');
+  font-display: block;
+}
+
+:root {
+  --pink: #ff5fa8;
+  --pink-soft: #ffc2dd;
+  --pink-deep: #e2317f;
+  --coral: #ff7f9e;
+  --aqua: #7ff3e6;          /* toque de Nami */
+  --pearl: #fff6fb;
+}
+
+html, body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: transparent;
+}
+
+/* escenario fijo de 1920x1080 que se escala a la ventana */
+#stage {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1920px;
+  height: 1080px;
+  overflow: hidden;            /* nada se pinta fuera de la pantalla (menos trabajo para la tarjeta gráfica) */
+  transform-origin: 0 0;
+  font-family: 'Fredoka', 'Nunito', 'Segoe UI Rounded', 'Arial Rounded MT Bold', 'Segoe UI', system-ui, sans-serif;
+}
+
+/* ===== Fondo marino (todo menos los huecos; la forma la pone el JS) ===== */
+.sea {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse 55% 30% at 50% 0%, rgba(255,110,181,.42), rgba(255,110,181,0) 75%),
+    radial-gradient(ellipse 30% 22% at 50% 0%, rgba(255,200,230,.28), transparent 70%),
+    radial-gradient(ellipse 40% 50% at 0% 100%, rgba(255,60,160,.16), transparent 70%),
+    radial-gradient(ellipse 40% 50% at 100% 100%, rgba(150,80,255,.14), transparent 70%),
+    linear-gradient(180deg, #3a1238 0%, #250f2f 28%, #160a22 62%, #0d0715 100%);
+}
+
+/* reflejos de luz bajo el agua (cáusticas), solo en el centro de arriba.
+   Dos capas de la misma red de luz que se desplazan despacio en direcciones distintas:
+   al cruzarse parece que la luz "baila". Texturas: fondo/causticas*.png (generar_causticas.py) */
+.rays {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 1500px;
+  height: 330px;              /* solo la franja de arriba: lo de debajo queda tapado por el hueco del juego */
+  margin-left: -750px;
+  overflow: hidden;
+  -webkit-mask-image: radial-gradient(ellipse 50% 100% at 50% 0, #000 0%, rgba(0,0,0,.6) 40%, transparent 90%);
+          mask-image: radial-gradient(ellipse 50% 100% at 50% 0, #000 0%, rgba(0,0,0,.6) 40%, transparent 90%);
+}
+.rays::before, .rays::after {
+  content: '';
+  position: absolute;
+  will-change: transform;
+}
+.rays::before, .rays::after { inset: 0; }
+/* las dos texturas se funden despacio entre sí y "respiran" un poco: parece luz que baila,
+   y las capas son del tamaño justo (antes se desplazaban capas enormes) */
+.rays::before {
+  background: url('fondo/causticas1.png') 0 0 / 512px 512px;
+  animation: caust1 7s ease-in-out infinite alternate;
+}
+.rays::after {
+  background: url('fondo/causticas2.png') 0 0 / 640px 640px;
+  animation: caust2 9s ease-in-out infinite alternate;
+}
+@keyframes caust1 { from { opacity: .8;  transform: scale(1); }    to { opacity: .2;  transform: scale(1.05); } }
+@keyframes caust2 { from { opacity: .15; transform: scale(1.06); } to { opacity: .65; transform: scale(1); } }
+/* el "sol": un brillo rosa en el centro de la superficie */
+.sun {
+  position: absolute;
+  left: 50%;
+  top: -220px;
+  width: 760px;
+  height: 420px;
+  margin-left: -380px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at 50% 50%, rgba(255,235,245,.55) 0%, rgba(255,150,205,.35) 30%, rgba(255,110,181,0) 70%);
+}
+
+
+/* burbujas: la de fuera sube en línea recta y la de dentro se mece suave
+   (dos movimientos separados = sin tirones al cambiar de dirección) */
+.bubbles span {
+  position: absolute;
+  bottom: -60px;
+  left: var(--x);
+  width: var(--s);
+  height: var(--s);
+  will-change: transform;
+  animation: rise var(--d) linear var(--t) infinite;
+}
+.bubbles span i {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 32% 30%, rgba(255,255,255,.95) 0 9%, rgba(255,255,255,.12) 12%, rgba(255,150,205,.08) 60%, rgba(255,150,205,.6) 100%);
+}
+@keyframes rise {
+  0%   { transform: translateY(0); opacity: 0; }
+  8%   { opacity: 1; }
+  85%  { opacity: 1; }
+  100% { transform: translateY(-1160px); opacity: 0; }
+}
+
+/* luces difuminadas que flotan (bokeh) */
+.bokeh span {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: var(--s);
+  height: var(--s);
+  margin: calc(var(--s) / -2) 0 0 calc(var(--s) / -2);
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--c) 0%, rgba(255,255,255,0) 70%);
+}
+
+/* ===== Marcos color perla ===== */
+.frame {
+  position: absolute;
+  box-sizing: border-box;
+  border: 7px solid var(--pearl);
+  border-radius: 35px;
+  box-shadow:
+    0 0 0 3px rgba(255,95,168,.55),
+    0 8px 0 3px rgba(226,49,127,.45),
+    0 18px 44px rgba(60,10,70,.5);
+}
+/* ===== Destello de neón que recorre el borde =====
+   Una barrita de luz rosa (punta casi blanca, cola que se apaga) que da la vuelta al marco.
+   Hay una por lado; el JS las encadena para que parezca un solo destello que dobla las esquinas.
+   Solo se desplazan (transform) y se encienden/apagan (opacity): lo hace la tarjeta gráfica.
+   .ring recorta el destello a la forma redondeada del borde (más un poco de brillo por fuera). */
+.frame .ring-luz {
+  position: absolute;
+  inset: -12px;
+  padding: 12px;
+  border-radius: 40px;
+  pointer-events: none;
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+}
+.frame .cometa {
+  position: absolute;
+  left: 0;
+  top: 0;
+  border-radius: 4px;
+  opacity: 0;
+  will-change: transform, opacity;
+}
+/* resplandor: una copia difuminada del mismo degradado, así también se apaga hacia la cola
+   (se difumina una sola vez; luego solo se desplaza con la barrita) */
+.frame .cometa::after {
+  content: '';
+  position: absolute;
+  inset: -6px;
+  border-radius: 10px;
+  background: inherit;
+  filter: blur(5px);
+  opacity: .9;
+}
+/* la punta va hacia donde se mueve; termina en suave, sin borde duro */
+.frame .cometa.h  { height: 7px; background: linear-gradient(90deg,  rgba(255,60,170,0), rgba(255,60,170,.5) 50%, #ff4fb3 84%, #ffd6ef 95%, rgba(255,214,239,0)); }
+.frame .cometa.hi { height: 7px; background: linear-gradient(270deg, rgba(255,60,170,0), rgba(255,60,170,.5) 50%, #ff4fb3 84%, #ffd6ef 95%, rgba(255,214,239,0)); }
+.frame .cometa.v  { width: 7px;  background: linear-gradient(180deg, rgba(255,60,170,0), rgba(255,60,170,.5) 50%, #ff4fb3 84%, #ffd6ef 95%, rgba(255,214,239,0)); }
+.frame .cometa.vi { width: 7px;  background: linear-gradient(0deg,   rgba(255,60,170,0), rgba(255,60,170,.5) 50%, #ff4fb3 84%, #ffd6ef 95%, rgba(255,214,239,0)); }
+
+/* ola que se riza sobre el marco del juego */
+.wave {
+  position: absolute;
+  left: 40px;
+  top: -44px;                /* asentada sobre el borde, sin entrar en el hueco */
+  width: 300px;
+  height: 40px;
+  filter: drop-shadow(0 3px 0 rgba(226,49,127,.45));
+}
+.wave.r { left: auto; right: 40px; transform: scaleX(-1); }
+.wave svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.wave .foam { animation: foam 3s ease-in-out infinite alternate; transform-origin: 50% 100%; }
+@keyframes foam { from { transform: translateY(1px) scaleY(.94); } to { transform: translateY(-1px) scaleY(1.04); } }
+
+/* etiqueta del marco */
+.tag {
+  position: absolute;
+  top: -22px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 6px 22px 7px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #ff86c0 0%, var(--pink) 55%, #f24c98 100%);
+  color: #fff;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  white-space: nowrap;
+  text-shadow: 0 2px 0 rgba(180,20,90,.35);
+  box-shadow: inset 0 2px 0 rgba(255,255,255,.45), 0 4px 0 var(--pink-deep), 0 0 18px rgba(255,95,168,.45);
+  z-index: 2;
+}
+.tag svg { width: .9em; height: .9em; vertical-align: -.1em; margin-right: 6px; }
+
+
+/* ===== Título ===== */
+.title {
+  position: absolute;
+  left: 50%;
+  top: 48px;
+  transform: translateX(-50%);
+  animation: float 6s ease-in-out infinite;
+}
+@keyframes float {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50%      { transform: translateX(-50%) translateY(-5px); }
+}
+.title-card {
+  position: relative;
+  padding: 8px 60px 4px;
+  border-radius: 999px;
+  background:
+    radial-gradient(circle at 50% 120%, rgba(127,243,230,.25), transparent 60%),
+    linear-gradient(180deg, #fff 0%, #fff0f7 55%, #ffd6ea 100%);
+  border: 5px solid var(--pearl);
+  box-shadow:
+    0 0 0 3px rgba(255,95,168,.55),
+    0 8px 0 3px rgba(226,49,127,.45),
+    inset 0 0 22px rgba(255,194,221,.8);      /* sin sombra difusa: el título queda encima del juego y no debe oscurecerlo */
+}
+/* escamas y brillo van recortados a la forma del cartel; el nombre puede sobresalir */
+.title-card .clip {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  overflow: hidden;
+}
+/* escamas de sirena muy suaves */
+.title-card .scales {
+  position: absolute;
+  inset: 0;
+  opacity: .35;
+  background:
+    radial-gradient(circle at 50% 0, transparent 13px, rgba(255,140,196,.55) 14px, transparent 16px) 0 0 / 30px 18px,
+    radial-gradient(circle at 50% 0, transparent 13px, rgba(255,140,196,.55) 14px, transparent 16px) 15px 9px / 30px 18px;
+}
+.title-card .shine {
+  position: absolute;
+  top: -30%;
+  bottom: -30%;
+  left: 0;
+  width: 100%;
+  background: linear-gradient(90deg, rgba(255,255,255,0) 40%, rgba(255,255,255,.95) 50%, rgba(255,255,255,0) 60%);
+  transform: translateX(-120%) skewX(-20deg);
+  animation: shine 7s ease-in-out 2s infinite;
+}
+@keyframes shine {
+  0%        { transform: translateX(-120%) skewX(-20deg); }
+  14%, 100% { transform: translateX(120%) skewX(-20deg); }
+}
+.name {
+  position: relative;
+  font-family: 'Dream American Diner', 'Fredoka', cursive;
+  font-size: 86px;
+  font-weight: normal;
+  line-height: .78;      /* las letras sobresalen un poco por arriba del cartel */
+  letter-spacing: 0;
+  /* caja más grande que las letras (el degradado solo se pinta dentro de la caja),
+     con márgenes negativos para que el cartel no crezca */
+  padding: 40px 24px 26px;
+  margin: -40px -24px -26px;
+  background: linear-gradient(180deg, #ff8cc4 0%, #ff4f9f 45%, #d42475 100%);
+  -webkit-background-clip: text;
+          background-clip: text;
+  color: transparent;
+  filter:
+    drop-shadow(2px 0 0 #fff) drop-shadow(-2px 0 0 #fff)
+    drop-shadow(0 2px 0 #fff) drop-shadow(0 -2px 0 #fff)
+    drop-shadow(0 5px 0 var(--pink-soft));
+}
+/* copos de nieve a los lados del título */
+.title .flake {
+  position: absolute;
+  top: 50%;
+  width: 60px;
+  height: 60px;
+  margin-top: -30px;
+  color: #fff;
+  filter: drop-shadow(0 0 6px rgba(255,194,221,.95)) drop-shadow(0 0 12px rgba(127,243,230,.5));
+  animation: twirl 14s linear infinite;
+}
+.title .flake.l { left: -84px; }
+.title .flake.r { right: -84px; animation-direction: reverse; }
+@keyframes twirl { to { transform: rotate(360deg); } }
+.title svg { display: block; width: 100%; height: 100%; }
+
+/* perlitas */
+.pearl {
+  position: absolute;
+  width: var(--s, 12px);
+  height: var(--s, 12px);
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #fff 0 20%, #ffe3f1 45%, #f5b3d4 100%);
+  box-shadow: 0 0 8px rgba(255,255,255,.6);
+  animation: glint var(--d, 3s) ease-in-out var(--t, 0s) infinite;
+}
+@keyframes glint {
+  0%, 100% { opacity: .55; transform: scale(.85); }
+  50%      { opacity: 1;   transform: scale(1.1); }
+}
+
+/* ===== Ojo de buey: ventanita redonda con una escena submarina ===== */
+.porthole {
+  position: absolute;
+  left: 1546px;              /* centro en x=1696, y=304 (lo recoloca el JS según la cámara) */
+  top: 154px;
+  width: 300px;
+  height: 300px;
+}
+/* aro perlado */
+.porthole .ring {
+  position: absolute;
+  inset: -18px;
+  border-radius: 50%;
+  background: conic-gradient(from 200deg, #fff, #ffd3e8, #ff9ccb, #fff, #c8fff8, #ffd3e8, #fff);
+  box-shadow:
+    0 0 0 3px rgba(255,95,168,.6),
+    0 8px 0 3px rgba(226,49,127,.45),
+    0 12px 24px rgba(60,10,70,.4),
+    inset 0 0 0 3px rgba(255,255,255,.7),
+    inset 0 0 14px rgba(226,49,127,.45);
+}
+/* remaches de perla en el aro */
+.porthole .rivet {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  margin: -7px 0 0 -7px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #fff 0 22%, #ffe3f1 50%, #f29cc7 100%);
+  box-shadow: 0 1px 2px rgba(120,20,80,.45);
+}
+/* el agua de dentro */
+.porthole .water {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse 70% 40% at 50% 0%, rgba(255,140,200,.55), transparent 70%),
+    linear-gradient(180deg, #8e2f7e 0%, #5a1d62 40%, #2f1240 75%, #170a24 100%);
+  box-shadow: inset 0 0 30px rgba(40,5,50,.55);
+}
+.porthole .water .rays {
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  -webkit-mask-image: linear-gradient(180deg, #000, transparent 85%);
+          mask-image: linear-gradient(180deg, #000, transparent 85%);
+}
+/* animales que pasan por la ventana (los crea el JS al azar) */
+.porthole .swimmer {
+  position: absolute;
+  left: 0;
+  top: 0;
+  will-change: transform;
+}
+.porthole .swimmer .flip { width: 100%; height: 100%; }
+.porthole .swimmer.left .flip { transform: scaleX(-1); }
+.porthole .swimmer svg, .porthole .swimmer img { display: block; width: 100%; height: 100%; overflow: visible; }
+.porthole .swimmer img { object-fit: contain; filter: drop-shadow(0 6px 10px rgba(60,10,70,.35)); }
+.porthole .swimmer .body { width: 100%; height: 100%; animation: bob 2.2s ease-in-out infinite alternate; }
+.porthole .swimmer.fast .body { animation-duration: 1.3s; }
+.porthole .swimmer.pulse .body { animation: squish 2.6s ease-in-out infinite; transform-origin: 50% 30%; }
+@keyframes bob    { from { transform: translateY(-3px) rotate(-2deg); } to { transform: translateY(3px) rotate(2deg); } }
+@keyframes squish { 0%, 100% { transform: scale(1, 1); } 45% { transform: scale(.88, 1.1); } }
+/* burbujitas que sueltan al nadar */
+.porthole .trail {
+  position: absolute;
+  width: var(--s);
+  height: var(--s);
+  border-radius: 50%;
+  background: radial-gradient(circle at 32% 30%, rgba(255,255,255,.95) 0 12%, rgba(255,255,255,.15) 16%, rgba(255,214,236,.6) 100%);
+}
+.porthole .pbub span {
+  position: absolute;
+  bottom: -20px;
+  left: var(--x);
+  width: var(--s);
+  height: var(--s);
+  border-radius: 50%;
+  background: radial-gradient(circle at 32% 30%, rgba(255,255,255,.95) 0 10%, rgba(255,255,255,.15) 14%, rgba(255,214,236,.55) 100%);
+}
+/* brillo del cristal */
+.porthole .glass {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background:
+    radial-gradient(ellipse 34% 20% at 32% 22%, rgba(255,255,255,.55), transparent 70%),
+    radial-gradient(circle at 50% 50%, transparent 62%, rgba(255,255,255,.18) 70%, transparent 74%);
+  pointer-events: none;
+}
+
+/* ===== Abierto fuera de OBS: fondo oscuro alrededor y cuadritos en los huecos ===== */
+html.preview body { background: #1b0e2c; }
+.transp {
+  position: absolute;
+  border-radius: 28px;
+  background: repeating-conic-gradient(#d9d3e3 0 25%, #f4f1f8 0 50%) 0 0 / 32px 32px;
+}
+.transp::after {
+  content: 'transparente en OBS';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  padding: 8px 18px;
+  border-radius: 999px;
+  background: rgba(27,14,44,.7);
+  color: #fff;
+  font: 600 22px/1 'Fredoka', sans-serif;
+  white-space: nowrap;
+}
+
+/* ===== Modo demo (overlay.html?demo): contenido de ejemplo en los huecos ===== */
+.demo { position: absolute; overflow: hidden; border-radius: 28px; }
+.demo.game {
+  background:
+    radial-gradient(ellipse 30% 20% at 70% 30%, rgba(255,255,200,.6), transparent 70%),
+    linear-gradient(180deg, #7ec8ff 0%, #b9e3ff 45%, #6fcf6a 46%, #3f9a45 100%);
+}
+.demo.game::after, .demo.cam::after {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font: 700 64px/1 'Fredoka', sans-serif;
+  color: rgba(255,255,255,.75);
+  letter-spacing: .2em;
+}
+.demo.game::after { content: 'JUEGO'; }
+.demo.cam { background: linear-gradient(135deg, #5b3a6e, #2e2240); }
+.demo.cam::after { content: 'CÁMARA'; font-size: 34px; color: rgba(255,255,255,.6); }
+
+/* ===================================================================
+   ESCENAS: paneles con contenido (ilustraciones, mensajes, notas)
+   =================================================================== */
+.panel {
+  position: absolute;
+  overflow: hidden;
+  border-radius: 28px;
+  background: #1a0b26;
+}
+/* ilustración con un zoom muy lento (solo transform: lo hace la tarjeta gráfica) */
+.panel .arte {
+  position: absolute;
+  inset: 0;
+  background: center / cover no-repeat;
+  will-change: transform;
+  animation: zoom-lento 34s ease-in-out infinite alternate;
+}
+@keyframes zoom-lento {
+  from { transform: scale(1.06) translate(0, 0); }
+  to   { transform: scale(1.12) translate(-1.5%, -1%); }
+}
+/* velo rosado y oscurecido abajo para que el texto se lea */
+.panel .velo {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(26,11,38,0) 45%, rgba(26,11,38,.55) 75%, rgba(20,8,30,.9) 100%),
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(255,110,181,.18), transparent 70%);
+}
+/* mensaje grande sobre la ilustración */
+.panel .mensaje {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 54px;
+  text-align: center;
+  font-family: 'Fredoka', sans-serif;
+}
+.panel .mensaje .pill {
+  display: inline-block;
+  padding: 14px 56px 18px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #ff86c0 0%, var(--pink) 55%, #f24c98 100%);
+  color: #fff;
+  font-size: 64px;
+  font-weight: 700;
+  letter-spacing: .01em;
+  text-shadow: 0 3px 0 rgba(180,20,90,.4);
+  box-shadow:
+    inset 0 3px 0 rgba(255,255,255,.45),
+    0 7px 0 var(--pink-deep),
+    0 0 0 4px rgba(255,255,255,.85),
+    0 0 44px rgba(255,110,199,.75);
+  animation: latido 3.6s ease-in-out infinite;
+}
+@keyframes latido {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.03); }
+}
+.panel .mensaje .sub {
+  margin-top: 22px;
+  color: #fff;
+  font-size: 34px;
+  font-weight: 600;
+  text-shadow: 0 2px 0 rgba(90,10,60,.6), 0 0 18px rgba(255,110,199,.8);
+}
+/* "..." que se encienden uno detrás de otro */
+.puntos i { display: inline-block; font-style: normal; animation: punto 1.8s ease-in-out infinite; }
+.puntos i:nth-child(2) { animation-delay: .3s; }
+.puntos i:nth-child(3) { animation-delay: .6s; }
+@keyframes punto { 0%, 100% { opacity: .25; } 40% { opacity: 1; } }
+
+/* tarjeta de notas (marco pequeño en empezando, descanso y final) */
+.panel.notas {
+  background:
+    radial-gradient(ellipse 90% 60% at 50% 0%, rgba(255,110,181,.28), transparent 70%),
+    linear-gradient(180deg, #3a1446 0%, #23102f 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 26px;
+  padding: 40px 38px;
+  box-sizing: border-box;
+  font-family: 'Fredoka', sans-serif;
+  color: #fff;
+}
+.panel.notas .cabecera {
+  font-family: 'Dream American Diner', 'Fredoka', cursive;
+  font-size: 54px;
+  line-height: 1;
+  text-align: center;
+  color: #ffd6ef;
+  text-shadow: 0 0 14px rgba(255,110,199,.9), 0 0 34px rgba(255,110,199,.5);
+  margin-bottom: 6px;
+}
+.panel.notas .linea {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 29px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+.panel.notas .linea b {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  font-size: 28px;
+  background: rgba(255,110,181,.18);
+  box-shadow: inset 0 0 0 2px rgba(255,150,205,.5), 0 0 16px rgba(255,110,181,.35);
+}
+/* etiqueta sobre un panel (p. ej. "charlando") */
+.panel .etiqueta {
+  position: absolute;
+  left: 50%;
+  bottom: 22px;
+  transform: translateX(-50%);
+  padding: 8px 26px 10px;
+  border-radius: 999px;
+  background: rgba(26,11,38,.72);
+  box-shadow: inset 0 0 0 2px rgba(255,150,205,.55), 0 0 18px rgba(255,110,181,.4);
+  color: #fff;
+  font: 600 26px/1 'Fredoka', sans-serif;
+  white-space: nowrap;
+}
+
+/* escena sin fondo (partida a pantalla completa) */
+html.sin-fondo .sea { display: none; }
+html.preview.sin-fondo #stage { background: repeating-conic-gradient(#d9d3e3 0 25%, #f4f1f8 0 50%) 0 0 / 32px 32px; }
+.demo.full { border-radius: 0; }
+.demo.full::after { content: 'PARTIDA A PANTALLA COMPLETA'; font-size: 48px; }
+
+/* ===================================================================
+   PANTALLAS DE ESPERA (empezando, descanso, final): imagen a pantalla
+   completa, nombre grande, mensaje y recordatorios. Sin ventanas.
+   =================================================================== */
+.pantalla {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  font-family: 'Fredoka', sans-serif;
+  color: #fff;
+}
+.pantalla .arte {
+  position: absolute;
+  inset: -2.5%;
+  background: center / cover no-repeat;
+  will-change: transform;
+  animation: zoom-pantalla 40s ease-in-out infinite alternate;
+}
+@keyframes zoom-pantalla {
+  from { transform: scale(1) translate(0, 0); }
+  to   { transform: scale(1.06) translate(-1%, -1%); }
+}
+/* oscurece el lado del texto y tiñe de rosa, como si se viera desde el agua */
+.pantalla .velo {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(20,7,30,.94) 0%, rgba(26,9,38,.82) 30%, rgba(40,12,52,.35) 52%, rgba(40,12,52,0) 70%),
+    linear-gradient(180deg, rgba(26,9,38,0) 60%, rgba(16,6,24,.75) 100%),
+    radial-gradient(ellipse 70% 50% at 50% 0%, rgba(255,110,181,.22), transparent 70%);
+}
+.pantalla .texto {
+  position: absolute;
+  left: 110px;
+  top: 0;
+  bottom: 0;
+  width: 800px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+/* el nombre como en la web: blanco con resplandor rosa neón */
+.pantalla .logo {
+  font-family: 'Dream American Diner', 'Fredoka', cursive;
+  font-size: 170px;
+  line-height: .95;
+  padding: 40px 30px 30px;
+  margin: -40px -30px -10px;
+  color: #fff;
+  text-shadow: 0 0 12px rgba(255,110,181,.95), 0 0 42px rgba(255,110,181,.6), 0 0 90px rgba(255,110,181,.35);
+  animation: neon-logo 5s ease-in-out infinite;
+}
+@keyframes neon-logo {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: .9; }
+}
+.pantalla .linea-rosa {
+  width: 140px;
+  height: 6px;
+  margin: 26px 0 30px;
+  border-radius: 3px;
+  background: linear-gradient(90deg, #ff4fb3, #ffd6ef);
+  box-shadow: 0 0 14px rgba(255,79,179,.9);
+}
+.pantalla .titular {
+  font-size: 88px;
+  font-weight: 700;
+  line-height: 1.02;
+  letter-spacing: -.01em;
+  text-shadow: 0 4px 0 rgba(120,20,90,.45), 0 0 30px rgba(255,110,181,.55);
+}
+.pantalla .sub {
+  margin-top: 18px;
+  font-size: 34px;
+  font-weight: 500;
+  color: #ffd6ef;
+  text-shadow: 0 2px 10px rgba(0,0,0,.5);
+}
+/* barra de carga (cuando no hay cuenta atrás) */
+.pantalla .carga {
+  position: relative;
+  width: 520px;
+  height: 14px;
+  margin-top: 46px;
+  border-radius: 7px;
+  overflow: hidden;
+  background: rgba(255,255,255,.12);
+  box-shadow: inset 0 0 0 2px rgba(255,150,205,.35);
+}
+.pantalla .carga i {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 40%;
+  border-radius: 7px;
+  background: linear-gradient(90deg, rgba(255,79,179,0), #ff4fb3 60%, #ffe6f5);
+  box-shadow: 0 0 14px rgba(255,79,179,.9);
+  will-change: transform;
+  animation: carga 2.6s ease-in-out infinite;
+}
+@keyframes carga {
+  from { transform: translateX(-100%); }
+  to   { transform: translateX(250%); }
+}
+/* cuenta atrás (empezando.html?minutos=5) */
+.pantalla .reloj {
+  margin-top: 40px;
+  display: inline-flex;
+  align-self: flex-start;
+  align-items: center;
+  gap: 18px;
+  padding: 14px 34px 16px;
+  border-radius: 999px;
+  background: rgba(26,9,38,.6);
+  box-shadow: inset 0 0 0 2px rgba(255,150,205,.55), 0 0 26px rgba(255,79,179,.35);
+  font-size: 64px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.pantalla .reloj small { font-size: 26px; font-weight: 600; color: #ffd6ef; }
+/* recordatorios en "píldoras" */
+.pantalla .notas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px 16px;
+  margin-top: 46px;
+}
+.pantalla .nota {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 22px 11px 12px;
+  border-radius: 999px;
+  background: rgba(26,9,38,.62);
+  box-shadow: inset 0 0 0 2px rgba(255,150,205,.45);
+  font-size: 26px;
+  font-weight: 600;
+}
+.pantalla .nota b {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  font-size: 24px;
+  background: rgba(255,110,181,.22);
+}
+/* marco fino de neón alrededor de toda la pantalla */
+.pantalla-marco { position: absolute; }
