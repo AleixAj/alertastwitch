@@ -705,7 +705,13 @@ html.preview body { background: #1b0e2c; }
     { img: 'animales/turtle.png',        peso: 9,  w: [175, 195], s: [14, 17],  mira: 'izq' },
     { img: 'animales/dolphin.png',       peso: 10, w: [230, 250], s: [7, 9],    mira: 'izq', fast: true, arc: 30 },
     { img: 'animales/shark.png',         peso: 10, w: [270, 295], s: [12, 15],  mira: 'izq', giro: 14 },
-    { img: 'animales/whale.png',         peso: 7,  w: [470, 520], s: [22, 26],  mira: 'izq', giro: 6 }
+    { img: 'animales/whale.png',         peso: 7,  w: [470, 520], s: [22, 26],  mira: 'izq', giro: 6 },
+    { img: 'animales/seal.png',          peso: 7,  w: [160, 180], s: [9, 12],   mira: 'izq' },
+    { img: 'animales/otter.png',         peso: 6,  w: [150, 170], s: [12, 15],  mira: 'izq', giro: 10 },
+    { img: 'animales/shrimp.png',        peso: 8,  w: [85, 100],  s: [8, 11],   mira: 'izq' },
+    { img: 'animales/penguin.png',       peso: 6,  w: [110, 125], s: [8, 10],   up: true, fast: true },
+    { img: 'animales/lobster.png',       peso: 5,  w: [125, 140], s: [12, 15],  up: true },
+    { img: 'animales/crab.png',          peso: 6,  w: [90, 105],  s: [12, 15],  fondo: true, fast: true }   // camina por abajo
   ];
   CRIATURAS.forEach(function (c) { c.id = c.svg || c.img.replace(/^.*\/|\.png$/g, ''); });
   var K = D / 300;                                    // los animales crecen con la ventana
@@ -726,7 +732,7 @@ html.preview body { background: #1b0e2c; }
     var c = forzado ? CRIATURAS.filter(function (x) { return x.id === forzado; })[0] : elegir(); ultimo = c.id; activos++;
     var w = entre(c.w) * K, h = w;                     // tamaños pensados para una ventana de 300 px
     if (c.svg) { var vb = document.getElementById(c.svg).getAttribute('viewBox').split(' '); h = w * vb[3] / vb[2]; }
-    var izq = !c.up && Math.random() < .5;            // ¿va hacia la izquierda?
+    var izq = !c.up && !c.fondo && Math.random() < .5;            // ¿va hacia la izquierda?
     var girar = c.mira === 'izq' ? !izq : (c.mira === 'der' ? izq : false);
     var el = document.createElement('div');
     el.className = 'swimmer' + (girar ? ' left' : '') + (c.fast ? ' fast' : '') + (c.pulse ? ' pulse' : '');
@@ -739,8 +745,14 @@ html.preview body { background: #1b0e2c; }
     var frames, dur = entre(c.s) * Math.sqrt(K) * 1000;
     var x0, y0, x1, y1, ang;
     function lim(v, m) { return Math.max(-m, Math.min(m, v)); }
-    if (c.up) {
-      // pulpos, medusas y calamares suben desde abajo, rectos o en diagonal
+    if (c.fondo) {
+      // el cangrejo camina de lado por la parte de abajo de la ventana
+      var izqF = Math.random() < .5;
+      x0 = izqF ? D + 10 : -w - 10; x1 = izqF ? -w - 10 : D + 10;
+      y0 = y1 = D - h * .95;
+      ang = 0;
+    } else if (c.up) {
+      // pulpos, medusas, calamares, pingüino y langosta suben desde abajo, rectos o en diagonal
       x0 = -w * .3 + Math.random() * (D - w * .4);
       x1 = -w * .3 + Math.random() * (D - w * .4);
       y0 = D + 10; y1 = -h - 10;
