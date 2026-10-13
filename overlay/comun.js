@@ -177,6 +177,15 @@
         document.getElementById('demo-layer').appendChild(d);
       }
       marco(b, k * .5);
+      // nombre mínimo encima del marco (fuera del recorte, no tapa el hueco)
+      if (b.nombre) {
+        var nm = document.createElement('div');
+        nm.className = 'nombre-mini';
+        nm.innerHTML = '<i></i>' + b.nombre.toUpperCase() + '<i></i>';
+        nm.style.left = (b.x + b.w / 2) + 'px';
+        nm.style.top = (b.y - BORDER - 40) + 'px';
+        stage.appendChild(nm);
+      }
     });
     if (!conFondo && demo) {
       var full = document.createElement('div');
