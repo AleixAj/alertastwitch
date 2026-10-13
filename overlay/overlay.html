@@ -674,12 +674,12 @@ html.preview body { background: #1b0e2c; }
 
   // ----- ojo de buey: centrado en el hueco que queda encima de la cámara -----
   var ph = document.querySelector('.porthole');
-  // alineada con la cuadrícula: el aro (18 px) empieza a la altura del borde de arriba del juego
+  // ocupa el hueco libre de la derecha: el aro (18 px) empieza a la altura del cartel del título
   // y por abajo deja HUECO px (sin contar su sombra de 8 px) hasta el marco de la cámara
-  var ARO = 18, SOMBRA = 8, HUECO = 14;
-  var aroArriba = LAYOUT.game.y - BORDER;
+  var ARO = 18, SOMBRA = 8, HUECO = 14, TITULO_ARRIBA = 43;
+  var aroArriba = TITULO_ARRIBA;
   var aroAbajo = LAYOUT.cam.y - BORDER - HUECO - SOMBRA;
-  var D = Math.min(330, aroAbajo - aroArriba - ARO * 2, LAYOUT.cam.w - 40);
+  var D = Math.min(400, aroAbajo - aroArriba - ARO * 2, LAYOUT.cam.w - 40);
   ph.style.width = ph.style.height = D + 'px';
   ph.style.left = (LAYOUT.cam.x + LAYOUT.cam.w / 2 - D / 2) + 'px';
   ph.style.top = (aroArriba + ARO + (aroAbajo - aroArriba - ARO * 2 - D) / 2) + 'px';
@@ -708,6 +708,7 @@ html.preview body { background: #1b0e2c; }
     { img: 'animales/whale.png',         peso: 7,  w: [470, 520], s: [22, 26],  mira: 'izq', giro: 6 }
   ];
   CRIATURAS.forEach(function (c) { c.id = c.svg || c.img.replace(/^.*\/|\.png$/g, ''); });
+  var K = D / 300;                                    // los animales crecen con la ventana
   var swimmers = ph.querySelector('.swimmers'), activos = 0, ultimo = '';
   function entre(r) { return r[0] + Math.random() * (r[1] - r[0]); }
   // elige uno al azar según su peso, sin repetir el último
@@ -723,7 +724,7 @@ html.preview body { background: #1b0e2c; }
   }
   function soltar(forzado) {
     var c = forzado ? CRIATURAS.filter(function (x) { return x.id === forzado; })[0] : elegir(); ultimo = c.id; activos++;
-    var w = entre(c.w), h = w;
+    var w = entre(c.w) * K, h = w;                     // tamaños pensados para una ventana de 300 px
     if (c.svg) { var vb = document.getElementById(c.svg).getAttribute('viewBox').split(' '); h = w * vb[3] / vb[2]; }
     var izq = !c.up && Math.random() < .5;            // ¿va hacia la izquierda?
     var girar = c.mira === 'izq' ? !izq : (c.mira === 'der' ? izq : false);
@@ -735,7 +736,7 @@ html.preview body { background: #1b0e2c; }
       (c.svg ? '<svg><use href="#' + c.svg + '"/></svg>' : '<img src="' + c.img + '" alt="">') + '</div></div>';
     swimmers.appendChild(el);
 
-    var frames, dur = entre(c.s) * 1000;
+    var frames, dur = entre(c.s) * Math.sqrt(K) * 1000;
     var x0, y0, x1, y1, ang;
     function lim(v, m) { return Math.max(-m, Math.min(m, v)); }
     if (c.up) {
@@ -753,7 +754,7 @@ html.preview body { background: #1b0e2c; }
       ang = lim((izq ? Math.atan2(-dy, -dx) : Math.atan2(dy, dx)) * 180 / Math.PI, c.giro || 22);   // el morro apunta hacia donde va
     }
     frames = [{ transform: 'translate(' + x0 + 'px,' + y0 + 'px) rotate(' + ang + 'deg)' },
-              { transform: 'translate(' + (x0 + x1) / 2 + 'px,' + ((y0 + y1) / 2 - (c.arc || 0)) + 'px) rotate(' + ang + 'deg)' },
+              { transform: 'translate(' + (x0 + x1) / 2 + 'px,' + ((y0 + y1) / 2 - (c.arc || 0) * K) + 'px) rotate(' + ang + 'deg)' },
               { transform: 'translate(' + x1 + 'px,' + y1 + 'px) rotate(' + ang + 'deg)' }];
     var anim = el.animate(frames, { duration: dur, easing: 'linear' });
 
