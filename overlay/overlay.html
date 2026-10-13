@@ -674,12 +674,15 @@ html.preview body { background: #1b0e2c; }
 
   // ----- ojo de buey: centrado en el hueco que queda encima de la cámara -----
   var ph = document.querySelector('.porthole');
-  // la ventana va por debajo de los marcos: si su sombra llega a la cámara, queda tapada por el marco
-  var top = LAYOUT.game.y;
-  var D = Math.min(330, LAYOUT.cam.y - BORDER - top - 18 - 6, LAYOUT.cam.w - 40);
+  // alineada con la cuadrícula: el aro (18 px) empieza a la altura del borde de arriba del juego
+  // y por abajo deja HUECO px (sin contar su sombra de 8 px) hasta el marco de la cámara
+  var ARO = 18, SOMBRA = 8, HUECO = 14;
+  var aroArriba = LAYOUT.game.y - BORDER;
+  var aroAbajo = LAYOUT.cam.y - BORDER - HUECO - SOMBRA;
+  var D = Math.min(330, aroAbajo - aroArriba - ARO * 2, LAYOUT.cam.w - 40);
   ph.style.width = ph.style.height = D + 'px';
   ph.style.left = (LAYOUT.cam.x + LAYOUT.cam.w / 2 - D / 2) + 'px';
-  ph.style.top = top + 'px';
+  ph.style.top = (aroArriba + ARO + (aroAbajo - aroArriba - ARO * 2 - D) / 2) + 'px';
   var ring = ph.querySelector('.ring');
   for (i = 0; i < 12; i++) {
     var a = i / 12 * Math.PI * 2, rv = document.createElement('div');
