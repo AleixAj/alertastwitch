@@ -46,6 +46,7 @@ html, body {
   top: 0;
   width: 1920px;
   height: 1080px;
+  overflow: hidden;            /* nada se pinta fuera de la pantalla (menos trabajo para la tarjeta gráfica) */
   transform-origin: 0 0;
   font-family: 'Fredoka', 'Nunito', 'Segoe UI Rounded', 'Arial Rounded MT Bold', 'Segoe UI', system-ui, sans-serif;
 }
@@ -69,40 +70,32 @@ html, body {
 .rays {
   position: absolute;
   left: 50%;
-  top: -40px;
-  width: 1700px;
-  height: 760px;
-  margin-left: -850px;
+  top: 0;
+  width: 1500px;
+  height: 330px;              /* solo la franja de arriba: lo de debajo queda tapado por el hueco del juego */
+  margin-left: -750px;
   overflow: hidden;
-  -webkit-mask-image: radial-gradient(ellipse 50% 100% at 50% 0, #000 0%, rgba(0,0,0,.6) 35%, transparent 75%);
-          mask-image: radial-gradient(ellipse 50% 100% at 50% 0, #000 0%, rgba(0,0,0,.6) 35%, transparent 75%);
+  -webkit-mask-image: radial-gradient(ellipse 50% 100% at 50% 0, #000 0%, rgba(0,0,0,.6) 40%, transparent 90%);
+          mask-image: radial-gradient(ellipse 50% 100% at 50% 0, #000 0%, rgba(0,0,0,.6) 40%, transparent 90%);
 }
 .rays::before, .rays::after {
   content: '';
   position: absolute;
   will-change: transform;
 }
+.rays::before, .rays::after { inset: 0; }
+/* las dos texturas se funden despacio entre sí y "respiran" un poco: parece luz que baila,
+   y las capas son del tamaño justo (antes se desplazaban capas enormes) */
 .rays::before {
-  left: -512px;
-  top: -512px;
-  width: calc(100% + 1024px);
-  height: calc(100% + 1024px);
   background: url('fondo/causticas1.png') 0 0 / 512px 512px;
-  opacity: .7;
-  animation: caust1 46s linear infinite;
+  animation: caust1 7s ease-in-out infinite alternate;
 }
 .rays::after {
-  left: -640px;
-  top: -640px;
-  width: calc(100% + 1280px);
-  height: calc(100% + 1280px);
   background: url('fondo/causticas2.png') 0 0 / 640px 640px;
-  opacity: .5;
-  animation: caust2 64s linear infinite;
+  animation: caust2 9s ease-in-out infinite alternate;
 }
-/* se desplazan justo una baldosa: al terminar empiezan igual y no se nota el salto */
-@keyframes caust1 { to { transform: translate(512px, 512px); } }
-@keyframes caust2 { to { transform: translate(-640px, 640px); } }
+@keyframes caust1 { from { opacity: .8;  transform: scale(1); }    to { opacity: .2;  transform: scale(1.05); } }
+@keyframes caust2 { from { opacity: .15; transform: scale(1.06); } to { opacity: .65; transform: scale(1); } }
 /* el "sol": un brillo rosa en el centro de la superficie */
 .sun {
   position: absolute;
@@ -652,7 +645,7 @@ html.preview body { background: #1b0e2c; }
   // ----- luces difuminadas (rosas, blancas y algún toque aguamarina) -----
   var bokeh = document.querySelector('.bokeh'), html = '';
   var tints = ['rgba(255,110,181,.5)', 'rgba(255,180,220,.4)', 'rgba(255,80,170,.42)', 'rgba(127,243,230,.22)', 'rgba(190,120,255,.35)'];
-  for (var i = 0; i < 14; i++) {
+  for (var i = 0; i < 10; i++) {
     html += '<span style="--x:' + (rnd() * 100).toFixed(1) + '%;--y:' + (rnd() * 100).toFixed(1) + '%;--s:' + (60 + rnd() * 160 | 0) + 'px;--c:' + tints[i % tints.length] + '"></span>';
   }
   bokeh.innerHTML = html;
