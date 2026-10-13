@@ -133,14 +133,22 @@
     }
     function marco(b, desfase) {
       var f = document.createElement('div');
-      f.className = conFondo ? 'frame' : 'frame solo';
+      f.className = 'frame';
       place(f, b, BORDER);
+      if (!conFondo) {
+        // cámara sola dentro del juego: un destello que gira siguiendo las esquinas redondeadas
+        // (un degradado cónico que rota, recortado a la forma del borde)
+        var d = Math.ceil(Math.hypot(b.w, b.h)) + 40;
+        f.innerHTML = '<div class="luz-giro"><div class="ring-luz"><div class="giro" style="width:' + d +
+          'px;height:' + d + 'px;margin:' + (-d / 2) + 'px 0 0 ' + (-d / 2) + 'px"></div></div></div>';
+        frames.appendChild(f);
+        return;
+      }
       f.innerHTML = '<div class="ring-luz"></div>';
       frames.appendChild(f);
       // dos destellos por marco, siempre en lados opuestos (media vuelta de diferencia)
-      // (en la cámara sola dentro del juego, uno solo)
       cometa(f.querySelector('.ring-luz'), b, desfase);
-      if (conFondo) cometa(f.querySelector('.ring-luz'), b, desfase + .5);
+      cometa(f.querySelector('.ring-luz'), b, desfase + .5);
     }
     // destello que recorre el borde: 4 barritas (una por lado) encadenadas.
     // Solo se desplazan y se encienden/apagan: lo hace la tarjeta gráfica.

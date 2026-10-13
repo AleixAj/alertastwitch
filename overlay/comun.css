@@ -190,10 +190,30 @@ html, body {
 .frame .cometa.hi { height: 7px; background: linear-gradient(270deg, rgba(255,60,170,0), rgba(255,60,170,.5) 50%, #ff4fb3 84%, #ffd6ef 95%, rgba(255,214,239,0)); }
 .frame .cometa.v  { width: 7px;  background: linear-gradient(180deg, rgba(255,60,170,0), rgba(255,60,170,.5) 50%, #ff4fb3 84%, #ffd6ef 95%, rgba(255,214,239,0)); }
 .frame .cometa.vi { width: 7px;  background: linear-gradient(0deg,   rgba(255,60,170,0), rgba(255,60,170,.5) 50%, #ff4fb3 84%, #ffd6ef 95%, rgba(255,214,239,0)); }
-/* cámara sola dentro del juego: un solo destello, más fino y suave (que no distraiga) */
-.frame.solo .cometa.h, .frame.solo .cometa.hi { height: 3px; margin-top: 2px; }
-.frame.solo .cometa.v, .frame.solo .cometa.vi { width: 3px; margin-left: 2px; }
-.frame.solo .cometa::after { inset: -4px; filter: blur(4px); opacity: .6; }
+/* cámara sola dentro del juego: un solo destello que gira por el borde siguiendo las esquinas.
+   .ring-luz deja ver solo el borde; .giro es un degradado cónico que rota (solo transform).
+   El resplandor va en .luz-giro, por fuera del recorte. */
+.frame .luz-giro {
+  position: absolute;
+  inset: -7px;
+  filter: drop-shadow(0 0 4px rgba(255,79,179,.9));
+  pointer-events: none;
+}
+.frame .luz-giro .ring-luz {
+  inset: 0;
+  padding: 7px;
+  border-radius: 35px;
+}
+.frame .giro {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  background: conic-gradient(rgba(255,60,170,0) 0deg, rgba(255,60,170,0) 230deg,
+    rgba(255,60,170,.55) 310deg, #ff4fb3 345deg, #ffd6ef 357deg, rgba(255,214,239,0) 360deg);
+  animation: girar 13s linear infinite;
+  will-change: transform;
+}
+@keyframes girar { to { transform: rotate(360deg); } }
 
 /* ola que se riza sobre el marco del juego */
 .wave {
