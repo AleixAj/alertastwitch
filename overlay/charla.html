@@ -6,7 +6,8 @@
 <link rel="icon" href="data:,">
 <link rel="stylesheet" href="comun.css">
 <!--
-  ESCENA DE CHARLA: cámara en grande para hablar con el chat. El marco grande es la cámara (transparente).
+  ESCENA DE CHARLA: cámara en grande (transparente) y, a la derecha, un panel para el chat.
+  - La fuente del chat (Chat Box de Streamlabs) va ENCIMA del overlay, dentro del panel.
   - En OBS: fuente "Navegador", archivo local = este archivo, 1920 x 1080.
   - El diseño común está en comun.css y comun.js.
 -->
@@ -16,12 +17,11 @@
 <script>
   montarEscena({
     huecos: [
-      Object.assign({ tipo: 'cam' }, GRANDE)      // cámara en grande
+      Object.assign({ tipo: 'cam' }, GRANDE)                  // cámara en grande (transparente)
     ],
     paneles: [
-      Object.assign({ arte: 'escenas/charla.jpg', etiqueta: '💬 Charlando con el chat' }, PEQUENO)
-    ],
-    ventana: true
+      { x: 1448, y: 182, w: 440, h: 783, chat: true }         // panel del chat: el chat de Streamlabs va encima
+    ]
   });
 </script>
 </body>

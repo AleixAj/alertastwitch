@@ -788,3 +788,43 @@ html.preview.sin-fondo #stage { background: repeating-conic-gradient(#d9d3e3 0 2
   background: #ff4fb3;
   box-shadow: 0 0 8px #ff4fb3;
 }
+
+/* panel para el chat (escena de charla): fondo oscuro translúcido para que los mensajes se lean */
+.panel.chat {
+  background:
+    radial-gradient(ellipse 90% 40% at 50% 0%, rgba(255,110,181,.22), transparent 70%),
+    linear-gradient(180deg, rgba(42,14,52,.92) 0%, rgba(26,9,38,.94) 100%);
+}
+.panel.chat .cabecera-chat {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  border-bottom: 1.5px solid rgba(255,150,205,.35);
+  color: #fff;
+  font: 400 30px/1 'Lilita One', 'Fredoka', sans-serif;
+  letter-spacing: .06em;
+  text-shadow: 0 0 12px rgba(255,110,181,.8);
+}
+.panel.chat .cabecera-chat i {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #ff4fb3;
+  box-shadow: 0 0 10px #ff4fb3;
+}
+/* mensajes de ejemplo (solo con ?demo) */
+.panel.chat .ejemplo {
+  position: absolute;
+  left: 24px;
+  right: 20px;
+  top: 84px;
+  font: 600 23px/1.45 'Fredoka', sans-serif;
+  color: #fff;
+}
+.panel.chat .ejemplo p { margin: 0 0 12px; }

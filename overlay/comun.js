@@ -203,7 +203,7 @@
     // paneles con contenido
     paneles.forEach(function (p, k) {
       var el = document.createElement('div');
-      el.className = 'panel' + (p.notas ? ' notas' : '');
+      el.className = 'panel' + (p.notas ? ' notas' : '') + (p.chat ? ' chat' : '');
       place(el, p, 0);
       var h = '';
       if (p.arte) h += '<div class="arte" style="background-image:url(\'' + p.arte + '\')"></div><div class="velo"></div>';
@@ -211,6 +211,14 @@
                           (p.puntos ? '<span class="puntos"><i>.</i><i>.</i><i>.</i></span>' : '') + '</div>' +
                           (p.sub ? '<div class="sub">' + p.sub + '</div>' : '') + '</div>';
       if (p.etiqueta) h += '<div class="etiqueta">' + p.etiqueta + '</div>';
+      if (p.chat) {
+        h += '<div class="cabecera-chat"><i></i>CHAT<i></i></div>';
+        if (demo) h += '<div class="ejemplo">' +
+          '<p><b style="color:#ff8cc4">sirenita_rosa</b>: holaaa Lux 💖</p>' +
+          '<p><b style="color:#7ff3e6">marea_alta</b>: qué bonito el directo</p>' +
+          '<p><b style="color:#c9a8ff">Burbujita</b>: ¿qué vas a jugar hoy?</p>' +
+          '<p><b style="color:#ffd56b">CoralQueen</b>: buenas tardes a todos</p></div>';
+      }
       if (p.notas) {
         h += '<div class="cabecera">' + p.notas.cabecera + '</div>' +
              p.notas.lineas.map(function (l) { return '<div class="linea"><b>' + l[0] + '</b><span>' + l[1] + '</span></div>'; }).join('');

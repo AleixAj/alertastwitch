@@ -76,7 +76,7 @@ escena para cada una y añade una fuente "Navegador" con "Archivo local",
 ancho 1920 y alto 1080:
 
   overlay.html    ->  Juego / navegador: juego grande y cámara a la derecha
-  charla.html     ->  Charla: la cámara en grande
+  charla.html     ->  Charla: la cámara en grande y el chat a la derecha
   partida.html    ->  Partida: el juego a pantalla completa y la cámara pequeña
   empezando.html  ->  Antes de empezar el directo
   descanso.html   ->  Pausa
@@ -89,6 +89,9 @@ transformación):
   overlay.html:   Juego   posición 32, 182    tamaño 1392 x 783
                   Cámara  posición 1448, 485  tamaño 440 x 480
   charla.html:    Cámara  posición 32, 182    tamaño 1392 x 783
+                  Chat    posición 1460, 254   tamaño 416 x 700
+                  (el chat va ENCIMA del overlay: en Streamlabs > Chat Box
+                  copia la URL y añádela como fuente "Navegador" con esa URL)
   partida.html:   Juego   posición 0, 0       tamaño 1920 x 1080
                   Cámara  posición 24, 34     tamaño 320 x 352
 
