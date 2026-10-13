@@ -147,8 +147,8 @@ html, body {
   border: 7px solid var(--pearl);
   border-radius: 35px;
   box-shadow:
-    0 0 0 3px rgba(255,95,168,.55),
-    0 8px 0 3px rgba(226,49,127,.45),
+    0 0 0 3px #e9579c,              /* filo rosa y canto de abajo: colores sólidos, sin transparencia */
+    0 8px 0 3px #a8306c,
     0 18px 44px rgba(60,10,70,.5);
 }
 /* ===== Destello de neón que recorre el borde =====
@@ -271,8 +271,8 @@ html, body {
     linear-gradient(180deg, #fff 0%, #fff0f7 55%, #ffd6ea 100%);
   border: 5px solid var(--pearl);
   box-shadow:
-    0 0 0 3px rgba(255,95,168,.55),
-    0 8px 0 3px rgba(226,49,127,.45),
+    0 0 0 3px #e9579c,              /* filo rosa y canto de abajo: colores sólidos, sin transparencia */
+    0 8px 0 3px #a8306c,
     inset 0 0 22px rgba(255,194,221,.8);      /* sin sombra difusa: el título queda encima del juego y no debe oscurecerlo */
 }
 /* escamas y brillo van recortados a la forma del cartel; el nombre puede sobresalir */
