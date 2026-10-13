@@ -79,7 +79,7 @@ ancho 1920 y alto 1080:
   charla.html     ->  Charla: la cámara en grande y el chat a la derecha
   partida.html    ->  Partida: el juego a pantalla completa y la cámara pequeña
   empezando.html  ->  Antes de empezar el directo
-  descanso.html   ->  Pausa
+  descanso.html   ->  Pausa (con barra de carga, sin cuenta atrás)
   final.html      ->  Despedida
 
 En las escenas con cámara o juego, pon esas fuentes DEBAJO del overlay en la
@@ -109,7 +109,7 @@ La cámara pequeña es casi cuadrada: si tu cámara es panorámica, recórtala p
 los lados (Alt + arrastrar en OBS) para que no se deforme.
 Pon el Alert Box ENCIMA del overlay, para que las alertas se vean.
 
-Cuenta atrás en empezando y descanso: en vez de "Archivo local", desmarca esa
+Cuenta atrás en empezando: en vez de "Archivo local", desmarca esa
 casilla y pon en URL la ruta del archivo terminada en ?minutos=5 (o los
 minutos que quieras), por ejemplo:
   file:///C:/ruta/a/overlay/empezando.html?minutos=5
