@@ -164,15 +164,42 @@ html, body {
     0 8px 0 3px rgba(226,49,127,.45),
     0 18px 44px rgba(60,10,70,.5);
 }
-/* luz de neón rosa que recorre el borde (la dibuja el JS: una estela que se va afinando) */
-.frame .neon {
+/* ===== Haz de luz neón que recorre el borde =====
+   Dos destellos opuestos (rosa chicle con la punta casi blanca y cola que se desvanece) que giran.
+   El destello se dibuja una vez y luego solo GIRA: lo hace la tarjeta gráfica, casi no gasta.
+   Una máscara deja ver el giro solo en la franja del borde (.beam) o justo por fuera (.beam.glow). */
+.frame .beam {
   position: absolute;
-  left: -7px;
-  top: -7px;
-  overflow: visible;
+  inset: -7px;                 /* encima del borde perla de 7 px */
+  padding: 7px;
+  border-radius: 35px;
+  overflow: hidden;
   pointer-events: none;
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
 }
-.frame .neon rect { fill: none; stroke-linecap: round; }
+.frame .beam.glow {
+  inset: -26px;                /* resplandor: franja de 19 px por fuera del borde, más el borde */
+  padding: 26px;
+  border-radius: 54px;
+  opacity: .95;
+}
+.frame .beam i {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: var(--d);
+  height: var(--d);
+  margin: calc(var(--d) / -2) 0 0 calc(var(--d) / -2);
+  background: conic-gradient(from 0deg,
+    rgba(255,60,170,0) 0deg 75deg, rgba(255,60,170,.6) 135deg, #ff4fb3 163deg, #ff9ad9 173deg, #ffe6f5 178.5deg, rgba(255,230,245,0) 180deg,
+    rgba(255,60,170,0) 180deg 255deg, rgba(255,60,170,.6) 315deg, #ff4fb3 343deg, #ff9ad9 353deg, #ffe6f5 358.5deg, rgba(255,230,245,0) 360deg);
+  will-change: transform;
+  animation: haz var(--vuelta, 16s) linear infinite;
+}
+.frame .beam.glow i { filter: blur(10px); }   /* se difumina una sola vez; luego solo gira */
+@keyframes haz { to { transform: rotate(360deg); } }
 
 /* ola que se riza sobre el marco del juego */
 .wave {
@@ -586,58 +613,18 @@ html.preview body { background: #1b0e2c; }
     var f = document.createElement('div');
     f.className = 'frame';
     place(f, b, BORDER);
-    f.innerHTML = neonSVG(b) +
+    // diámetro del cuadrado que gira: la diagonal del marco (así cubre todo el borde)
+    var dg = Math.ceil(Math.hypot(b.w, b.h) + 80);
+    f.style.setProperty('--d', dg + 'px');
+    f.style.setProperty('--vuelta', (opts.vuelta || 16) + 's');
+    f.innerHTML = '<div class="beam glow"><i></i></div><div class="beam"><i></i></div>' +
       (opts.waves ? '<div class="wave">' + WAVE + '</div><div class="wave r">' + WAVE + '</div>' : '') +
       (opts.tag ? '<div class="tag">' + opts.tag + '</div>' : '');
     frames.appendChild(f);
-    animarNeon(f, b);
   }
-
-  // ----- neón: varias capas que comparten la cabeza; cuanto más larga, más fina y transparente -----
-  var NEON_CAPAS = 6, NEON_COLA = 0.55, NEON_VEL = 170, NEON_FPS = 30;   // capas, largo de la estela, px por segundo, veces por segundo que se redibuja
-  function neonSVG(b) {
-    var W = b.w + BORDER * 2, H = b.h + BORDER * 2, h = BORDER / 2, r = R + BORDER - h;
-    var rect = '<rect x="' + h + '" y="' + h + '" width="' + (W - BORDER) + '" height="' + (H - BORDER) + '" rx="' + r + '" pathLength="1000"';
-    // halo ancho y suave a lo largo de toda la estela
-    var out = '<svg class="neon" width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '">' +
-              rect + ' data-halo="1" stroke="#ff7fcf" stroke-width="26" stroke-opacity=".22"/>';
-    for (var k = 0; k < NEON_CAPAS; k++) {
-      var t = k / (NEON_CAPAS - 1);                                   // 0 = cabeza, 1 = final de la cola
-      var ancho = (12 - t * 8.5).toFixed(2);                          // de 12 px a 3,5 px
-      var op = (1 - t * .6).toFixed(2);
-      var color = k === 0 ? '#fff0fa' : (k < 2 ? '#ffa3e0' : '#ff6ec7');      // rosa chicle neón
-      out += rect + ' stroke="' + color + '" stroke-width="' + ancho + '" stroke-opacity="' + op + '"/>';
-    }
-    return out + '</svg>';
-  }
-  // El neón no lo puede mover la tarjeta gráfica (es un trazo que avanza), así que se redibuja
-  // solo NEON_FPS veces por segundo: va tan despacio que no se nota y gasta mucho menos.
-  var neones = [];
-  function animarNeon(f, b) {
-    var per = 2 * (b.w + b.h + BORDER * 2) - (8 - 2 * Math.PI) * (R + BORDER / 2);   // perímetro aprox.
-    var capa = 0, n = { dur: per / NEON_VEL * 1000, rects: [] };
-    f.querySelectorAll('.neon rect').forEach(function (rc) {
-      var largo = rc.dataset.halo ? 1000 * NEON_COLA : 1000 * NEON_COLA * Math.pow(++capa / NEON_CAPAS, 1.4) + 6;   // la cabeza es la capa más corta
-      rc.setAttribute('stroke-dasharray', largo.toFixed(1) + ' ' + (1000 - largo).toFixed(1));
-      n.rects.push({ el: rc, largo: largo });
-    });
-    neones.push(n);
-  }
-  var ultimoNeon = -1e9;
-  function moverNeon(t) {
-    if (t - ultimoNeon >= 1000 / NEON_FPS - 1) {
-      ultimoNeon = t;
-      neones.forEach(function (n) {
-        var avance = (t % n.dur) / n.dur * 1000;
-        n.rects.forEach(function (r) { r.el.setAttribute('stroke-dashoffset', (r.largo - avance).toFixed(1)); });
-      });
-    }
-    requestAnimationFrame(moverNeon);
-  }
-  requestAnimationFrame(moverNeon);
 
   frame('game', LAYOUT.game, {});
-  frame('cam',  LAYOUT.cam,  {});
+  frame('cam',  LAYOUT.cam,  { vuelta: 11 });
 
   // ----- luces difuminadas (rosas, blancas y algún toque aguamarina) -----
   var bokeh = document.querySelector('.bokeh'), html = '';
