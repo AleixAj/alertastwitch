@@ -146,3 +146,5 @@ PARA QUIEN MANTIENE LAS ALERTAS (el streamer no necesita esto)
   compactas a mano). Tamaño y posición: TAMANO y POSICIONES en el script.
 - Si cambias un alerta.html de grandes/, ejecuta "python sync_preview.py"
   para que su preview.html se actualice.
+- Para preparar el paquete que se le pasa al streamer: "python crear_paquete.py"
+  (crea dist/Luxanita-overlay-y-alertas.zip solo con lo necesario).
