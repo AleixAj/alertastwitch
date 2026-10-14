@@ -12,8 +12,8 @@
      fondo:   false = sin fondo marino (para jugar a pantalla completa).
 */
 (function () {
-  var R = 28;          // redondeo de las esquinas de los huecos
-  var BORDER = 7;      // grosor del marco
+  var R = 2;           // redondeo de las esquinas de los huecos (casi rectas)
+  var BORDER = 3;      // grosor del marco (la línea de neón)
 
   // ===== Distribución común (la misma en todas las escenas, para que al cambiar de escena todo encaje) =====
   window.GRANDE  = { x: 32,   y: 182, w: 1392, h: 783 };   // marco grande (16:9)
@@ -68,7 +68,8 @@
   ];
   CRIATURAS.forEach(function (c) { c.id = c.img.replace(/^.*\/|\.png$/g, ''); });
 
-  var COMETA_VEL = 110;   // velocidad de los destellos del borde, en px por segundo
+  var COMETA_VEL = 120;   // velocidad del neón del borde, en px por segundo
+  var BRILLO = 22;        // cuánto sale el brillo del neón por fuera del marco, en px
 
   // números aleatorios repetibles (el fondo siempre sale igual)
   function mulberry(a) {
@@ -134,43 +135,52 @@
     }
     function marco(b, desfase) {
       var f = document.createElement('div');
-      f.className = conFondo ? 'frame' : 'frame solo';
+      f.className = 'frame';
       place(f, b, BORDER);
-      if (!conFondo) {
-        // cámara sola dentro del juego: un destello que gira siguiendo las esquinas redondeadas
-        // (un degradado cónico que rota, recortado a la forma del borde)
-        var d = Math.ceil(Math.hypot(b.w, b.h)) + 40;
-        f.innerHTML = '<div class="luz-giro"><div class="ring-luz"><div class="giro" style="width:' + d +
-          'px;height:' + d + 'px;margin:' + (-d / 2) + 'px 0 0 ' + (-d / 2) + 'px"></div></div></div>';
-        frames.appendChild(f);
-        return;
-      }
-      f.innerHTML = '<div class="ring-luz"></div>';
+      var W = b.w + BORDER * 2, H = b.h + BORDER * 2, g = BRILLO, c = BORDER + 6;
+      var RW = W + g * 2, RH = H + g * 2;
+      // franjas de cada lado, cortadas en diagonal por las esquinas
+      function pol(pts) { return 'polygon(' + pts.map(function (p) { return p[0] + 'px ' + p[1] + 'px'; }).join(',') + ')'; }
+      var tl = [g + c, g + c], tr = [g + W - c, g + c], br = [g + W - c, g + H - c], bl = [g + c, g + H - c];
+      var franjas = [
+        pol([[0, 0], [RW, 0], tr, tl]),        // arriba
+        pol([[RW, 0], [RW, RH], br, tr]),      // derecha
+        pol([[RW, RH], [0, RH], bl, br]),      // abajo
+        pol([[0, RH], [0, 0], tl, bl])         // izquierda
+      ];
+      var luz = document.createElement('div');
+      luz.className = 'luz';
+      luz.style.cssText = 'left:' + (-g - BORDER) + 'px;top:' + (-g - BORDER) + 'px;width:' + RW + 'px;height:' + RH + 'px';
+      var lados = franjas.map(function (cp) {
+        var d = document.createElement('div');
+        d.style.clipPath = cp;
+        luz.appendChild(d);
+        return d;
+      });
+      f.appendChild(luz);
       frames.appendChild(f);
-      // dos destellos por marco, siempre en lados opuestos (media vuelta de diferencia)
-      cometa(f.querySelector('.ring-luz'), b, desfase);
-      cometa(f.querySelector('.ring-luz'), b, desfase + .5);
+      // dos tramos largos por marco, siempre en lados opuestos (media vuelta de diferencia)
+      cometa(lados, W, H, g, desfase);
+      cometa(lados, W, H, g, desfase + .5);
     }
-    // destello que recorre el borde: 4 barritas (una por lado) encadenadas.
-    // Solo se desplazan y se encienden/apagan: lo hace la tarjeta gráfica.
-    function cometa(ring, b, desfase) {
-      var W = b.w + BORDER * 2, H = b.h + BORDER * 2, o = 12 - BORDER;   // o: donde empieza el borde dentro del anillo
-      var per = 2 * (W + H), total = per / COMETA_VEL * 1000;
-      var L = Math.round(Math.max(300, Math.min(720, per * .16)));         // largo de cada estela
-      // [clase, x0, y0, x1, y1, largo del lado]: cada barrita entra con la punta en una esquina y sigue
-      // hasta que su cola ha pasado la siguiente (lo que sobresale lo tapa la máscara del anillo)
-      var lados = [
-        ['h',  o - L,     o,          o + W,     o,          W],    // arriba: de izquierda a derecha
-        ['v',  o + W - 7, o - L,      o + W - 7, o + H,      H],    // derecha: de arriba abajo
-        ['hi', o + W,     o + H - 7,  o - L,     o + H - 7,  W],    // abajo: de derecha a izquierda
-        ['vi', o,         o + H,      o,         o - L,      H]     // izquierda: de abajo arriba
+    // tramo de neón que da la vuelta al marco: 4 barritas (una por lado) encadenadas.
+    // Cada una entra con la punta en una esquina y sigue hasta que su cola pasa la siguiente;
+    // lo que sobresale lo corta la franja de su lado.
+    function cometa(lados, W, H, o, desfase) {
+      var B = BORDER, per = 2 * (W + H), total = per / COMETA_VEL * 1000;
+      var L = Math.round(per * .36);           // largo de cada tramo (dos tramos = 72% del borde)
+      var tramos = [
+        ['h',  o - L,     o,         o + W,     o,         W],    // arriba: de izquierda a derecha
+        ['v',  o + W - B, o - L,     o + W - B, o + H,     H],    // derecha: de arriba abajo
+        ['hi', o + W,     o + H - B, o - L,     o + H - B, W],    // abajo: de derecha a izquierda
+        ['vi', o,         o + H,     o,         o - L,     H]     // izquierda: de abajo arriba
       ];
       var hecho = 0;
-      lados.forEach(function (ld) {
+      tramos.forEach(function (ld, k) {
         var el = document.createElement('div');
         el.className = 'cometa ' + ld[0];
         if (ld[0] === 'h' || ld[0] === 'hi') el.style.width = L + 'px'; else el.style.height = L + 'px';
-        ring.appendChild(el);
+        lados[k].appendChild(el);
         var fin = Math.min(1, (ld[5] + L) / per);
         el.animate([
           { offset: 0,          transform: 'translate(' + ld[1] + 'px,' + ld[2] + 'px)', opacity: 1 },

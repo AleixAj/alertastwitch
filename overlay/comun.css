@@ -156,84 +156,60 @@ html, body {
   background: radial-gradient(circle, var(--c) 0%, rgba(255,255,255,0) 70%);
 }
 
-/* ===== Marcos color perla ===== */
+/* ===== Marcos de neón =====
+   Una línea fina (opaca, rosa oscuro) alrededor de cada hueco y, encima, dos tramos largos de neón
+   rosa que van dando la vuelta, siempre en lados opuestos, dejando dos huecos que se mueven.
+   Esquinas casi rectas: así el marco tapa del todo las esquinas de la cámara. */
 .frame {
   position: absolute;
   box-sizing: border-box;
-  border: 7px solid var(--pearl);
-  border-radius: 35px;
-  box-shadow:
-    0 0 0 3px #e9579c,              /* filo rosa y canto de abajo: colores sólidos, sin transparencia */
-    0 8px 0 3px #a8306c,
-    0 18px 44px rgba(60,10,70,.5);
+  border: 3px solid #5a1d50;
+  border-radius: 5px;
+  box-shadow: 0 12px 34px rgba(20,4,30,.55);
 }
-/* ===== Destello de neón que recorre el borde =====
-   Una barrita de luz rosa (punta casi blanca, cola que se apaga) que da la vuelta al marco.
-   Hay una por lado; el JS las encadena para que parezca un solo destello que dobla las esquinas.
-   Solo se desplazan (transform) y se encienden/apagan (opacity): lo hace la tarjeta gráfica.
-   .ring recorta el destello a la forma redondeada del borde (más un poco de brillo por fuera). */
-.frame .ring-luz {
+/* .luz: el neón con su brillo. Cada lado va en su propia franja, cortada en diagonal en las
+   esquinas (como el inglete de un marco de cuadro): así el neón dobla la esquina limpio. */
+.frame .luz {
   position: absolute;
-  inset: -12px;
-  padding: 12px;
-  border-radius: 40px;
   pointer-events: none;
-  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-          mask-composite: exclude;
 }
+.frame .luz > div {
+  position: absolute;
+  inset: 0;
+}
+/* Cada tramo es una barrita por lado que solo se desplaza (transform) y se enciende/apaga (opacity):
+   lo hace la tarjeta gráfica. Los extremos se apagan suave; el centro del tubo es casi blanco. */
 .frame .cometa {
   position: absolute;
   left: 0;
   top: 0;
-  border-radius: 4px;
   opacity: 0;
   will-change: transform, opacity;
+  background: linear-gradient(var(--a), rgba(255,79,179,0), #ff4fb3 12%, #ff4fb3 88%, rgba(255,79,179,0));
 }
-/* resplandor: una copia difuminada del mismo degradado, así también se apaga hacia la cola
-   (se difumina una sola vez; luego solo se desplaza con la barrita) */
+/* brillo: copia difuminada (se difumina una sola vez; luego solo se desplaza con la barrita) */
 .frame .cometa::after {
   content: '';
   position: absolute;
-  inset: -6px;
-  border-radius: 10px;
-  background: inherit;
+  inset: -5px;
+  background: linear-gradient(var(--a), rgba(255,60,170,0), rgba(255,60,170,.85) 14%, rgba(255,60,170,.85) 86%, rgba(255,60,170,0));
   filter: blur(5px);
-  opacity: .9;
 }
-/* la punta va hacia donde se mueve; termina en suave, sin borde duro */
-.frame .cometa.h  { height: 7px; background: linear-gradient(90deg,  rgba(255,60,170,0), rgba(255,60,170,.5) 50%, #ff4fb3 84%, #ffd6ef 95%, rgba(255,214,239,0)); }
-.frame .cometa.hi { height: 7px; background: linear-gradient(270deg, rgba(255,60,170,0), rgba(255,60,170,.5) 50%, #ff4fb3 84%, #ffd6ef 95%, rgba(255,214,239,0)); }
-.frame .cometa.v  { width: 7px;  background: linear-gradient(180deg, rgba(255,60,170,0), rgba(255,60,170,.5) 50%, #ff4fb3 84%, #ffd6ef 95%, rgba(255,214,239,0)); }
-.frame .cometa.vi { width: 7px;  background: linear-gradient(0deg,   rgba(255,60,170,0), rgba(255,60,170,.5) 50%, #ff4fb3 84%, #ffd6ef 95%, rgba(255,214,239,0)); }
-/* cámara sola dentro del juego: un solo destello que gira por el borde siguiendo las esquinas.
-   .ring-luz deja ver solo el borde; .giro es un degradado cónico que rota (solo transform).
-   El resplandor va en .luz-giro, por fuera del recorte. */
-.frame .luz-giro {
+/* centro del tubo de neón */
+.frame .cometa::before {
+  content: '';
   position: absolute;
-  inset: -7px;
-  filter: drop-shadow(0 0 4px rgba(255,79,179,.9));
-  pointer-events: none;
+  z-index: 1;
+  background: linear-gradient(var(--a), rgba(255,226,243,0), #ffe2f3 16%, #ffe2f3 84%, rgba(255,226,243,0));
 }
-.frame .luz-giro .ring-luz {
-  inset: 0;
-  padding: 7px;
-  border-radius: 35px;
-}
-.frame .giro {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  background: conic-gradient(rgba(255,60,170,0) 0deg, rgba(255,60,170,0) 230deg,
-    rgba(255,60,170,.55) 310deg, #ff4fb3 345deg, #ffd6ef 357deg, rgba(255,214,239,0) 360deg);
-  animation: girar 13s linear infinite;
-  will-change: transform;
-}
-@keyframes girar { to { transform: rotate(360deg); } }
-/* sin fondo (cámara sola): esquinas menos redondeadas por dentro para que el marco, que es opaco,
-   tape del todo las esquinas de la cámara (que es rectangular). Interior 16px + borde 7px = 23px. */
-.frame.solo { border-radius: 23px; }
-.frame.solo .luz-giro .ring-luz { border-radius: 23px; }
+.frame .cometa.h, .frame .cometa.hi { height: 3px; }
+.frame .cometa.v, .frame .cometa.vi { width: 3px; }
+.frame .cometa.h  { --a: 90deg; }
+.frame .cometa.hi { --a: 270deg; }
+.frame .cometa.v  { --a: 180deg; }
+.frame .cometa.vi { --a: 0deg; }
+.frame .cometa.h::before, .frame .cometa.hi::before { left: 0; right: 0; top: 1px; height: 1px; }
+.frame .cometa.v::before, .frame .cometa.vi::before { top: 0; bottom: 0; left: 1px; width: 1px; }
 
 /* ola que se riza sobre el marco del juego */
 .wave {
@@ -475,7 +451,7 @@ html, body {
 html.preview body { background: #1b0e2c; }
 .transp {
   position: absolute;
-  border-radius: 28px;
+  border-radius: 2px;
   background: repeating-conic-gradient(#d9d3e3 0 25%, #f4f1f8 0 50%) 0 0 / 32px 32px;
 }
 .transp::after {
@@ -493,7 +469,7 @@ html.preview body { background: #1b0e2c; }
 }
 
 /* ===== Modo demo (overlay.html?demo): contenido de ejemplo en los huecos ===== */
-.demo { position: absolute; overflow: hidden; border-radius: 28px; }
+.demo { position: absolute; overflow: hidden; border-radius: 2px; }
 .demo.game {
   background:
     radial-gradient(ellipse 30% 20% at 70% 30%, rgba(255,255,200,.6), transparent 70%),
@@ -518,7 +494,7 @@ html.preview body { background: #1b0e2c; }
 .panel {
   position: absolute;
   overflow: hidden;
-  border-radius: 28px;
+  border-radius: 2px;
   background: #1a0b26;
 }
 /* ilustración con un zoom muy lento (solo transform: lo hace la tarjeta gráfica) */
