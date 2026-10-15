@@ -1,133 +1,298 @@
-CÓMO INSTALAR LAS ALERTAS EN STREAMLABS
-=======================================
+==================================================================
+   LUXANITA  ·  ALERTAS Y OVERLAY PARA EL DIRECTO
+   Guía de instalación paso a paso
+==================================================================
 
-Hay 4 alertas:
+Qué hay en esta carpeta:
 
-  follow  ->  Follows                (6 segundos)
-  sub     ->  Subscriptions          (11 segundos)
-  gift    ->  Gift Subs / regaladas  (8 segundos)
-  raid    ->  Raids                  (9 segundos)
+  grandes/      Alertas grandes (follow, sub, gift y raid)
+  compactas/    Las mismas alertas, más pequeñas
+  overlay/      Las escenas del directo para OBS (juego, charla...)
 
-Cada una está en su carpeta, con todo lo que necesitas: 3 archivos de texto
-y el sonido.
+Índice:
 
-ELIGE VERSIÓN
--------------
-- grandes/            ->  grandes, en el centro y con efectos por toda la
-                          pantalla. Para charlar, empezar el directo, etc.
-- compactas/arriba/   ->  más pequeñas, arriba en el centro, con los efectos
-                          solo alrededor de la tarjeta (no tapan el juego).
-- compactas/centro/   ->  igual que las de arriba, pero en el centro.
-En las compactas la sub dura 8 segundos (no 11).
-Los pasos son los mismos; solo cambia de qué carpeta copias los archivos
-(por ejemplo grandes/follow o compactas/arriba/follow).
+  ANTES DE EMPEZAR
+  PARTE 1. ALERTAS ............ en Streamlabs
+  PARTE 2. OVERLAY ............ en OBS
+  PARTE 3. AJUSTES RECOMENDADOS
+  PARTE 4. SI ALGO NO SALE BIEN
 
 
-PASOS (repítelos con cada una de las 4)
----------------------------------------
-1. En Streamlabs abre Alert Box y entra en la alerta (por ejemplo, Follows).
+==================================================================
+ ANTES DE EMPEZAR
+==================================================================
 
-2. Activa "Enable Custom HTML/CSS".
+1. Descomprime el .zip en una carpeta que no vayas a mover ni borrar,
+   por ejemplo:  C:\Luxanita
 
-3. Verás tres pestañas: HTML, CSS y JS. En cada una, borra todo lo que haya
-   y pega el archivo del mismo nombre:
-     HTML  ->  alerta.html
-     CSS   ->  alerta.css
-     JS    ->  alerta.js
-   (Para copiar: abre el archivo con el Bloc de notas, Ctrl+A, Ctrl+C.)
+   ¡Importante! OBS lee los archivos desde ahí. Si luego mueves o
+   cambias el nombre de la carpeta, las escenas dejan de verse.
 
-4. En "Sound", sube el sonido.mp3 de esa carpeta.
+2. Necesitas:
+     - OBS Studio (o Streamlabs Desktop) instalado.
+     - Una cuenta de Streamlabs (streamlabs.com) conectada a Twitch.
 
-5. En "Alert Duration", pon los segundos de la lista de arriba.
-
-6. Quita la imagen de la alerta y pon la animación de entrada y salida
-   más simple (fadeIn / fadeOut). La animación ya va incluida.
-
-7. Guarda.
-
-En OBS, haz que la fuente del Alert Box ocupe toda la pantalla (1920x1080).
+3. Un par de cosas que salen en la guía:
+     - "Fuente": cada cosa que añades a una escena de OBS (la cámara,
+       el juego, el overlay...). Se añaden con el botón "+" del cuadro
+       "Fuentes".
+     - "Navegador": un tipo de fuente que muestra una página web o un
+       archivo .html. Todo el overlay se añade así.
 
 
-PROBAR
-------
-Pulsa "Test Follow", "Test Sub", etc. en Streamlabs. Tiene que salir el
-nombre de la persona, no la palabra "{name}".
+==================================================================
+ PARTE 1. ALERTAS (en Streamlabs)
+==================================================================
 
-Para verlas sin Streamlabs: abre el preview.html de cada carpeta
-(doble clic) y pulsa "Probar alerta".
+Son 4 alertas. Cada una tiene su carpeta con 3 archivos de texto y su
+sonido:
 
-
-SI ALGO NO SALE BIEN
---------------------
-- Sale "{name}" o algo entre llaves: revisa que pegaste los tres archivos
-  en su pestaña correcta.
-- No se oye el sonido: mira que en "Sound" esté subido el sonido.mp3 y el
-  volumen no esté a 0. En OBS, si la fuente del Alert Box tiene marcado
-  "Controlar audio mediante OBS", sale en el Mezclador de audio: que no
-  esté silenciada ahí.
-- Las subs regaladas o la raid no muestran el número: la alerta sigue
-  funcionando, solo sin el número. Avisa a quien te las hizo.
+  Carpeta   Alerta en Streamlabs        Duración
+  -------   -------------------------   ---------------------------
+  follow    Follows                     6 segundos
+  sub       Subscriptions               11 s (8 s en las compactas)
+  gift      Gift Subs (subs regaladas)  8 segundos
+  raid      Raids                       9 segundos
 
 
-OVERLAY (escenas submarinas para OBS)
-------------------------------------
-Está en la carpeta "overlay". Hay una escena por archivo; en OBS crea una
-escena para cada una y añade una fuente "Navegador" con "Archivo local",
-ancho 1920 y alto 1080:
+1.1  ELIGE QUÉ VERSIÓN QUIERES
+------------------------------
+  grandes/             Grandes, en el centro, con efectos por toda la
+                       pantalla. Quedan muy bien, pero tapan el juego.
 
-  overlay.html    ->  Juego / navegador: juego grande y cámara a la derecha
-  charla.html     ->  Charla: la cámara en grande y el chat a la derecha
-  partida.html    ->  Partida: el juego a pantalla completa y la cámara pequeña
-  empezando.html  ->  Antes de empezar el directo
-  descanso.html   ->  Pausa (con barra de carga, sin cuenta atrás)
-  final.html      ->  Despedida
+  compactas/arriba/    Más pequeñas, arriba en el centro. Los efectos
+                       solo salen alrededor de la alerta, así que no
+                       molestan mientras juegas.  ← RECOMENDADA
 
-En las escenas con cámara o juego, pon esas fuentes DEBAJO del overlay en la
-lista de fuentes, en estas posiciones (clic derecho > Transformar > Editar
-transformación):
+  compactas/centro/    Igual que las de arriba, pero en el centro.
 
-  overlay.html:   Juego   posición 32, 182    tamaño 1392 x 783
-                  Cámara  posición 1448, 485  tamaño 440 x 480
-  charla.html:    Cámara  posición 32, 182    tamaño 1392 x 783
-                  Chat    posición 1460, 254   tamaño 416 x 700
-                  (el chat va ENCIMA del overlay: en Streamlabs > Chat Box
-                  copia la URL y añádela como fuente "Navegador" con esa URL)
-  partida.html:   Juego   posición 0, 0       tamaño 1920 x 1080
-                  Cámara  posición 24, 34     tamaño 320 x 352
+Los pasos son los mismos para todas. Solo cambia la carpeta de la que
+copias los archivos (por ejemplo compactas/arriba/follow).
 
-MARCO DE CÁMARA SUELTO (para ponerlo donde quieras mientras juegas):
-camara.html es solo el marco con el nombre, con el fondo transparente.
-  1. Fuente "Navegador" con "Archivo local" = overlay/camara.html,
-     ancho 416 y alto 460.
-  2. Pon la cámara DEBAJO, con tamaño 320 x 352, en la posición del marco
-     más 48 a la derecha y 40 hacia abajo (si el marco está en 0, 0, la
-     cámara va en 48, 40).
-  3. Selecciona las dos fuentes, clic derecho > Agrupar selección. Ahora
-     puedes mover o escalar el grupo a cualquier sitio y van juntas.
 
-La cámara pequeña es casi cuadrada: si tu cámara es panorámica, recórtala por
-los lados (Alt + arrastrar en OBS) para que no se deforme.
-Pon el Alert Box ENCIMA del overlay, para que las alertas se vean.
+1.2  INSTALA CADA ALERTA (repite estos pasos con las 4)
+-------------------------------------------------------
+  1. Entra en streamlabs.com > Alert Box y abre la alerta
+     (por ejemplo, Follows).
 
-Cuenta atrás en empezando: en vez de "Archivo local", desmarca esa
-casilla y pon en URL la ruta del archivo terminada en ?minutos=5 (o los
-minutos que quieras), por ejemplo:
-  file:///C:/ruta/a/overlay/empezando.html?minutos=5
-Sin eso sale una barra de carga animada. Marca también "Actualizar el
-navegador cuando la escena se active": así la cuenta empieza al cambiar a
-esa escena (si no, empieza al abrir OBS).
+  2. Activa la opción "Enable Custom HTML/CSS".
 
-Para que gaste menos ordenador: en cada fuente del overlay marca "Apagar la
-fuente cuando no esté visible".
+  3. Aparecen tres pestañas: HTML, CSS y JS. En cada una, borra todo
+     lo que haya y pega el archivo con el mismo nombre:
 
-Si en OBS los huecos salen a cuadritos o de color oscuro (no debería pasar):
-en la fuente del overlay, en "CSS personalizado", añade esta línea:
-  html.preview body, #stage { background: none !important; } .transp { display: none !important; }
+        Pestaña HTML  <-  alerta.html
+        Pestaña CSS   <-  alerta.css
+        Pestaña JS    <-  alerta.js
 
-Para ver cómo queda sin OBS: abre el archivo en el navegador (pulsa F11 para
-verlo a pantalla completa). Los huecos salen a cuadritos: eso significa que en
-OBS son transparentes. Añadiendo ?demo al final de la dirección se ve con un
-juego y una cámara de ejemplo.
+     Cómo copiar un archivo: clic derecho > Abrir con > Bloc de notas,
+     luego Ctrl+A (seleccionar todo) y Ctrl+C (copiar).
+     En Streamlabs: clic dentro de la pestaña, Ctrl+A y Ctrl+V.
+
+  4. En "Sound", sube el archivo sonido.mp3 de esa misma carpeta.
+
+  5. En "Alert Duration", pon los segundos de la tabla de arriba.
+
+  6. Quita la imagen de la alerta ("Image") y elige la animación de
+     entrada y salida más simple (fadeIn y fadeOut). La animación
+     bonita ya va dentro de los archivos.
+
+  7. Pulsa "Save" (guardar).
+
+
+1.3  AÑADE LAS ALERTAS A OBS (solo una vez)
+-------------------------------------------
+  1. En Streamlabs > Alert Box, copia el enlace del widget
+     ("Widget URL").
+  2. En OBS, en cada escena donde quieras ver alertas:
+     Fuentes > "+" > Navegador.
+       - URL:   pega el enlace
+       - Ancho: 1920     Alto: 1080
+  3. Pon esta fuente ARRIBA DEL TODO en la lista de fuentes, para que
+     las alertas se vean por encima de todo.
+
+  Truco: añádela en una escena y, en las demás, usa
+  "+" > Navegador > "Añadir existente". Así solo la configuras una vez.
+
+
+1.4  PRUEBA QUE FUNCIONAN
+-------------------------
+  - En Streamlabs pulsa "Test Follow", "Test Subscription", etc.
+    Tiene que salir el nombre de la persona, NO la palabra {name}.
+  - Para verlas sin Streamlabs: abre el preview.html de cualquier
+    carpeta (doble clic) y pulsa "Probar alerta".
+
+
+==================================================================
+ PARTE 2. OVERLAY (en OBS)
+==================================================================
+
+Hay una escena por archivo, todos dentro de la carpeta overlay/:
+
+  Archivo           Para qué sirve
+  ---------------   -----------------------------------------------
+  overlay.html      Jugando: juego grande y cámara a la derecha
+  partida.html      Jugando a pantalla completa con la cámara pequeña
+  charla.html       Charlando: cámara grande y chat a la derecha
+  empezando.html    Antes de empezar (con cuenta atrás opcional)
+  descanso.html     Pausa
+  final.html        Despedida
+  camara.html       Solo el marco de la cámara, para ponerlo
+                    donde quieras (ver 2.5)
+
+
+2.1  AÑADE CADA ESCENA
+----------------------
+  1. En OBS, en el cuadro "Escenas", pulsa "+" y ponle nombre
+     (por ejemplo "Jugando").
+  2. En "Fuentes": "+" > Navegador > ponle nombre > Aceptar.
+  3. En la ventana que se abre:
+       - Marca "Archivo local" y pulsa "Examinar". Elige el archivo
+         de la escena (por ejemplo overlay/overlay.html).
+       - Ancho: 1920     Alto: 1080
+       - Pulsa Aceptar.
+
+  Haz lo mismo con cada escena que quieras usar.
+
+  Las pantallas de empezando, descanso y final ya están completas:
+  no hace falta añadir nada más (solo las alertas, si quieres).
+
+
+2.2  COLOCA EL JUEGO Y LA CÁMARA
+--------------------------------
+Las escenas de juego y charla tienen huecos transparentes. Ahí se ven
+el juego y la cámara, que van DEBAJO del overlay en la lista de fuentes.
+
+Para ponerlos en su sitio exacto:
+
+  1. Clic derecho en la fuente (la cámara o el juego) > Transformar >
+     Editar transformación  (o selecciónala y pulsa Ctrl+E).
+  2. Escribe la "Posición" (X, Y) de la tabla de abajo.
+  3. En "Tipo de caja delimitadora" (Bounding Box Type) elige
+     "Escalar a los límites exteriores" (Scale to outer bounds).
+  4. En "Tamaño de la caja delimitadora" escribe el tamaño de la tabla.
+  5. Marca "Recortar a la caja delimitadora" (Crop to Bounding Box).
+     Así la imagen llena el hueco sin deformarse: lo que sobra por los
+     lados se recorta solo.
+
+  Escena          Fuente    Posición (X, Y)   Tamaño (ancho x alto)
+  -------------   -------   ---------------   ---------------------
+  overlay.html    Juego     32, 182           1392 x 783
+                  Cámara    1448, 485         440 x 480
+  partida.html    Juego     0, 0              1920 x 1080
+                  Cámara    24, 34            320 x 352
+  charla.html     Cámara    32, 182           1392 x 783
+                  Chat      1460, 254         416 x 700   (ver 2.3)
+
+Orden de las fuentes en la lista (la de arriba se ve por encima):
+
+    Alertas (Alert Box)       <- arriba del todo
+    Chat                      <- solo en charla
+    Overlay (el .html)
+    Cámara
+    Juego                     <- abajo del todo
+
+
+2.3  EL CHAT EN LA ESCENA DE CHARLA
+-----------------------------------
+  1. En streamlabs.com > Chat Box, copia el enlace del widget.
+  2. En la escena de charla: Fuentes > "+" > Navegador.
+       - URL:   pega el enlace
+       - Ancho: 416     Alto: 700
+  3. Ponla ENCIMA del overlay en la lista de fuentes.
+  4. Ctrl+E y pon Posición 1460, 254.
+     Queda dentro del panel rosa de la derecha, debajo de "CHAT".
+
+  Consejo: en los ajustes del Chat Box de Streamlabs, quita el fondo
+  (fondo transparente) para que se vea el panel del overlay.
+
+
+2.4  CUENTA ATRÁS EN LA PANTALLA DE EMPEZANDO (opcional)
+-------------------------------------------------------
+Sin hacer nada, sale una barra de carga animada. Para que salga una
+cuenta atrás de, por ejemplo, 5 minutos:
+
+  1. Abre las propiedades de la fuente de empezando (doble clic).
+  2. DESMARCA "Archivo local".
+  3. En "URL" escribe la ruta del archivo terminada en ?minutos=5.
+     Si la carpeta está en C:\Luxanita, sería:
+
+       file:///C:/Luxanita/overlay/empezando.html?minutos=5
+
+     (Ojo: con barras  /  hacia la derecha. Cambia el 5 por los
+     minutos que quieras).
+  4. Marca "Actualizar el navegador cuando la escena se active".
+     Así la cuenta empieza cuando cambias a esa escena (si no,
+     empezaría al abrir OBS).
+
+Cuando llega a cero, pone "¡Ya casi!".
+
+
+2.5  MARCO DE CÁMARA SUELTO (camara.html)
+-----------------------------------------
+Es solo el marco de la cámara con el nombre, con el fondo transparente.
+Sirve para ponerlo encima de cualquier juego, en el sitio que quieras.
+
+  1. Fuentes > "+" > Navegador > Archivo local = overlay/camara.html
+       - Ancho: 416     Alto: 460
+  2. Pon la cámara DEBAJO del marco en la lista de fuentes y, con
+     Ctrl+E (como en 2.2), dale tamaño 320 x 352.
+  3. Colócala 48 píxeles a la derecha y 40 hacia abajo de donde esté
+     el marco. Ejemplo: si el marco está en 0, 0, la cámara va en 48, 40.
+  4. Selecciona las dos fuentes (Ctrl + clic) > clic derecho >
+     "Agrupar elementos seleccionados".
+     Ahora puedes mover o cambiar el tamaño del grupo y van juntas.
+
+
+==================================================================
+ PARTE 3. AJUSTES RECOMENDADOS
+==================================================================
+
+  - Para que el ordenador vaya más ligero: en cada fuente Navegador del
+    overlay, marca "Apagar la fuente cuando no esté visible".
+    (No lo marques en la de las alertas: si no, alguna podría no salir).
+
+  - Para ver cómo queda sin OBS: abre cualquier escena con doble clic.
+    Se abre en el navegador (pulsa F11 para pantalla completa).
+    Los huecos salen a cuadritos: eso quiere decir que en OBS son
+    transparentes.
+    Si añades ?demo al final de la dirección, se ve con un juego y una
+    cámara de ejemplo.
+
+
+==================================================================
+ PARTE 4. SI ALGO NO SALE BIEN
+==================================================================
+
+  ALERTAS
+
+  - Sale {name} o algo entre llaves en vez del nombre:
+    revisa que pegaste cada archivo en su pestaña (HTML, CSS, JS).
+
+  - No se oye el sonido:
+    · Mira que en "Sound" esté subido el sonido.mp3 y que el volumen
+      no esté a 0.
+    · En OBS, abre las propiedades de la fuente de alertas. Si tiene
+      marcado "Controlar audio mediante OBS", la alerta sale en el
+      Mezclador de audio: comprueba que ahí no esté silenciada.
+
+  - En las subs regaladas o en la raid no sale el número:
+    la alerta funciona igual, solo sin el número. Avisa a quien te las
+    preparó.
+
+  OVERLAY
+
+  - Una escena sale en blanco o no se ve:
+    has movido o renombrado la carpeta. Vuelve a elegir el archivo con
+    "Examinar" en las propiedades de la fuente.
+
+  - El juego o la cámara se ven deformados o se salen del hueco:
+    repite los pasos de 2.2 con la posición y el tamaño de la tabla.
+
+  - Los huecos salen a cuadritos o de color oscuro dentro de OBS
+    (no debería pasar): abre las propiedades de la fuente del overlay
+    y, en "CSS personalizado", añade al final esta línea:
+
+      html.preview body, #stage { background: none !important; } .transp { display: none !important; }
 
 
 ------------------------------------------------------------------
