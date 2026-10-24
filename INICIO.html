@@ -218,7 +218,7 @@
   <header>
     <div class="encima">Alertas y overlay para el directo</div>
     <h1>Luxanita</h1>
-    <p class="lema">Todo listo para OBS y Streamlabs. Pulsa cualquier tarjeta y se abre en una ventana nueva, tal cual se verá en el directo.</p>
+    <p class="lema">Todo listo para OBS y Streamlabs. Pulsa cualquier tarjeta y se abre en una pestaña nueva, tal cual se verá en el directo.</p>
     <div class="datos">
       <span class="dato"><b>7</b> escenas de overlay</span>
       <span class="dato"><b>4</b> alertas en <b>3</b> tamaños</span>
@@ -308,7 +308,7 @@
   ];
 
   function tarjeta(href, foto, titulo, texto) {
-    return '<a class="tarjeta" href="' + href + '">' +
+    return '<a class="tarjeta" href="' + href + '" target="_blank" rel="noopener">' +
              '<div class="foto"><img src="inicio/miniaturas/' + foto + '.jpg" alt="" loading="lazy">' +
                '<span class="abrir">Abrir &#8599;</span></div>' +
              '<div class="pie"><h3>' + titulo + '</h3><p>' + texto + '</p></div>' +
@@ -330,15 +330,6 @@
       b.setAttribute('aria-pressed', 'true');
       pintarAlertas(b.dataset.carpeta);
     });
-  });
-
-  // Cada tarjeta, en su propia ventana (y la misma si se vuelve a pulsar).
-  document.addEventListener('click', function (ev) {
-    var a = ev.target.closest('a.tarjeta');
-    if (!a) return;
-    var nombre = 'luxanita-' + a.getAttribute('href').replace(/[^a-z]/gi, '');
-    var v = window.open(a.href, nombre, 'popup=yes,width=1280,height=760');
-    if (v) { ev.preventDefault(); v.focus(); }   // si el navegador lo bloquea, se abre en una pestaña
   });
 
   // Si el .zip no se ha extraído, los archivos de al lado no existen: avisamos.

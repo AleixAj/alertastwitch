@@ -7,7 +7,7 @@ Qué hay en esta carpeta:
 
   INICIO.html   Un menú para verlo todo: abre con doble clic y cada
                 botón te enseña una alerta o una escena en una
-                ventana nueva. Empieza por aquí.
+                pestaña nueva. Empieza por aquí.
   grandes/      Alertas grandes (follow, sub, gift y raid)
   compactas/    Las mismas alertas, más pequeñas
   overlay/      Las escenas del directo para OBS (juego, charla...)
