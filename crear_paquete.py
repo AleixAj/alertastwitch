@@ -10,7 +10,7 @@ import pathlib, zipfile
 BASE = pathlib.Path(__file__).parent
 SALIDA = BASE / "dist" / "Luxanita-overlay-y-alertas.zip"
 RAIZ = "Luxanita"                                   # carpeta que aparece al descomprimir
-CARPETAS = ["grandes", "compactas", "overlay"]
+CARPETAS = ["grandes", "compactas", "overlay", "inicio"]   # inicio/: las miniaturas del INICIO.html
 FUERA_EXT = {".py", ".pyc", ".wav"}
 FUERA_CARPETAS = {"__pycache__", "overlay/animales/fuentes"}   # dibujos de origen de la orca (no se usan)
 CORTE_INSTRUCCIONES = "PARA QUIEN MANTIENE LAS ALERTAS"         # esa parte es solo para quien edita el proyecto
