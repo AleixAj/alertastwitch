@@ -25,6 +25,11 @@ Qué hay en esta carpeta:
 1. Descomprime el .zip en una carpeta que no vayas a mover ni borrar,
    por ejemplo:  C:\Luxanita
 
+   Clic derecho en el .zip -> "Extraer todo...". No abras los archivos
+   desde dentro del .zip: Windows te deja, pero se ven rotos (sale un
+   corazón gigante y poco más), porque ahí dentro cada archivo está
+   solo y no encuentra a los demás.
+
    ¡Importante! OBS lee los archivos desde ahí. Si luego mueves o
    cambias el nombre de la carpeta, las escenas dejan de verse.
 
@@ -120,6 +125,8 @@ copias los archivos (por ejemplo compactas/arriba/follow).
     Tiene que salir el nombre de la persona, NO la palabra {name}.
   - Para verlas sin Streamlabs: abre el preview.html de cualquier
     carpeta (doble clic) y pulsa "Probar alerta".
+    Si sale un corazón gigante y nada más, es que lo has abierto desde
+    dentro del .zip: extrae la carpeta primero y vuelve a abrirlo.
 
 
 ==================================================================
@@ -257,6 +264,8 @@ Sirve para ponerlo encima de cualquier juego, en el sitio que quieras.
     transparentes.
     Si añades ?demo al final de la dirección, se ve con un juego y una
     cámara de ejemplo.
+    Si sale casi vacío o descolocado, lo has abierto desde dentro del
+    .zip: extrae la carpeta primero (clic derecho > "Extraer todo...").
 
 
 ==================================================================
