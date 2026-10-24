@@ -5,6 +5,13 @@ La temática es submarina y rosa, inspirada en Nami y Lux de League of Legends.
 
 ![Escena de juego](capturas/overlay-demo.png)
 
+## Descargar
+
+[![Descargar el paquete](https://img.shields.io/badge/Descargar%20el%20paquete-.zip-ff4fa3?style=for-the-badge&logo=github&logoColor=white)](https://github.com/AleixAj/alertastwitch/releases/latest/download/Luxanita-overlay-y-alertas.zip)
+
+Un zip con las alertas, el overlay y las instrucciones, listo para pasárselo al streamer.
+Se descomprime y dentro está el `INSTRUCCIONES.txt` con todos los pasos.
+
 ## Qué incluye
 
 **Alertas** (Streamlabs Alert Box, HTML/CSS/JS propio): follow, sub, subs regaladas y raid.
@@ -42,13 +49,17 @@ Los huecos del juego y la cámara son transparentes en OBS.
 Todos los pasos, explicados para quien no ha montado nunca un overlay, están en
 [INSTRUCCIONES.txt](INSTRUCCIONES.txt).
 
-Para darle el paquete al streamer:
+El zip del botón de arriba se vuelve a crear solo cada vez que cambia algo del
+proyecto (lo hace `.github/workflows/paquete.yml`), así que el enlace siempre lleva la
+versión de ahora.
+
+Para crearlo en tu ordenador:
 
 ```bash
 python crear_paquete.py
 ```
 
-Esto crea `dist/Luxanita-overlay-y-alertas.zip` solo con lo necesario: alertas, overlay e
+Deja en `dist/Luxanita-overlay-y-alertas.zip` solo lo necesario: alertas, overlay e
 instrucciones, sin scripts ni capturas.
 
 ## Verlo sin OBS

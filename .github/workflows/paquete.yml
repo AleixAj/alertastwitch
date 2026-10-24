@@ -1,0 +1,42 @@
+# Cada vez que cambian las alertas, el overlay o las instrucciones, vuelve a crear
+# el zip del paquete y lo deja en la release "paquete", que es la que descarga el
+# botón del README. Así el enlace siempre lleva la versión de ahora.
+name: Paquete para el streamer
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - grandes/**
+      - compactas/**
+      - overlay/**
+      - INSTRUCCIONES.txt
+      - crear_paquete.py
+      - .github/workflows/paquete.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  paquete:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Crear el zip
+        run: python crear_paquete.py
+
+      - name: Publicarlo en la release "paquete"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create paquete dist/Luxanita-overlay-y-alertas.zip \
+            --title "Paquete para el streamer" \
+            --notes "Alertas, overlay e instrucciones. Se actualiza solo con cada cambio en el proyecto." \
+            --latest \
+          || gh release upload paquete dist/Luxanita-overlay-y-alertas.zip --clobber
