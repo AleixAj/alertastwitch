@@ -1,16 +1,25 @@
-# Luxanita · Alertas y overlay para Twitch
+<h1 align="center">Luxanita · Alertas y overlay para Twitch</h1>
 
-Alertas para Streamlabs y escenas de overlay para OBS del canal **Luxanita**.
-La temática es submarina y rosa, inspirada en Nami y Lux de League of Legends.
+<p align="center">
+  Alertas para Streamlabs y escenas de overlay para OBS del canal <b>Luxanita</b>.<br>
+  Temática submarina y rosa, inspirada en Nami y Lux de League of Legends.
+</p>
 
-![Escena de juego](capturas/overlay-demo.png)
+<h2 align="center">DESCARGA</h2>
 
-## Descargar
+<p align="center">
+  <a href="https://github.com/AleixAj/alertastwitch/releases/latest/download/Luxanita-overlay-y-alertas.zip">
+    <img src="readme/btn-descargar.svg" alt="Descargar el paquete (.zip)" width="460">
+  </a>
+</p>
 
-[![Descargar el paquete](https://img.shields.io/badge/Descargar%20el%20paquete-.zip-ff4fa3?style=for-the-badge&logo=github&logoColor=white)](https://github.com/AleixAj/alertastwitch/releases/latest/download/Luxanita-overlay-y-alertas.zip)
+<p align="center">
+  <sub>Windows, Mac o Linux · Se descomprime y dentro está el <code>INSTRUCCIONES.txt</code> con todos los pasos</sub>
+</p>
 
-Un zip con las alertas, el overlay y las instrucciones, listo para pasárselo al streamer.
-Se descomprime y dentro está el `INSTRUCCIONES.txt` con todos los pasos.
+<p align="center">
+  <img src="capturas/overlay-demo.png" alt="Escena de juego" width="820">
+</p>
 
 ## Qué incluye
 
