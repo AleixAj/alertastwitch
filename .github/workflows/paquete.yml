@@ -10,6 +10,8 @@ on:
       - grandes/**
       - compactas/**
       - overlay/**
+      - inicio/**
+      - INICIO.html
       - INSTRUCCIONES.txt
       - crear_paquete.py
       - .github/workflows/paquete.yml
