@@ -62,7 +62,7 @@
   .encima {
     display: flex; align-items: center; justify-content: center; gap: 12px;
     color: var(--rosa-claro); font-size: 12.5px; letter-spacing: .34em;
-    text-transform: uppercase; margin-bottom: 14px;
+    text-transform: uppercase; margin-bottom: 34px;
   }
   .encima::before, .encima::after {
     content: ''; width: 54px; height: 1px;
@@ -71,11 +71,12 @@
   .encima::after { background: linear-gradient(90deg, var(--rosa), transparent); }
   h1 {
     font-family: 'Dream American Diner', 'Lilita One', cursive;
-    font-size: clamp(56px, 11vw, 132px); font-weight: 400; line-height: 1.05;
-    margin: 0; color: #fff;
+    /* los rabillos de esta tipografía se salen de la línea: por eso tanto aire */
+    font-size: clamp(56px, 11vw, 132px); font-weight: 400; line-height: 1.3;
+    margin: 0; padding: .1em 10px .14em; color: #fff;
     text-shadow: 0 0 12px rgba(255,110,181,.9), 0 0 46px rgba(255,110,181,.55), 0 0 96px rgba(255,110,181,.3);
   }
-  .lema { margin: 14px auto 0; max-width: 620px; color: var(--suave); font-size: clamp(14px, 2.3vw, 17.5px); line-height: 1.55; }
+  .lema { margin: 30px auto 0; max-width: 620px; color: var(--suave); font-size: clamp(14px, 2.3vw, 17.5px); line-height: 1.55; }
   .datos { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 22px; }
   .dato {
     padding: 7px 16px; border-radius: 999px; border: 1px solid var(--borde);
