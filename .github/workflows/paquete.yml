@@ -12,6 +12,7 @@ on:
       - overlay/**
       - inicio/**
       - INICIO.html
+      - INSTRUCCIONES.html
       - INSTRUCCIONES.txt
       - crear_paquete.py
       - .github/workflows/paquete.yml
