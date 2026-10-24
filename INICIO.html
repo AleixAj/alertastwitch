@@ -171,6 +171,20 @@
   }
   .cta.vacio:hover { border-color: var(--rosa); color: #fff; }
 
+  /* El botón de las instrucciones, en la portada */
+  .guia { display: flex; justify-content: center; margin-top: 34px; }
+  .cta.grande {
+    gap: 14px; padding: 15px 30px; font-size: 18px; text-align: left;
+    box-shadow: 0 0 34px rgba(255,110,181,.55);
+    animation: latir 3.4s ease-in-out infinite;
+  }
+  .cta.grande small { display: block; font-size: 12.5px; font-weight: 500; opacity: .78; letter-spacing: .01em; }
+  .cta.grande svg { flex: none; }
+  @keyframes latir {
+    0%, 100% { box-shadow: 0 0 30px rgba(255,110,181,.45); }
+    50%      { box-shadow: 0 0 48px rgba(255,110,181,.75); }
+  }
+
   /* ---------- Aviso de zip sin extraer ---------- */
   .aviso {
     display: none; position: relative; z-index: 2;
@@ -225,6 +239,18 @@
       <span class="dato">Con sonido</span>
       <span class="dato">1920 × 1080</span>
     </div>
+
+    <div class="guia">
+      <a class="cta grande" href="INSTRUCCIONES.html">
+        <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor"
+             stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M3 5.2c2.8-1 5.6-1 8.4.6v13c-2.8-1.6-5.6-1.6-8.4-.6zM21 5.2c-2.8-1-5.6-1-8.4.6v13c2.8-1.6 5.6-1.6 8.4-.6z"/>
+        </svg>
+        <span>Leer las instrucciones
+          <small>Cómo montarlo en OBS y en Streamlabs, paso a paso</small>
+        </span>
+      </a>
+    </div>
   </header>
 
   <section>
@@ -277,7 +303,7 @@
       </div>
     </div>
     <div class="acciones">
-      <a class="cta" href="INSTRUCCIONES.html">Abrir las instrucciones</a>
+      <a class="cta vacio" href="INSTRUCCIONES.html">Abrir las instrucciones</a>
       <a class="cta vacio" href="https://obsproject.com/download">Descargar OBS Studio</a>
       <a class="cta vacio" href="https://streamlabs.com/dashboard#/alertbox">Ir al Alert Box de Streamlabs</a>
     </div>
