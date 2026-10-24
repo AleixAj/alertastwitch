@@ -56,7 +56,9 @@ Los huecos del juego y la cámara son transparentes en OBS.
 ## Instalación
 
 Todos los pasos, explicados para quien no ha montado nunca un overlay, están en
-[INSTRUCCIONES.txt](INSTRUCCIONES.txt).
+[INSTRUCCIONES.html](INSTRUCCIONES.html) (la guía con el mismo diseño que el resto; se abre
+en el navegador). El mismo texto, en plano, está en [INSTRUCCIONES.txt](INSTRUCCIONES.txt):
+si cambias uno, cambia el otro.
 
 El zip del botón de arriba se vuelve a crear solo cada vez que cambia algo del
 proyecto (lo hace `.github/workflows/paquete.yml`), así que el enlace siempre lleva la

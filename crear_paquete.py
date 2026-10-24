@@ -34,8 +34,9 @@ SALIDA.parent.mkdir(exist_ok=True)
 n = 0
 with zipfile.ZipFile(SALIDA, "w", zipfile.ZIP_DEFLATED, compresslevel=9) as z:
     z.writestr(f"{RAIZ}/INSTRUCCIONES.txt", instrucciones().encode("utf-8-sig"))   # con BOM: acentos bien en cualquier Bloc de notas
-    z.write(BASE / "INICIO.html", f"{RAIZ}/INICIO.html")                           # menú con todos los previews
-    n += 1
+    for suelto in ("INICIO.html", "INSTRUCCIONES.html"):        # menú y guía, en la raíz
+        z.write(BASE / suelto, f"{RAIZ}/{suelto}")
+        n += 1
     for c in CARPETAS:
         for p in sorted((BASE / c).rglob("*")):
             if p.is_file() and not fuera(p):

@@ -1,0 +1,723 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Luxanita · Instrucciones</title>
+<!-- Icono de la pestaña: una burbuja rosa, dibujada aquí mismo (así no hace falta archivo) -->
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='13' fill='%23FF6EB5'/%3E%3Ccircle cx='11.5' cy='11' r='4' fill='%23fff' opacity='.75'/%3E%3C/svg%3E">
+<style>
+  @font-face { font-family: 'Dream American Diner'; src: url('overlay/fuentes/Dream-American-Diner-demo.ttf.woff') format('woff'); font-display: swap; }
+  @font-face { font-family: 'Lilita One'; src: url('overlay/fuentes/LilitaOne-400-latin.woff2') format('woff2'); font-display: swap; }
+  @font-face { font-family: 'Fredoka'; src: url('overlay/fuentes/Fredoka-latin.woff2') format('woff2'); font-weight: 300 700; font-display: swap; }
+
+  :root {
+    --negro: #0B0B0F;
+    --carta: #15151D;
+    --borde: rgba(255, 143, 199, .2);
+    --rosa: #FF6EB5;
+    --rosa-claro: #FF8FC7;
+    --texto: #EDEDF2;
+    --suave: #C9C9D6;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0; min-height: 100vh;
+    background: var(--negro); color: var(--texto);
+    font-family: 'Fredoka', system-ui, sans-serif;
+    font-size: 16px; line-height: 1.6;
+    overflow-x: hidden;
+  }
+  .luz {
+    position: fixed; inset: 0; pointer-events: none; z-index: 0;
+    background:
+      radial-gradient(900px 520px at 50% -8%, rgba(255, 110, 181, .2), transparent 70%),
+      radial-gradient(700px 420px at 8% 30%, rgba(150, 90, 255, .12), transparent 70%),
+      radial-gradient(760px 460px at 96% 70%, rgba(127, 243, 230, .06), transparent 70%);
+  }
+
+  /* ---------- Barra de arriba ---------- */
+  .barra {
+    position: sticky; top: 0; z-index: 20;
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    padding: 12px 22px;
+    background: rgba(11, 11, 15, .82); backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255,255,255,.06);
+  }
+  .barra .marca {
+    font-family: 'Dream American Diner', cursive; font-size: 30px; line-height: 1;
+    color: #fff; text-shadow: 0 0 14px rgba(255,110,181,.8); text-decoration: none;
+    padding-top: 6px;
+  }
+  .volver {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 9px 18px; border-radius: 999px;
+    border: 1px solid var(--borde); color: var(--texto); text-decoration: none;
+    font-size: 14px; font-weight: 600; transition: .18s ease;
+  }
+  .volver:hover { border-color: var(--rosa); color: #fff; }
+
+  /* ---------- Estructura ---------- */
+  .lienzo { position: relative; z-index: 1; max-width: 1180px; margin: 0 auto; padding: 48px 22px 90px; }
+  .reja { display: grid; gap: 40px; grid-template-columns: 236px minmax(0, 1fr); align-items: start; }
+  @media (max-width: 980px) { .reja { grid-template-columns: 1fr; } nav.indice { position: static !important; } }
+
+  nav.indice {
+    position: sticky; top: 86px;
+    padding: 20px; border-radius: 18px;
+    border: 1px solid var(--borde); background: var(--carta);
+  }
+  nav.indice h2 {
+    font-family: 'Lilita One', cursive; font-weight: 400; font-size: 13px;
+    letter-spacing: .22em; text-transform: uppercase; color: var(--rosa-claro);
+    margin: 0 0 12px;
+  }
+  nav.indice a {
+    display: block; padding: 7px 10px; margin: 0 -10px; border-radius: 9px;
+    color: var(--suave); text-decoration: none; font-size: 14.5px; transition: .15s ease;
+  }
+  nav.indice a:hover { background: rgba(255,110,181,.1); color: #fff; }
+  nav.indice a.aqui { color: var(--rosa); background: rgba(255,110,181,.12); font-weight: 600; }
+
+  /* ---------- Portada ---------- */
+  header.portada { text-align: center; margin-bottom: 46px; }
+  .encima {
+    display: flex; align-items: center; justify-content: center; gap: 12px;
+    color: var(--rosa-claro); font-size: 12.5px; letter-spacing: .34em;
+    text-transform: uppercase; margin-bottom: 18px;
+  }
+  .encima::before, .encima::after { content: ''; width: 54px; height: 1px; background: linear-gradient(90deg, transparent, var(--rosa)); }
+  .encima::after { background: linear-gradient(90deg, var(--rosa), transparent); }
+  header.portada h1 {
+    font-family: 'Lilita One', cursive; font-weight: 400;
+    font-size: clamp(34px, 6vw, 56px); letter-spacing: .03em; text-transform: uppercase;
+    margin: 0; color: #fff; text-shadow: 0 0 28px rgba(255,110,181,.5);
+  }
+  header.portada p { max-width: 640px; margin: 14px auto 0; color: var(--suave); }
+
+  /* ---------- Secciones ---------- */
+  section { margin-top: 56px; scroll-margin-top: 92px; }
+  section > h2 {
+    display: flex; align-items: center; gap: 14px;
+    font-family: 'Lilita One', cursive; font-weight: 400;
+    font-size: clamp(21px, 3vw, 27px); letter-spacing: .05em; text-transform: uppercase;
+    color: var(--rosa); text-shadow: 0 0 22px rgba(255,110,181,.45);
+    margin: 0 0 6px;
+  }
+  section > h2 .parte {
+    font-family: 'Fredoka', sans-serif; font-size: 12px; font-weight: 600;
+    letter-spacing: .14em; color: var(--negro); background: var(--rosa);
+    padding: 4px 11px; border-radius: 999px; text-shadow: none;
+  }
+  section > p.entradilla { color: var(--suave); margin: 0 0 22px; }
+  h3 {
+    font-family: 'Lilita One', cursive; font-weight: 400; font-size: 19px;
+    letter-spacing: .04em; color: #fff; margin: 34px 0 14px;
+  }
+
+  /* ---------- Pasos ---------- */
+  ol.pasos { list-style: none; margin: 0; padding: 0; counter-reset: paso; }
+  ol.pasos > li {
+    counter-increment: paso;
+    position: relative; padding: 0 0 22px 56px;
+  }
+  ol.pasos > li::before {
+    counter-increment: none; content: counter(paso);
+    position: absolute; left: 0; top: 0;
+    width: 36px; height: 36px; border-radius: 50%;
+    display: grid; place-items: center;
+    background: rgba(255,110,181,.14); border: 1px solid var(--borde);
+    color: var(--rosa-claro); font-family: 'Lilita One', cursive; font-size: 17px;
+  }
+  ol.pasos > li::after {
+    content: ''; position: absolute; left: 17.5px; top: 42px; bottom: 4px; width: 1px;
+    background: linear-gradient(rgba(255,143,199,.35), rgba(255,143,199,0));
+  }
+  ol.pasos > li:last-child::after { display: none; }
+  ol.pasos > li > b { display: block; color: #fff; font-weight: 600; margin-bottom: 2px; }
+  ol.pasos p { margin: 6px 0 0; color: var(--suave); }
+  ol.pasos ul { margin: 8px 0 0; padding-left: 20px; color: var(--suave); }
+  ol.pasos ul li { margin: 4px 0; }
+
+  /* ---------- Tarjetas y avisos ---------- */
+  .caja {
+    padding: 18px 20px; border-radius: 16px;
+    border: 1px solid var(--borde); background: var(--carta);
+    margin: 18px 0;
+  }
+  .nota, .ojo, .truco {
+    position: relative; padding: 16px 20px 16px 54px; border-radius: 14px;
+    margin: 18px 0; font-size: 15px; line-height: 1.55;
+  }
+  .nota::before, .ojo::before, .truco::before {
+    position: absolute; left: 18px; top: 15px; font-size: 19px; line-height: 1.2;
+  }
+  .nota { background: rgba(255,110,181,.09); border: 1px solid rgba(255,110,181,.3); color: #FFE7F2; }
+  .nota::before { content: '💡'; }
+  .truco { background: rgba(127,243,230,.07); border: 1px solid rgba(127,243,230,.28); color: #DDFCF7; }
+  .truco::before { content: '⭐'; }
+  .ojo { background: rgba(255,60,110,.1); border: 1px solid rgba(255,95,122,.45); color: #FFE3EA; }
+  .ojo::before { content: '⚠️'; }
+  .nota b, .ojo b, .truco b { color: #fff; }
+
+  /* ---------- Tablas ---------- */
+  .tabla { overflow-x: auto; margin: 18px 0; border-radius: 16px; border: 1px solid var(--borde); }
+  table { width: 100%; border-collapse: collapse; font-size: 14.5px; background: var(--carta); }
+  th, td { padding: 11px 16px; text-align: left; border-bottom: 1px solid rgba(255,255,255,.06); }
+  th {
+    font-family: 'Lilita One', cursive; font-weight: 400; font-size: 13px;
+    letter-spacing: .1em; text-transform: uppercase; color: var(--rosa-claro);
+    background: rgba(255,110,181,.07);
+  }
+  tbody tr:last-child td { border-bottom: 0; }
+  td b { color: #fff; }
+
+  /* ---------- Piezas pequeñas ---------- */
+  code {
+    font-family: 'Consolas', 'SF Mono', monospace; font-size: .92em;
+    background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.08);
+    padding: 2px 7px; border-radius: 6px; color: #FFD9EC; white-space: nowrap;
+  }
+  kbd {
+    font-family: inherit; font-size: .86em; font-weight: 600;
+    background: #22222D; border: 1px solid rgba(255,255,255,.16);
+    border-bottom-width: 2px; padding: 2px 8px; border-radius: 6px; color: #fff;
+  }
+  a { color: var(--rosa-claro); }
+  .bloque {
+    display: flex; gap: 12px; align-items: flex-start; justify-content: space-between;
+    background: #101017; border: 1px solid var(--borde); border-radius: 14px;
+    padding: 14px 16px; margin: 14px 0;
+  }
+  .bloque code { white-space: pre-wrap; word-break: break-all; background: none; border: 0; padding: 0; color: #FFD9EC; }
+  .copiar {
+    flex: none; border: 1px solid var(--borde); background: transparent; color: var(--texto);
+    font-family: inherit; font-size: 13px; font-weight: 600;
+    padding: 7px 14px; border-radius: 999px; cursor: pointer; transition: .15s ease;
+  }
+  .copiar:hover { border-color: var(--rosa); color: #fff; }
+
+  /* ---------- Rejilla de escenas ---------- */
+  .escenas { display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); margin: 20px 0; }
+  .escena {
+    border-radius: 16px; border: 1px solid var(--borde); background: var(--carta); overflow: hidden;
+    text-decoration: none; color: inherit; transition: .2s ease;
+  }
+  .escena:hover { transform: translateY(-3px); border-color: var(--rosa); box-shadow: 0 14px 34px rgba(0,0,0,.45), 0 0 44px rgba(255,110,181,.18); }
+  .escena img { width: 100%; aspect-ratio: 16/9; object-fit: cover; display: block; }
+  .escena div { padding: 12px 14px 14px; }
+  .escena b { display: block; color: #fff; font-size: 15px; }
+  .escena span { font-size: 13px; color: var(--suave); }
+  .escena code { font-size: 12px; }
+
+  footer {
+    margin-top: 74px; padding-top: 26px; border-top: 1px solid rgba(255,255,255,.07);
+    text-align: center; color: #8A8A99; font-size: 13.5px; line-height: 1.7;
+  }
+  .cta {
+    display: inline-flex; align-items: center; gap: 9px; margin-top: 14px;
+    padding: 13px 24px; border-radius: 14px; text-decoration: none;
+    font-size: 15px; font-weight: 700; background: var(--rosa); color: var(--negro);
+    box-shadow: 0 0 28px rgba(255,110,181,.5); transition: .18s ease;
+  }
+  .cta:hover { transform: translateY(-2px); box-shadow: 0 0 40px rgba(255,110,181,.7); }
+
+  @media (prefers-reduced-motion: reduce) { *, *::before { transition: none !important; } html { scroll-behavior: auto; } }
+</style>
+</head>
+<body>
+
+<div class="luz"></div>
+
+<div class="barra">
+  <a class="marca" href="INICIO.html">Luxanita</a>
+  <a class="volver" href="INICIO.html">&larr; Volver al inicio</a>
+</div>
+
+<div class="lienzo">
+
+  <header class="portada">
+    <div class="encima">Guía paso a paso</div>
+    <h1>Instrucciones</h1>
+    <p>Para montar las alertas y el overlay en OBS y Streamlabs, aunque no lo hayas hecho nunca.
+       Es un rato la primera vez; después ya no se toca.</p>
+  </header>
+
+  <div class="reja">
+
+    <nav class="indice">
+      <h2>Índice</h2>
+      <a href="#empezar">Antes de empezar</a>
+      <a href="#alertas">1 · Alertas</a>
+      <a href="#overlay">2 · Overlay</a>
+      <a href="#ajustes">3 · Ajustes</a>
+      <a href="#problemas">4 · Si algo falla</a>
+    </nav>
+
+    <main>
+
+      <!-- ============ ANTES DE EMPEZAR ============ -->
+      <section id="empezar">
+        <h2>Antes de empezar</h2>
+        <p class="entradilla">Tres cosas y ya podemos ir al lío.</p>
+
+        <ol class="pasos">
+          <li>
+            <b>Descomprime el .zip y deja la carpeta en su sitio</b>
+            <p>Clic derecho en el .zip &rarr; <b>"Extraer todo..."</b>. Déjala en un sitio
+               fijo, por ejemplo <code>C:\Luxanita</code>.</p>
+            <div class="ojo">
+              <b>Importante:</b> OBS lee los archivos desde esa carpeta. Si luego la mueves o le
+              cambias el nombre, las escenas dejan de verse.
+            </div>
+            <div class="ojo">
+              <b>No abras los archivos desde dentro del .zip.</b> Windows te deja, pero se ven
+              rotos (sale un corazón gigante y poco más), porque ahí dentro cada archivo está
+              solo y no encuentra a los demás.
+            </div>
+          </li>
+          <li>
+            <b>Comprueba que lo tienes todo</b>
+            <ul>
+              <li><b>OBS Studio</b> (o Streamlabs Desktop) instalado.</li>
+              <li>Una cuenta de <b>Streamlabs</b> conectada a Twitch.</li>
+            </ul>
+          </li>
+          <li>
+            <b>Dos palabras que salen todo el rato</b>
+            <ul>
+              <li><b>Fuente:</b> cada cosa que añades a una escena de OBS (la cámara, el juego,
+                  el overlay...). Se añaden con el botón <b>"+"</b> del cuadro "Fuentes".</li>
+              <li><b>Navegador:</b> un tipo de fuente que muestra una página web o un archivo
+                  <code>.html</code>. Todo el overlay se añade así.</li>
+            </ul>
+          </li>
+        </ol>
+
+        <div class="nota">
+          ¿Quieres ver antes cómo queda todo? Abre <a href="INICIO.html">INICIO.html</a>: desde ahí
+          se ven las alertas y las escenas sin tocar OBS.
+        </div>
+      </section>
+
+      <!-- ============ PARTE 1: ALERTAS ============ -->
+      <section id="alertas">
+        <h2><span class="parte">PARTE 1</span> Alertas, en Streamlabs</h2>
+        <p class="entradilla">Son 4 alertas. Cada una tiene su carpeta con tres archivos de texto y su sonido.</p>
+
+        <div class="tabla">
+          <table>
+            <thead><tr><th>Carpeta</th><th>Alerta en Streamlabs</th><th>Duración</th></tr></thead>
+            <tbody>
+              <tr><td><b>follow</b></td><td>Follows</td><td>6 segundos</td></tr>
+              <tr><td><b>sub</b></td><td>Subscriptions</td><td>11 s (8 s en las compactas)</td></tr>
+              <tr><td><b>gift</b></td><td>Gift Subs (subs regaladas)</td><td>8 segundos</td></tr>
+              <tr><td><b>raid</b></td><td>Raids</td><td>9 segundos</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>1.1 · Elige qué versión quieres</h3>
+        <div class="tabla">
+          <table>
+            <thead><tr><th>Carpeta</th><th>Cómo se ven</th></tr></thead>
+            <tbody>
+              <tr><td><b>grandes/</b></td><td>Grandes, en el centro, con efectos por toda la pantalla. Quedan muy bien, pero tapan el juego.</td></tr>
+              <tr><td><b>compactas/arriba/</b></td><td>Más pequeñas, arriba en el centro. Los efectos solo salen alrededor de la alerta, así que no molestan mientras juegas. <b>← la recomendada</b></td></tr>
+              <tr><td><b>compactas/centro/</b></td><td>Igual que las de arriba, pero en mitad de la pantalla.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Los pasos son los mismos para las tres. Solo cambia la carpeta de la que copias los
+           archivos (por ejemplo <code>compactas/arriba/follow</code>).</p>
+
+        <h3>1.2 · Instala cada alerta (repite esto con las 4)</h3>
+        <ol class="pasos">
+          <li>
+            <b>Abre la alerta en Streamlabs</b>
+            <p>Entra en <a href="https://streamlabs.com/dashboard#/alertbox">streamlabs.com &rarr; Alert Box</a>
+               y abre la que toque (por ejemplo, Follows).</p>
+          </li>
+          <li>
+            <b>Activa "Enable Custom HTML/CSS"</b>
+            <p>Aparecen tres pestañas: HTML, CSS y JS.</p>
+          </li>
+          <li>
+            <b>Pega cada archivo en su pestaña</b>
+            <p>En cada pestaña, borra todo lo que haya y pega el archivo del mismo nombre:</p>
+            <div class="tabla">
+              <table>
+                <thead><tr><th>Pestaña</th><th>Archivo que pegas</th></tr></thead>
+                <tbody>
+                  <tr><td>HTML</td><td><code>alerta.html</code></td></tr>
+                  <tr><td>CSS</td><td><code>alerta.css</code></td></tr>
+                  <tr><td>JS</td><td><code>alerta.js</code></td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="nota">
+              <b>Cómo se copia un archivo:</b> clic derecho &rarr; Abrir con &rarr; Bloc de notas,
+              luego <kbd>Ctrl</kbd>+<kbd>A</kbd> y <kbd>Ctrl</kbd>+<kbd>C</kbd>.
+              En Streamlabs: clic dentro de la pestaña, <kbd>Ctrl</kbd>+<kbd>A</kbd> y
+              <kbd>Ctrl</kbd>+<kbd>V</kbd>.
+            </div>
+          </li>
+          <li>
+            <b>Sube el sonido</b>
+            <p>En <b>"Sound"</b>, sube el <code>sonido.mp3</code> de esa misma carpeta.</p>
+          </li>
+          <li>
+            <b>Pon la duración</b>
+            <p>En <b>"Alert Duration"</b>, los segundos de la tabla de arriba.</p>
+          </li>
+          <li>
+            <b>Quita la imagen y deja la animación simple</b>
+            <p>Borra la imagen de la alerta (<b>"Image"</b>) y elige la entrada y salida más
+               simples (<code>fadeIn</code> y <code>fadeOut</code>). La animación bonita ya va
+               dentro de los archivos.</p>
+          </li>
+          <li>
+            <b>Guarda</b>
+            <p>Pulsa <b>"Save"</b>. Y las mismas siete cosas con la siguiente alerta.</p>
+          </li>
+        </ol>
+
+        <h3>1.3 · Añade las alertas a OBS (esto solo una vez)</h3>
+        <ol class="pasos">
+          <li>
+            <b>Copia el enlace del widget</b>
+            <p>En Streamlabs &rarr; Alert Box, copia la <b>"Widget URL"</b>.</p>
+          </li>
+          <li>
+            <b>Añádelo como fuente Navegador</b>
+            <p>En OBS, en cada escena donde quieras alertas: Fuentes &rarr; <b>"+"</b> &rarr; Navegador.</p>
+            <ul>
+              <li>URL: pega el enlace</li>
+              <li>Ancho <b>1920</b> · Alto <b>1080</b></li>
+            </ul>
+          </li>
+          <li>
+            <b>Súbela arriba del todo</b>
+            <p>En la lista de fuentes, la de las alertas va la primera, para que se vean por
+               encima de todo lo demás.</p>
+          </li>
+        </ol>
+        <div class="truco">
+          Añádela en una escena y, en las demás, usa <b>"+" &rarr; Navegador &rarr; "Añadir existente"</b>.
+          Así solo la configuras una vez.
+        </div>
+
+        <h3>1.4 · Comprueba que funcionan</h3>
+        <ul>
+          <li>En Streamlabs pulsa <b>"Test Follow"</b>, <b>"Test Subscription"</b>, etc. Tiene que
+              salir el nombre de la persona, <b>no</b> la palabra <code>{name}</code>.</li>
+          <li>Sin Streamlabs: desde <a href="INICIO.html">INICIO.html</a>, o abriendo el
+              <code>preview.html</code> de cualquier carpeta, y pulsando "Probar alerta".</li>
+        </ul>
+      </section>
+
+      <!-- ============ PARTE 2: OVERLAY ============ -->
+      <section id="overlay">
+        <h2><span class="parte">PARTE 2</span> Overlay, en OBS</h2>
+        <p class="entradilla">Una escena por archivo, todos dentro de la carpeta <code>overlay/</code>.
+           Pulsa cualquiera para verla.</p>
+
+        <div class="escenas">
+          <a class="escena" href="overlay/overlay.html?demo" target="_blank" rel="noopener">
+            <img src="inicio/miniaturas/escena-overlay.jpg" alt="" loading="lazy">
+            <div><b>Jugando</b><span>Juego grande y cámara a la derecha</span><br><code>overlay.html</code></div>
+          </a>
+          <a class="escena" href="overlay/partida.html?demo" target="_blank" rel="noopener">
+            <img src="inicio/miniaturas/escena-partida.jpg" alt="" loading="lazy">
+            <div><b>Partida</b><span>Juego a pantalla completa, cámara pequeña</span><br><code>partida.html</code></div>
+          </a>
+          <a class="escena" href="overlay/charla.html?demo" target="_blank" rel="noopener">
+            <img src="inicio/miniaturas/escena-charla.jpg" alt="" loading="lazy">
+            <div><b>Charla</b><span>Cámara grande y chat a la derecha</span><br><code>charla.html</code></div>
+          </a>
+          <a class="escena" href="overlay/empezando.html?demo" target="_blank" rel="noopener">
+            <img src="inicio/miniaturas/escena-empezando.jpg" alt="" loading="lazy">
+            <div><b>Empezando</b><span>Antes de empezar, con cuenta atrás</span><br><code>empezando.html</code></div>
+          </a>
+          <a class="escena" href="overlay/descanso.html?demo" target="_blank" rel="noopener">
+            <img src="inicio/miniaturas/escena-descanso.jpg" alt="" loading="lazy">
+            <div><b>Descanso</b><span>Para las pausas</span><br><code>descanso.html</code></div>
+          </a>
+          <a class="escena" href="overlay/final.html?demo" target="_blank" rel="noopener">
+            <img src="inicio/miniaturas/escena-final.jpg" alt="" loading="lazy">
+            <div><b>Despedida</b><span>Para cerrar el directo</span><br><code>final.html</code></div>
+          </a>
+          <a class="escena" href="overlay/camara.html?demo" target="_blank" rel="noopener">
+            <img src="inicio/miniaturas/escena-camara.jpg" alt="" loading="lazy">
+            <div><b>Solo la cámara</b><span>El marco suelto (ver 2.5)</span><br><code>camara.html</code></div>
+          </a>
+        </div>
+
+        <h3>2.1 · Añade cada escena</h3>
+        <ol class="pasos">
+          <li>
+            <b>Crea la escena</b>
+            <p>En el cuadro "Escenas" de OBS, pulsa <b>"+"</b> y ponle nombre (por ejemplo "Jugando").</p>
+          </li>
+          <li>
+            <b>Añade la fuente</b>
+            <p>En "Fuentes": <b>"+"</b> &rarr; Navegador &rarr; ponle nombre &rarr; Aceptar.</p>
+          </li>
+          <li>
+            <b>Apunta al archivo</b>
+            <ul>
+              <li>Marca <b>"Archivo local"</b> y pulsa "Examinar". Elige el archivo de la escena
+                  (por ejemplo <code>overlay/overlay.html</code>).</li>
+              <li>Ancho <b>1920</b> · Alto <b>1080</b>.</li>
+              <li>Aceptar.</li>
+            </ul>
+          </li>
+        </ol>
+        <div class="nota">
+          Las pantallas de <b>empezando</b>, <b>descanso</b> y <b>despedida</b> ya están completas:
+          no hace falta añadirles nada más (solo las alertas, si quieres).
+        </div>
+
+        <h3>2.2 · Coloca el juego y la cámara</h3>
+        <p>Las escenas de juego y charla tienen huecos transparentes: ahí se ven el juego y la
+           cámara, que van <b>debajo</b> del overlay en la lista de fuentes.</p>
+        <ol class="pasos">
+          <li>
+            <b>Abre la transformación</b>
+            <p>Clic derecho en la fuente (la cámara o el juego) &rarr; Transformar &rarr; Editar
+               transformación. O selecciónala y pulsa <kbd>Ctrl</kbd>+<kbd>E</kbd>.</p>
+          </li>
+          <li>
+            <b>Escribe la posición</b>
+            <p>La <b>Posición (X, Y)</b> de la tabla de abajo.</p>
+          </li>
+          <li>
+            <b>Tipo de caja delimitadora</b>
+            <p>Elige <b>"Escalar a los límites exteriores"</b> (Scale to outer bounds).</p>
+          </li>
+          <li>
+            <b>Tamaño de la caja</b>
+            <p>El tamaño de la tabla de abajo.</p>
+          </li>
+          <li>
+            <b>Marca "Recortar a la caja delimitadora"</b>
+            <p>Así la imagen llena el hueco sin deformarse: lo que sobra por los lados se recorta solo.</p>
+          </li>
+        </ol>
+
+        <div class="tabla">
+          <table>
+            <thead><tr><th>Escena</th><th>Fuente</th><th>Posición (X, Y)</th><th>Tamaño</th></tr></thead>
+            <tbody>
+              <tr><td rowspan="2"><b>overlay.html</b></td><td>Juego</td><td><code>32, 182</code></td><td><code>1392 x 783</code></td></tr>
+              <tr><td>Cámara</td><td><code>1448, 485</code></td><td><code>440 x 480</code></td></tr>
+              <tr><td rowspan="2"><b>partida.html</b></td><td>Juego</td><td><code>0, 0</code></td><td><code>1920 x 1080</code></td></tr>
+              <tr><td>Cámara</td><td><code>24, 34</code></td><td><code>320 x 352</code></td></tr>
+              <tr><td rowspan="2"><b>charla.html</b></td><td>Cámara</td><td><code>32, 182</code></td><td><code>1392 x 783</code></td></tr>
+              <tr><td>Chat</td><td><code>1460, 254</code></td><td><code>416 x 700</code> (ver 2.3)</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="caja">
+          <b>Orden de las fuentes</b> (la de arriba se ve por encima):
+          <ol style="margin:10px 0 0; padding-left:22px; color:var(--suave)">
+            <li>Alertas (Alert Box) <b>← arriba del todo</b></li>
+            <li>Chat <span style="opacity:.75">(solo en charla)</span></li>
+            <li>Overlay (el <code>.html</code>)</li>
+            <li>Cámara</li>
+            <li>Juego <b>← abajo del todo</b></li>
+          </ol>
+        </div>
+
+        <h3>2.3 · El chat, en la escena de charla</h3>
+        <ol class="pasos">
+          <li>
+            <b>Copia el enlace del Chat Box</b>
+            <p>En streamlabs.com &rarr; Chat Box, copia el enlace del widget.</p>
+          </li>
+          <li>
+            <b>Añádelo a la escena</b>
+            <p>Fuentes &rarr; <b>"+"</b> &rarr; Navegador. URL: el enlace. Ancho <b>416</b> · Alto <b>700</b>.</p>
+          </li>
+          <li>
+            <b>Ponlo encima del overlay</b>
+            <p>En la lista de fuentes, por encima del <code>.html</code>.</p>
+          </li>
+          <li>
+            <b>Colócalo</b>
+            <p><kbd>Ctrl</kbd>+<kbd>E</kbd> y Posición <code>1460, 254</code>. Queda dentro del
+               panel rosa de la derecha, debajo de "CHAT".</p>
+          </li>
+        </ol>
+        <div class="truco">
+          En los ajustes del Chat Box de Streamlabs, quita el fondo (fondo transparente) para que
+          se vea el panel del overlay.
+        </div>
+
+        <h3>2.4 · Cuenta atrás en la pantalla de empezando <span style="color:var(--suave);font-family:'Fredoka';font-size:14px">(opcional)</span></h3>
+        <p>Sin tocar nada sale una barra de carga animada. Para que salga una cuenta atrás de,
+           por ejemplo, 5 minutos:</p>
+        <ol class="pasos">
+          <li><b>Abre las propiedades</b><p>Doble clic en la fuente de empezando.</p></li>
+          <li><b>Desmarca "Archivo local"</b></li>
+          <li>
+            <b>Escribe la dirección con los minutos</b>
+            <p>En "URL", la ruta del archivo terminada en <code>?minutos=5</code>. Si la carpeta
+               está en <code>C:\Luxanita</code>:</p>
+            <div class="bloque">
+              <code id="ruta">file:///C:/Luxanita/overlay/empezando.html?minutos=5</code>
+              <button class="copiar" type="button" data-copiar="ruta">Copiar</button>
+            </div>
+            <p>Ojo con las barras: van <code>/</code> hacia la derecha. Cambia el 5 por los
+               minutos que quieras.</p>
+          </li>
+          <li>
+            <b>Marca "Actualizar el navegador cuando la escena se active"</b>
+            <p>Así la cuenta empieza cuando cambias a esa escena, no al abrir OBS.</p>
+          </li>
+        </ol>
+        <p>Cuando llega a cero, pone <b>"¡Ya casi!"</b>.</p>
+
+        <h3>2.5 · Marco de cámara suelto</h3>
+        <p>Es solo el marco de la cámara con el nombre y el fondo transparente. Sirve para ponerlo
+           encima de cualquier juego, donde quieras.</p>
+        <ol class="pasos">
+          <li>
+            <b>Añade el marco</b>
+            <p>Fuentes &rarr; <b>"+"</b> &rarr; Navegador &rarr; Archivo local =
+               <code>overlay/camara.html</code>. Ancho <b>416</b> · Alto <b>460</b>.</p>
+          </li>
+          <li>
+            <b>Pon la cámara debajo</b>
+            <p>En la lista de fuentes, debajo del marco. Con <kbd>Ctrl</kbd>+<kbd>E</kbd> dale
+               tamaño <code>320 x 352</code>.</p>
+          </li>
+          <li>
+            <b>Cuádrala con el marco</b>
+            <p>48 píxeles a la derecha y 40 hacia abajo de donde esté el marco. Si el marco está
+               en <code>0, 0</code>, la cámara va en <code>48, 40</code>.</p>
+          </li>
+          <li>
+            <b>Agrúpalas</b>
+            <p>Selecciona las dos (<kbd>Ctrl</kbd> + clic) &rarr; clic derecho &rarr;
+               "Agrupar elementos seleccionados". Ya puedes moverlas y redimensionarlas juntas.</p>
+          </li>
+        </ol>
+      </section>
+
+      <!-- ============ PARTE 3: AJUSTES ============ -->
+      <section id="ajustes">
+        <h2><span class="parte">PARTE 3</span> Ajustes recomendados</h2>
+
+        <div class="caja">
+          <b>Para que el ordenador vaya más ligero</b>
+          <p style="margin:6px 0 0;color:var(--suave)">En cada fuente Navegador del overlay, marca
+             <b>"Apagar la fuente cuando no esté visible"</b>. No lo marques en la de las alertas:
+             si no, alguna podría no salir.</p>
+        </div>
+
+        <div class="caja">
+          <b>Para ver cómo queda sin abrir OBS</b>
+          <p style="margin:6px 0 0;color:var(--suave)">Abre cualquier escena con doble clic (o desde
+             <a href="INICIO.html">INICIO.html</a>) y pulsa <kbd>F11</kbd> para pantalla completa.
+             Los huecos salen a cuadritos: eso quiere decir que en OBS son transparentes. Si añades
+             <code>?demo</code> al final de la dirección, se ve con un juego y una cámara de ejemplo.</p>
+        </div>
+      </section>
+
+      <!-- ============ PARTE 4: PROBLEMAS ============ -->
+      <section id="problemas">
+        <h2><span class="parte">PARTE 4</span> Si algo no sale bien</h2>
+
+        <h3>Alertas</h3>
+        <div class="caja">
+          <b>Sale <code>{name}</code> o algo entre llaves en vez del nombre</b>
+          <p style="margin:6px 0 0;color:var(--suave)">Revisa que pegaste cada archivo en su pestaña:
+             HTML con HTML, CSS con CSS y JS con JS.</p>
+        </div>
+        <div class="caja">
+          <b>No se oye el sonido</b>
+          <ul style="margin:6px 0 0;color:var(--suave)">
+            <li>Mira que en "Sound" esté subido el <code>sonido.mp3</code> y que el volumen no esté a 0.</li>
+            <li>En OBS, abre las propiedades de la fuente de alertas. Si tiene marcado
+                "Controlar audio mediante OBS", la alerta sale en el Mezclador de audio:
+                comprueba que ahí no esté silenciada.</li>
+          </ul>
+        </div>
+        <div class="caja">
+          <b>En las subs regaladas o en la raid no sale el número</b>
+          <p style="margin:6px 0 0;color:var(--suave)">La alerta funciona igual, solo que sin el
+             número. Avisa a quien te las preparó.</p>
+        </div>
+
+        <h3>Overlay</h3>
+        <div class="caja">
+          <b>Una escena sale en blanco o no se ve</b>
+          <p style="margin:6px 0 0;color:var(--suave)">Has movido o renombrado la carpeta. Vuelve a
+             elegir el archivo con "Examinar" en las propiedades de la fuente.</p>
+        </div>
+        <div class="caja">
+          <b>El juego o la cámara se ven deformados o se salen del hueco</b>
+          <p style="margin:6px 0 0;color:var(--suave)">Repite los pasos del 2.2 con la posición y
+             el tamaño de la tabla.</p>
+        </div>
+        <div class="caja">
+          <b>Los huecos salen a cuadritos o de color oscuro dentro de OBS</b>
+          <p style="margin:6px 0 0;color:var(--suave)">No debería pasar. Si pasa: abre las propiedades
+             de la fuente del overlay y, en "CSS personalizado", añade al final esta línea:</p>
+          <div class="bloque">
+            <code id="css-obs">html.preview body, #stage { background: none !important; } .transp { display: none !important; }</code>
+            <button class="copiar" type="button" data-copiar="css-obs">Copiar</button>
+          </div>
+        </div>
+
+        <div class="nota">
+          Si te quedas atascada en algo, lo más rápido es mandar una captura de la pantalla de OBS
+          con la lista de fuentes abierta.
+        </div>
+      </section>
+
+      <footer>
+        <a class="cta" href="INICIO.html">Volver al inicio</a>
+        <p>Hecho con cariño para el canal de Luxanita.</p>
+      </footer>
+
+    </main>
+  </div>
+</div>
+
+<script>
+  // Botones de copiar (en file:// no siempre va el portapapeles moderno: hay plan B)
+  document.querySelectorAll('.copiar').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var texto = document.getElementById(b.dataset.copiar).textContent;
+      function hecho() { var antes = b.textContent; b.textContent = '¡Copiado!'; setTimeout(function () { b.textContent = antes; }, 1600); }
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(texto).then(hecho, planB);
+      } else { planB(); }
+      function planB() {
+        var t = document.createElement('textarea');
+        t.value = texto; document.body.appendChild(t); t.select();
+        try { document.execCommand('copy'); hecho(); } catch (e) { b.textContent = 'Cópialo a mano'; }
+        document.body.removeChild(t);
+      }
+    });
+  });
+
+  // El índice marca por dónde vas
+  var enlaces = [].slice.call(document.querySelectorAll('nav.indice a'));
+  var secciones = enlaces.map(function (a) { return document.querySelector(a.getAttribute('href')); });
+  var mirar = new IntersectionObserver(function (entradas) {
+    entradas.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      var i = secciones.indexOf(e.target);
+      enlaces.forEach(function (a, j) { a.classList.toggle('aqui', i === j); });
+    });
+  }, { rootMargin: '-90px 0px -65% 0px' });
+  secciones.forEach(function (s) { if (s) mirar.observe(s); });
+</script>
+
+</body>
+</html>

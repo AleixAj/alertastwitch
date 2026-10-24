@@ -3,8 +3,13 @@
    Guía de instalación paso a paso
 ==================================================================
 
+Esta misma guía, con imágenes y mejor presentada, está en
+INSTRUCCIONES.html (ábrelo con doble clic). Este archivo de texto es
+por si prefieres leerlo así o imprimirlo.
+
 Qué hay en esta carpeta:
 
+  INSTRUCCIONES.html  Esta guía, en bonito
   INICIO.html   Un menú para verlo todo: abre con doble clic y cada
                 botón te enseña una alerta o una escena en una
                 pestaña nueva. Empieza por aquí.
