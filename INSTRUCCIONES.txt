@@ -5,6 +5,9 @@
 
 Qué hay en esta carpeta:
 
+  INICIO.html   Un menú para verlo todo: abre con doble clic y cada
+                botón te enseña una alerta o una escena en una
+                ventana nueva. Empieza por aquí.
   grandes/      Alertas grandes (follow, sub, gift y raid)
   compactas/    Las mismas alertas, más pequeñas
   overlay/      Las escenas del directo para OBS (juego, charla...)
@@ -29,6 +32,9 @@ Qué hay en esta carpeta:
    desde dentro del .zip: Windows te deja, pero se ven rotos (sale un
    corazón gigante y poco más), porque ahí dentro cada archivo está
    solo y no encuentra a los demás.
+
+   Ya extraída la carpeta, abre INICIO.html con doble clic: desde ahí
+   ves todas las alertas y todas las escenas sin tocar nada más.
 
    ¡Importante! OBS lee los archivos desde ahí. Si luego mueves o
    cambias el nombre de la carpeta, las escenas dejan de verse.

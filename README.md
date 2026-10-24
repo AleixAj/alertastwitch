@@ -14,7 +14,7 @@
 </p>
 
 <p align="center">
-  <sub>Windows, Mac o Linux · Se descomprime y dentro está el <code>INSTRUCCIONES.txt</code> con todos los pasos</sub>
+  <sub>Windows, Mac o Linux · Se descomprime, se abre el <code>INICIO.html</code> y desde ahí se ve todo · Los pasos, en <code>INSTRUCCIONES.txt</code></sub>
 </p>
 
 <p align="center">

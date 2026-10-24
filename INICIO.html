@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Luxanita · Empieza por aquí</title>
+<style>
+  @font-face { font-family: 'Fredoka'; src: url('overlay/fuentes/Fredoka-latin.woff2') format('woff2'); font-weight: 300 700; font-display: swap; }
+  @font-face { font-family: 'Dream American Diner'; src: url('overlay/fuentes/Dream-American-Diner-demo.ttf.woff') format('woff'); font-display: swap; }
+
+  :root {
+    --pink: #ff5fa8;
+    --pink-soft: #ffc2dd;
+    --pink-deep: #e2317f;
+  }
+  * { box-sizing: border-box; }
+
+  /* El mismo fondo a cuadritos que la pantalla de prueba de las alertas */
+  body {
+    margin: 0;
+    padding: 44px 24px 72px;
+    min-height: 100vh;
+    background: #1b1530 url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80"><rect width="80" height="80" fill="%231b1530"/><rect width="40" height="40" fill="%23221a3b"/><rect x="40" y="40" width="40" height="40" fill="%23221a3b"/></svg>');
+    color: #fff6fb;
+    font-family: 'Fredoka', system-ui, sans-serif;
+  }
+  .caja { max-width: 1000px; margin: 0 auto; }
+
+  h1 {
+    font-family: 'Dream American Diner', 'Fredoka', cursive;
+    font-size: 66px; font-weight: 400; margin: 0; text-align: center;
+    color: var(--pink-soft); text-shadow: 0 0 18px rgba(255,95,168,.75);
+  }
+  .sub { text-align: center; opacity: .8; margin: 8px 0 36px; font-size: 17px; }
+
+  section {
+    background: rgba(0,0,0,.55);
+    border-radius: 16px;
+    padding: 20px 22px 24px;
+    margin-bottom: 20px;
+  }
+  h2 { font-size: 21px; margin: 0 0 4px; color: var(--pink-soft); }
+  .pista { opacity: .75; font-size: 15px; margin: 0 0 16px; }
+
+  .fila { display: flex; flex-wrap: wrap; gap: 10px; }
+  .boton {
+    display: block; min-width: 190px; flex: 1 1 190px;
+    padding: 12px 16px; border-radius: 10px; border: 0;
+    background: var(--pink); color: #fff; text-decoration: none;
+    font-family: inherit; font-size: 16px; font-weight: 600; text-align: left;
+    cursor: pointer; transition: .15s;
+  }
+  .boton span { display: block; font-weight: 400; font-size: 13px; opacity: .85; }
+  .boton:hover { background: var(--pink-deep); transform: translateY(-2px); }
+  .boton.suave { background: rgba(255,255,255,.12); }
+  .boton.suave:hover { background: rgba(255,255,255,.22); }
+
+  .aviso {
+    display: none; max-width: 1000px; margin: 0 auto 24px;
+    padding: 16px 20px; border-radius: 12px;
+    background: #4a1020; border: 1px solid #ff5f7a; color: #ffe3ea;
+    font-size: 16px; line-height: 1.5;
+  }
+  footer { text-align: center; font-size: 14px; opacity: .55; margin-top: 28px; }
+</style>
+</head>
+<body>
+
+<div class="aviso" id="aviso">
+  <b>Esto está abierto desde dentro del .zip.</b><br>
+  Así los archivos no se encuentran entre ellos y se ve todo roto. Cierra esta ventana,
+  haz clic derecho en el .zip &rarr; <b>"Extraer todo..."</b> y abre el INICIO.html de la
+  carpeta que te queda.
+</div>
+
+<div class="caja">
+  <h1>Luxanita</h1>
+  <p class="sub">Alertas y overlay para el directo. Cada botón abre una ventana nueva.</p>
+
+  <section>
+    <h2>Instalación</h2>
+    <p class="pista">Los pasos, uno a uno. Ábrelo antes de nada.</p>
+    <div class="fila">
+      <a class="boton" href="INSTRUCCIONES.txt">Abrir las instrucciones<span>Todo explicado paso a paso</span></a>
+      <a class="boton suave" href="https://obsproject.com/download">Descargar OBS Studio<span>Si aún no lo tienes</span></a>
+      <a class="boton suave" href="https://streamlabs.com/dashboard#/alertbox">Alert Box de Streamlabs<span>Donde se pegan las alertas</span></a>
+    </div>
+  </section>
+
+  <section>
+    <h2>Escenas del overlay</h2>
+    <p class="pista">Se abren con un juego y una cámara de ejemplo. En OBS esos huecos son transparentes.</p>
+    <div class="fila" id="escenas"></div>
+  </section>
+
+  <section>
+    <h2>Alertas grandes</h2>
+    <p class="pista">En el centro y con efectos por toda la pantalla. Pulsa "Probar alerta". Llevan sonido.</p>
+    <div class="fila" id="grandes"></div>
+  </section>
+
+  <section>
+    <h2>Alertas pequeñas, arriba</h2>
+    <p class="pista">No tapan el juego.</p>
+    <div class="fila" id="arriba"></div>
+  </section>
+
+  <section>
+    <h2>Alertas pequeñas, en el centro</h2>
+    <p class="pista">Lo mismo, pero en mitad de la pantalla.</p>
+    <div class="fila" id="centro"></div>
+  </section>
+
+  <footer>Si algo no se ve bien, está explicado al final de las instrucciones.</footer>
+</div>
+
+<script>
+  var escenas = [
+    ['overlay.html?demo', 'Jugando', 'Juego, cámara y acuario'],
+    ['partida.html?demo', 'Partida', 'Juego a pantalla completa'],
+    ['charla.html?demo', 'Charla', 'Cámara grande y chat'],
+    ['empezando.html?demo', 'Empezando', 'Antes de empezar'],
+    ['descanso.html?demo', 'Descanso', 'Pausa'],
+    ['final.html?demo', 'Despedida', 'Para cerrar el directo'],
+    ['camara.html?demo', 'Solo la cámara', 'El marco suelto']
+  ];
+  var alertas = [
+    ['follow', 'Follow', 'Alguien sigue el canal'],
+    ['sub', 'Sub', 'Suscripción'],
+    ['gift', 'Subs regaladas', 'Alguien regala subs'],
+    ['raid', 'Raid', 'Llega una raid']
+  ];
+
+  function pintar(id, lista, carpeta) {
+    document.getElementById(id).innerHTML = lista.map(function (e) {
+      return '<a class="boton" href="' + carpeta + e[0] + '">' + e[1] +
+             '<span>' + e[2] + '</span></a>';
+    }).join('');
+  }
+  pintar('escenas', escenas, 'overlay/');
+  pintar('grandes', alertas.map(function (a) { return [a[0] + '/preview.html', a[1], a[2]]; }), 'grandes/');
+  pintar('arriba', alertas.map(function (a) { return [a[0] + '/preview.html', a[1], a[2]]; }), 'compactas/arriba/');
+  pintar('centro', alertas.map(function (a) { return [a[0] + '/preview.html', a[1], a[2]]; }), 'compactas/centro/');
+
+  // Cada botón, en su propia ventana (y la misma ventana si se vuelve a pulsar).
+  document.querySelectorAll('a.boton').forEach(function (a) {
+    a.setAttribute('target', '_blank');
+    a.setAttribute('rel', 'noopener');
+    a.addEventListener('click', function (ev) {
+      var nombre = 'luxanita-' + this.getAttribute('href').replace(/[^a-z]/gi, '');
+      var v = window.open(this.href, nombre, 'popup=yes,width=1280,height=760');
+      if (v) { ev.preventDefault(); v.focus(); }   // si el navegador lo bloquea, se abre en pestaña
+    });
+  });
+
+  // Si el .zip no se ha extraído, los archivos de al lado no existen: avisamos.
+  var prueba = new Image();
+  prueba.onerror = function () { document.getElementById('aviso').style.display = 'block'; };
+  prueba.src = 'overlay/escenas/p-descanso.jpg';
+</script>
+
+</body>
+</html>
