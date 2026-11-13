@@ -510,12 +510,12 @@
           <table>
             <thead><tr><th>Escena</th><th>Fuente</th><th>Posición (X, Y)</th><th>Tamaño</th></tr></thead>
             <tbody>
-              <tr><td rowspan="2"><b>overlay.html</b></td><td>Juego</td><td><code>32, 182</code></td><td><code>1392 x 783</code></td></tr>
-              <tr><td>Cámara</td><td><code>1448, 485</code></td><td><code>440 x 480</code></td></tr>
+              <tr><td rowspan="2"><b>overlay.html</b></td><td>Juego</td><td><code>32, 200</code></td><td><code>1360 x 765</code></td></tr>
+              <tr><td>Cámara</td><td><code>1416, 611</code></td><td><code>472 x 354</code></td></tr>
               <tr><td rowspan="2"><b>partida.html</b></td><td>Juego</td><td><code>0, 0</code></td><td><code>1920 x 1080</code></td></tr>
-              <tr><td>Cámara</td><td><code>24, 34</code></td><td><code>320 x 352</code></td></tr>
-              <tr><td rowspan="2"><b>charla.html</b></td><td>Cámara</td><td><code>32, 182</code></td><td><code>1392 x 783</code></td></tr>
-              <tr><td>Chat</td><td><code>1460, 254</code></td><td><code>416 x 700</code> (ver 2.3)</td></tr>
+              <tr><td>Cámara</td><td><code>24, 34</code></td><td><code>352 x 264</code></td></tr>
+              <tr><td rowspan="2"><b>charla.html</b></td><td>Cámara</td><td><code>32, 200</code></td><td><code>1360 x 765</code></td></tr>
+              <tr><td>Chat</td><td><code>1428, 272</code></td><td><code>448 x 682</code> (ver 2.3)</td></tr>
             </tbody>
           </table>
         </div>
@@ -539,7 +539,7 @@
           </li>
           <li>
             <b>Añádelo a la escena</b>
-            <p>Fuentes &rarr; <b>"+"</b> &rarr; Navegador. URL: el enlace. Ancho <b>416</b> · Alto <b>700</b>.</p>
+            <p>Fuentes &rarr; <b>"+"</b> &rarr; Navegador. URL: el enlace. Ancho <b>448</b> · Alto <b>682</b>.</p>
           </li>
           <li>
             <b>Ponlo encima del overlay</b>
@@ -547,7 +547,7 @@
           </li>
           <li>
             <b>Colócalo</b>
-            <p><kbd>Ctrl</kbd>+<kbd>E</kbd> y Posición <code>1460, 254</code>. Queda dentro del
+            <p><kbd>Ctrl</kbd>+<kbd>E</kbd> y Posición <code>1428, 272</code>. Queda dentro del
                panel rosa de la derecha, debajo de "CHAT".</p>
           </li>
         </ol>
@@ -587,12 +587,12 @@
           <li>
             <b>Añade el marco</b>
             <p>Fuentes &rarr; <b>"+"</b> &rarr; Navegador &rarr; Archivo local =
-               <code>overlay/camara.html</code>. Ancho <b>416</b> · Alto <b>460</b>.</p>
+               <code>overlay/camara.html</code>. Ancho <b>448</b> · Alto <b>372</b>.</p>
           </li>
           <li>
             <b>Pon la cámara debajo</b>
             <p>En la lista de fuentes, debajo del marco. Con <kbd>Ctrl</kbd>+<kbd>E</kbd> dale
-               tamaño <code>320 x 352</code>.</p>
+               tamaño <code>352 x 264</code>.</p>
           </li>
           <li>
             <b>Cuádrala con el marco</b>
@@ -602,7 +602,10 @@
           <li>
             <b>Agrúpalas</b>
             <p>Selecciona las dos (<kbd>Ctrl</kbd> + clic) &rarr; clic derecho &rarr;
-               "Agrupar elementos seleccionados". Ya puedes moverlas y redimensionarlas juntas.</p>
+               "Agrupar elementos seleccionados". Ya puedes moverlas juntas.</p>
+            <p>Para hacerlo más grande, no estires el grupo (el marco se vería borroso): multiplica
+               todos los números por lo mismo. Por ejemplo, x1,5: marco <b>672 x 558</b>, cámara
+               <code>528 x 396</code> en <code>72, 60</code>.</p>
           </li>
         </ol>
       </section>
@@ -652,6 +655,13 @@
              número. Avisa a quien te las preparó.</p>
         </div>
 
+        <div class="caja">
+          <b>Las alertas se ven borrosas, pequeñas o descolocadas</b>
+          <p style="margin:6px 0 0;color:var(--suave)">En OBS, abre las propiedades de la fuente de
+             alertas y pon Ancho <b>1920</b> y Alto <b>1080</b>. Luego clic derecho &rarr; Transformar
+             &rarr; <b>Ajustar a la pantalla</b>. No la estires a mano: se vería borrosa.</p>
+        </div>
+
         <h3>Overlay</h3>
         <div class="caja">
           <b>Una escena sale en blanco o no se ve</b>
@@ -662,6 +672,19 @@
           <b>El juego o la cámara se ven deformados o se salen del hueco</b>
           <p style="margin:6px 0 0;color:var(--suave)">Repite los pasos del 2.2 con la posición y
              el tamaño de la tabla.</p>
+        </div>
+        <div class="caja">
+          <b>Se ve borroso o salen bandas negras arriba y abajo</b>
+          <ul style="margin:6px 0 0;color:var(--suave)">
+            <li>En OBS: Ajustes &rarr; Vídeo. <b>Resolución base</b> 1920x1080 y <b>Resolución de salida</b>
+                1920x1080 (o 1280x720 con filtro Lanczos si el ordenador va justo). Si la base tiene la forma
+                de tu monitor (por ejemplo 1920x1200 o una ultrapanorámica), salen bandas.</li>
+            <li>En la fuente del overlay: Propiedades &rarr; Ancho <b>1920</b> y Alto <b>1080</b>. Luego clic
+                derecho &rarr; Transformar &rarr; <b>Ajustar a la pantalla</b>. Si está mal, el propio overlay
+                lo avisa con una franja rosa arriba.</li>
+            <li>En la captura del juego y en la cámara: clic derecho &rarr; Filtro de escalado &rarr; <b>Lanczos</b>.
+                Así el texto del juego se ve más nítido al encogerlo para que quepa en el marco.</li>
+          </ul>
         </div>
         <div class="caja">
           <b>Los huecos salen a cuadritos o de color oscuro dentro de OBS</b>

@@ -16,8 +16,9 @@
   var BORDER = 3;      // grosor del marco (la línea de neón)
 
   // ===== Distribución común (la misma en todas las escenas, para que al cambiar de escena todo encaje) =====
-  window.GRANDE  = { x: 32,   y: 182, w: 1392, h: 783 };   // marco grande (16:9)
-  window.PEQUENO = { x: 1448, y: 485, w: 440,  h: 480 };   // marco pequeño de la derecha
+  // Rejilla: 32 px de margen a los lados, 24 px entre columnas; el marco grande y el pequeño acaban a la misma altura.
+  window.GRANDE  = { x: 32,   y: 200, w: 1360, h: 765 };   // marco grande (16:9)
+  window.PEQUENO = { x: 1416, y: 611, w: 472,  h: 354 };   // marco pequeño de la derecha (4:3, más ancho que alto)
 
   var SKELETON =
     '<div id="stage">' +
@@ -111,6 +112,26 @@
     }
     window.addEventListener('resize', fit);
     fit();
+
+    // Aviso dentro de OBS si la fuente no mide lo que debe: si es más pequeña, OBS la estira y se ve
+    // borrosa; si no es 16:9, quedan bandas vacías arriba y abajo (o a los lados).
+    if (enOBS) {
+      var aviso = document.createElement('div');
+      aviso.style.cssText = 'position:fixed;left:0;right:0;top:0;z-index:99;padding:10px 14px;background:#e2317f;color:#fff;' +
+        'font:600 16px/1.35 Fredoka,Segoe UI,sans-serif;text-align:center;display:none';
+      document.body.appendChild(aviso);
+      var revisar = function () {
+        // vale cualquier tamaño igual o mayor con la misma forma (p. ej. 2560x1440): se sigue viendo nítido
+        var w = window.innerWidth, h = window.innerHeight;
+        var mal = w < LW - 2 || h < LH - 2 || Math.abs(w / h - LW / LH) > .01;
+        aviso.style.display = mal ? 'block' : 'none';
+        if (mal) aviso.textContent = 'Esta fuente mide ' + w + ' × ' + h + ' y tiene que medir ' + LW + ' × ' + LH +
+          '. Abre sus propiedades y pon Ancho ' + LW + ' y Alto ' + LH + '.' +
+          (LW === 1920 ? ' Luego clic derecho → Transformar → Ajustar a la pantalla.' : '');
+      };
+      window.addEventListener('resize', revisar);
+      revisar();
+    }
 
     // ----- recorte: el fondo y la decoración nunca pintan dentro de los huecos -----
     function rr(b) {
@@ -352,7 +373,7 @@
     // el aro (18 px) empieza a la altura del cartel del título y deja HUECO px (más su sombra) hasta el marco
     var ARO = 18, SOMBRA = 8, HUECO = 14, TITULO_ARRIBA = 43;
     var aroArriba = TITULO_ARRIBA, aroAbajo = P.y - BORDER - HUECO - SOMBRA;
-    var D = Math.min(400, aroAbajo - aroArriba - ARO * 2, P.w - 40);
+    var D = Math.min(aroAbajo - aroArriba - ARO * 2, P.w - 40);   // lo más grande que quepa en la columna
     ph.style.width = ph.style.height = D + 'px';
     ph.style.left = (P.x + P.w / 2 - D / 2) + 'px';
     ph.style.top = (aroArriba + ARO + (aroAbajo - aroArriba - ARO * 2 - D) / 2) + 'px';

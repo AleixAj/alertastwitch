@@ -194,12 +194,12 @@ Para ponerlos en su sitio exacto:
 
   Escena          Fuente    Posición (X, Y)   Tamaño (ancho x alto)
   -------------   -------   ---------------   ---------------------
-  overlay.html    Juego     32, 182           1392 x 783
-                  Cámara    1448, 485         440 x 480
+  overlay.html    Juego     32, 200           1360 x 765
+                  Cámara    1416, 611         472 x 354
   partida.html    Juego     0, 0              1920 x 1080
-                  Cámara    24, 34            320 x 352
-  charla.html     Cámara    32, 182           1392 x 783
-                  Chat      1460, 254         416 x 700   (ver 2.3)
+                  Cámara    24, 34            352 x 264
+  charla.html     Cámara    32, 200           1360 x 765
+                  Chat      1428, 272         448 x 682   (ver 2.3)
 
 Orden de las fuentes en la lista (la de arriba se ve por encima):
 
@@ -215,9 +215,9 @@ Orden de las fuentes en la lista (la de arriba se ve por encima):
   1. En streamlabs.com > Chat Box, copia el enlace del widget.
   2. En la escena de charla: Fuentes > "+" > Navegador.
        - URL:   pega el enlace
-       - Ancho: 416     Alto: 700
+       - Ancho: 448     Alto: 682
   3. Ponla ENCIMA del overlay en la lista de fuentes.
-  4. Ctrl+E y pon Posición 1460, 254.
+  4. Ctrl+E y pon Posición 1428, 272.
      Queda dentro del panel rosa de la derecha, debajo de "CHAT".
 
   Consejo: en los ajustes del Chat Box de Streamlabs, quita el fondo
@@ -251,14 +251,17 @@ Es solo el marco de la cámara con el nombre, con el fondo transparente.
 Sirve para ponerlo encima de cualquier juego, en el sitio que quieras.
 
   1. Fuentes > "+" > Navegador > Archivo local = overlay/camara.html
-       - Ancho: 416     Alto: 460
+       - Ancho: 448     Alto: 372
   2. Pon la cámara DEBAJO del marco en la lista de fuentes y, con
-     Ctrl+E (como en 2.2), dale tamaño 320 x 352.
+     Ctrl+E (como en 2.2), dale tamaño 352 x 264.
   3. Colócala 48 píxeles a la derecha y 40 hacia abajo de donde esté
      el marco. Ejemplo: si el marco está en 0, 0, la cámara va en 48, 40.
   4. Selecciona las dos fuentes (Ctrl + clic) > clic derecho >
      "Agrupar elementos seleccionados".
-     Ahora puedes mover o cambiar el tamaño del grupo y van juntas.
+     Ahora puedes mover el grupo y van juntas.
+     Para hacerlo más grande, no estires el grupo (el marco se vería
+     borroso): multiplica todos los números por lo mismo. Ejemplo x1,5:
+     marco 672 x 558, cámara 528 x 396 en 72, 60.
 
 
 ==================================================================
@@ -299,6 +302,11 @@ Sirve para ponerlo encima de cualquier juego, en el sitio que quieras.
     la alerta funciona igual, solo sin el número. Avisa a quien te las
     preparó.
 
+  - Las alertas se ven borrosas, pequeñas o descolocadas:
+    en OBS, propiedades de la fuente de alertas: Ancho 1920, Alto 1080.
+    Luego clic derecho > Transformar > Ajustar a la pantalla.
+    No la estires a mano: se vería borrosa.
+
   OVERLAY
 
   - Una escena sale en blanco o no se ve:
@@ -307,6 +315,17 @@ Sirve para ponerlo encima de cualquier juego, en el sitio que quieras.
 
   - El juego o la cámara se ven deformados o se salen del hueco:
     repite los pasos de 2.2 con la posición y el tamaño de la tabla.
+
+  - Se ve borroso o salen bandas negras arriba y abajo:
+    · OBS > Ajustes > Vídeo: Resolución base 1920x1080 y Resolución
+      de salida 1920x1080 (o 1280x720 con filtro Lanczos si el
+      ordenador va justo). Si la base tiene la forma de tu monitor
+      (1920x1200, ultrapanorámica...), salen bandas.
+    · Fuente del overlay: Propiedades > Ancho 1920, Alto 1080. Luego
+      clic derecho > Transformar > Ajustar a la pantalla. Si está mal,
+      el overlay lo avisa con una franja rosa arriba.
+    · Captura del juego y cámara: clic derecho > Filtro de escalado >
+      Lanczos (el texto del juego se ve más nítido).
 
   - Los huecos salen a cuadritos o de color oscuro dentro de OBS
     (no debería pasar): abre las propiedades de la fuente del overlay
