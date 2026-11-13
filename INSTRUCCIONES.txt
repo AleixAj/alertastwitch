@@ -251,9 +251,9 @@ Es solo el marco de la cámara con el nombre, con el fondo transparente.
 Sirve para ponerlo encima de cualquier juego, en el sitio que quieras.
 
   1. Fuentes > "+" > Navegador > Archivo local = overlay/camara.html
-       - Ancho: 448     Alto: 372
+       - Ancho: 568     Alto: 462
   2. Pon la cámara DEBAJO del marco en la lista de fuentes y, con
-     Ctrl+E (como en 2.2), dale tamaño 352 x 264.
+     Ctrl+E (como en 2.2), dale tamaño 472 x 354.
   3. Colócala 48 píxeles a la derecha y 40 hacia abajo de donde esté
      el marco. Ejemplo: si el marco está en 0, 0, la cámara va en 48, 40.
   4. Selecciona las dos fuentes (Ctrl + clic) > clic derecho >
@@ -261,7 +261,7 @@ Sirve para ponerlo encima de cualquier juego, en el sitio que quieras.
      Ahora puedes mover el grupo y van juntas.
      Para hacerlo más grande, no estires el grupo (el marco se vería
      borroso): multiplica todos los números por lo mismo. Ejemplo x1,5:
-     marco 672 x 558, cámara 528 x 396 en 72, 60.
+     marco 852 x 693, cámara 708 x 531 en 72, 60.
 
 
 ==================================================================
